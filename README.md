@@ -5,6 +5,7 @@ This repository contains features that can be added to your HotChocolate Server 
 
 This package uses HotChocolate directives and middlewares to add translations to your HotChocolate server. 
 Easily extend your fields to transform their code-value (for instance "CH") into a more presentable value for your consumer ("Switzerland"/"Schweiz"/"Suisse"...). 
+
 The resource strings containing the translations can be provided from any source you like: external microservices, from memory, resx files...
 
 ### Install
