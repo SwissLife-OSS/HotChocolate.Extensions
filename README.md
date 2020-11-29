@@ -1,10 +1,11 @@
-**Extensions for HotChocolate 11+**
-
-This repository contains features that can be added to enhance your HotChocolate experience.
+This repository contains features that can be added to your HotChocolate Server to enhance your HotChocolate experience.
 
 ## Translations
+***
 
-Sample applications are available here.
+This package uses HotChocolate directives and middlewares to add translations to your HotChocolate server. 
+Easily extend your fields to transform their code-value (for instance "CH") into a more presentable value for your consumer ("Switzerland"/"Schweiz"/"Suisse"...). 
+The resource strings containing the translations can be provided from any source you like: external microservices, from memory, resx files...
 
 ### Install
 
@@ -26,7 +27,12 @@ new ServiceCollection()
   );
 ```
 
-This will register the necessary objects to support translation on your fields. Now you can make your field translatable.
+The last step is to implement and register an IResourcesProvider. This provider will be used to retrieve the string resources in the target language. 
+```csharp
+services.AddSingleton<IResourcesProvider, MyResourcesProvider>();
+```
+
+With this we have registered the necessary objects to support translation on your fields. Now you start making your fields translatable.
 
 ### Translating fields
 
@@ -35,8 +41,8 @@ You can translate field values in several ways:
 #### Translation on demand
 
 The field can be made translatable. In this scenario, the field has two possible states: translated or not translated.
-The consumer of the app decides whether he wants the translated state of the field or the non translated state. 
-He does so by adding, or not adding, the field directive @translate to the field in his query. 
+The consumer of the application decides whether he wants the translated state of the field or the non-translated state. 
+He does so by adding, or not adding, the field directive ```@translate``` to the field in his query. 
 
 ```csharp
 public class AddressType : ObjectType<Query>
@@ -165,7 +171,7 @@ This will depend in large part on your implementation of ```IResourcesProvider``
 In our samples, we usually build our resource strings into our assemblies so that we can retrieve them very quickly from the memory.
 
 The ```IResourcesProvider``` is registered in the service container, it can therefore use any registered service of your applicaton. 
-If you are retrieving your resource strings from another microservice, you could consider injecting [Greendonut DataLoaders](https://github.com/ChilliCream/greendonut) or [IMemoryCache](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-5.0). 
+If you are retrieving your resource strings from another microservice, you could consider injecting [Greendonut DataLoaders](https://github.com/ChilliCream/greendonut) or [IMemoryCache](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-5.0) to reduce calls to the external microservice. 
 
 
 ## Community
