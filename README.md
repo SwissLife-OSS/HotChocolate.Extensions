@@ -22,8 +22,8 @@ new ServiceCollection()
   .SetSchema<MySchema>()
   .AddTranslation(
     /* add all translatable types explicitely, except String, which is already added implicitely. */
-    c => c.AddTranslatableType<Guid>()
-          .AddTranslatableType<MyEnum>()
+    c => c.AddTranslatableType<Country>()
+          .AddTranslatableType<MyEnum2>()
   );
 ```
 
