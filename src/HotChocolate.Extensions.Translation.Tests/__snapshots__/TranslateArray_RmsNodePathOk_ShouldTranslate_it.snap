@@ -1,0 +1,24 @@
+﻿{
+  "Label": null,
+  "Path": null,
+  "Data": {
+    "myField": [
+      {
+        "key": "foo",
+        "label": "rms:prefix/foo_it"
+      },
+      {
+        "key": "bar",
+        "label": "rms:prefix/bar_it"
+      },
+      {
+        "key": "baz",
+        "label": "rms:prefix/baz_it"
+      }
+    ]
+  },
+  "Errors": null,
+  "Extensions": null,
+  "ContextData": null,
+  "HasNext": null
+}
