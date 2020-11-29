@@ -78,7 +78,7 @@ namespace HotChocolate.Extensions.Translation
         {
             CultureInfo culture = DetermineOutputCulture(language);
 
-            IResourcesClient client = context.Service<IResourcesClient>();
+            IResourcesProvider client = context.Service<IResourcesProvider>();
 
             if (value is IEnumerable<T> items)
             {
@@ -100,7 +100,7 @@ namespace HotChocolate.Extensions.Translation
             object value,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client)
+            IResourcesProvider client)
         {
             if (value is string s)
             {
@@ -140,7 +140,7 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client,
+            IResourcesProvider client,
             IReadOnlyList<T> items)
         {
             if (directiveOptions.ToCodeLabelItem)
@@ -160,7 +160,7 @@ namespace HotChocolate.Extensions.Translation
             object value,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client,
+            IResourcesProvider client,
             Enum e)
         {
             context.Result = client.TryGetResourceAsString(
@@ -174,7 +174,7 @@ namespace HotChocolate.Extensions.Translation
             object value,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client,
+            IResourcesProvider client,
             string s)
         {
             context.Result = client.TryGetResourceAsString(
@@ -187,7 +187,7 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client,
+            IResourcesProvider client,
             IReadOnlyList<T> items)
         {
             context.Result = items
@@ -202,7 +202,7 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client,
+            IResourcesProvider client,
             IReadOnlyList<T> items)
         {
             context.Result = items
@@ -219,7 +219,7 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesClient client,
+            IResourcesProvider client,
             T item)
         {
             context.Result = item == null

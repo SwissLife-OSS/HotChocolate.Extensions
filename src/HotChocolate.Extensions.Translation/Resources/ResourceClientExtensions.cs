@@ -6,7 +6,7 @@ namespace HotChocolate.Extensions.Translation.Resources
     public static class ResourceClientExtensions
     {
         public static string TryGetResourceAsString(
-            this IResourcesClient client,
+            this IResourcesProvider client,
             string key,
             CultureInfo culture,
             string fallbackValue)

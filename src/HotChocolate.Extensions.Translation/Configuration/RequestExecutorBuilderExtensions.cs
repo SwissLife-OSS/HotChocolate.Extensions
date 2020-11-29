@@ -14,8 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IRequestExecutorBuilder AddTranslation(
             this IRequestExecutorBuilder builder,
-            Action<TranslationBuilder>? configure
-            )
+            Action<TranslationBuilder>? configure)
         {
             IRequestExecutorBuilder b = builder
                 .AddDirectiveType<TranslateDirectiveType>()

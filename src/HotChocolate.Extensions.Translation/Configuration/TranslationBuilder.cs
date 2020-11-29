@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
             _requestExecutorBuilder = requestExecutorBuilder;
         }
 
-        public TranslationBuilder AddType<T>()
+        public TranslationBuilder AddTranslatableType<T>()
         {
             _requestExecutorBuilder.AddDirectiveType<TranslateDirectiveType<T>>();
 

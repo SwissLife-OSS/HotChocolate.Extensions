@@ -1,123 +1,172 @@
-**Bewit is an authentication scheme alternative to cookies and bearer tokens.**
+**Extensions for HotChocolate 11+**
 
-Bewit enables you to provide authentication in use cases where cookies and authentication headers can not be used. With support for both stateful and stateless authentication, Bewit is a practical solution for many scenarii, including file downloads and temporary or single-use links.
+This repository contains features that can be added to enhance your HotChocolate experience.
 
-## Getting Started
+## Translations
 
-We've prepared a simple example of how to use Bewit to provide stateless secure file downloads for a HotChocolate Server.
-In this scenario, a HotChocolate server will be used to generate secure links. These links can then be used to download content from an Asp.Net MVC Server without cookies or authentication headers.
+Sample applications are available here.
 
 ### Install
 
-You will need the following package for your HotChocolate Server:
+You will need to include the following package on your HotChocolate Server:
 
 ```bash
-dotnet add package Bewit.Extensions.HotChocolate
+dotnet add package HotChocolate.Extensions.Translation
 ```
 
-On your MVC Server, add the following package:
-
-```bash
-dotnet add package Bewit.Extensions.Mvc
+The next step is to register some directives to your GraphQL Schema:
+```csharp
+new ServiceCollection()
+  .AddGraphQLServer()
+  .SetSchema<MySchema>()
+  .AddTranslation(
+    /* add all translatable types explicitely, except String, which is already added implicitely. */
+    c => c.AddTranslatableType<Guid>()
+          .AddTranslatableType<MyEnum>()
+  );
 ```
 
-### HotChocolate Server
+This will register the necessary objects to support translation on your fields. Now you can make your field translatable.
 
-First create a simple HotChocolate API with the following Schema:
+### Translating fields
+
+You can translate field values in several ways:
+
+#### Translation on demand
+
+The field can be made translatable. In this scenario, the field has two possible states: translated or not translated.
+The consumer of the app decides whether he wants the translated state of the field or the non translated state. 
+He does so by adding, or not adding, the field directive @translate to the field in his query. 
 
 ```csharp
-const string mvcApiUrl = "http://localhost:5000"; //your mvc api url here
-
-ISchema schema = SchemaBuilder.New()
-    .SetOptions(new SchemaOptions
+public class AddressType : ObjectType<Query>
+{
+    protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
     {
-        StrictValidation = false //because we don't have a QueryType in this example
-    })
-    .AddMutationType(
-        new ObjectType(
-            d =>
-            {
-                d.Name("Mutation");
-                d.Field("RequestAccessUrl")
-                    .Type<NonNullType<StringType>>()
-                    .Resolver(ctx => $"{mvcApiUrl}/api/file/123")
-                    .UseBewitUrlProtection();
-            }))
-    .Create();
-```
-
-You'll also need to register some things in the service container:
-
-```csharp
-services.AddBewitGeneration<string>(
-    new BewitOptions
-    {
-        Secret = "my encryption key",
-        TokenDuration = TimeSpan.FromMinutes(1) //lifespan of the generated url
-    },
-    builder => builder.UseHmacSha256Encryption()
-);
-```
-
-### MVC Server
-
-Create a simple Asp.Net MVC Server with the following Controller:
-
-```csharp
-    [Route("api/[controller]")]
-    [ApiController]
-    public class FileController: Controller
-    {
-        [HttpGet("{id}")]
-        [BewitUrlAuthorization]
-        public FileResult GetFile(string id)
-        {
-            return File(/* your file here*/);
-        }
+        descriptor.Field("country")
+            .Resolve(c => c.Parent<Query>().CountryCodeAlpha2)
+            .Translatable("Ref/Aex/Countries")
+            .Type<NonNullType<StringType>>();
     }
-```
-
-You'll also need to register some things in the service container:
-
-```csharp
-services.AddBewitUrlAuthorizationFilter(
-    new BewitOptions
-    {
-        Secret = "my encryption key"
-    },
-    builder => builder
-        .UseHmacSha256Encryption()
-    );
-```
-
-### Use
-
-You can now generate secure download urls by calling your mutation:
-
-```graphql
-mutation foo {
-  requestAccessUrl
 }
 ```
 
-## Features
+Querying this field will produce the following results:
+```graphql
+{ 
+  country // -> "CH"
+  countryLabel: country @translate // -> "Switzerland" if your Thread language is english
+  country_fr: country @translate(lang:"fr") // -> "Suisse"
+}
+```
 
-### Generating secured Links
+#### Translation to a { key label } item
 
-- [x] Vanilla (no overhead)
-- [x] HotChocolate integration
-- [ ] graphql-dotnet integration
+Alternatively, you can rewrite your string/enum/other field to make it a { key label } field.
+This can be useful if you also use Array Translations, which use the same typing (see next chapter).
 
-### Authentication
+```csharp
+public class AddressType : ObjectType<Query>
+{
+    protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
+    {
+        descriptor.Field("country")
+            .Resolve(c => c.Parent<Query>().CountryCodeAlpha2) //CountryCodeAlpha2 is a Country enum
+            .Translate("Ref/Aex/Countries");
+  
+    }
+}
+```
 
-- [x] Asp.Net MVC
+This will generate the following Schema:
+```graphql
+type Query {
+  country: TranslatedResourceOfCountry!
+}
 
-### Persistance (for Stateful authentication)
+type TranslatedResourceOfCountry {
+  key: Country!
+  label: String!
+}
+```
 
-- [x] MongoDb
-- [ ] Sql Server
-- [ ] Azure Blob Storage
-- [ ] PostgresSQL
+Querying this field will produce the following results:
+```graphql
+{
+  country {
+    key // -> "CH",
+    label // -> "Switzerland" if your Thread language is english
+  }
+}
+```
+
+#### Array Translation to { key label } items
+
+You can translate string/enum/other arrays to { key label } arrays.
+
+```csharp
+public class AddressType : ObjectType<Query>
+{
+    protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
+    {
+        descriptor.Field("countries")
+            .Resolve(c => new []{ Country.Fr, Country.Ch } )
+            .TranslateArray("Ref/Aex/Countries");
+    }
+}
+```
+
+This will generate the following Schema:
+```graphql
+type Query {
+  countries: [TranslatedResourceOfCountry!]!
+}
+
+type TranslatedResourceOfCountry {
+  key: Country!
+  label: String!
+}
+```
+
+Querying this field will produce the following results:
+```graphql
+{
+  countries {
+    key
+    label 
+  }
+}
+```
+
+```json
+{
+  countries: [
+    {
+      key: "FR",
+      label: "France"
+    },
+    {
+      key: "CH",
+      label: "Switzerland"
+    }
+}
+```
+
+
+### FAQ
+
+#### What language is used by default by this extension?
+
+The language of the thread, which you can for instance initialize via the [ASP.NET Core Localization Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-5.0#localization-middleware-2).
+
+#### What is the performance impact of translations?
+
+This will depend in large part on your implementation of ```IResourcesProvider```.
+In our samples, we usually build our resource strings into our assemblies so that we can retrieve them very quickly from memory.
+
+The ```IResourcesProvider``` is registered in the service container, it can therefore use any registered service of your applicaton. 
+If you are retrieving your resource strings from another microservice, you could consider injecting [Greendonut DataLoaders](https://github.com/ChilliCream/greendonut) or [IMemoryCache](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-5.0). 
+
 
 ## Community
 
