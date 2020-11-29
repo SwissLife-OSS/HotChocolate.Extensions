@@ -32,15 +32,15 @@ The last step is to implement and register an IResourcesProvider. This provider 
 services.AddSingleton<IResourcesProvider, MyResourcesProvider>();
 ```
 
-With this we have registered the necessary objects to support translation on your fields. Now you start making your fields translatable.
+With this we have registered the necessary objects to support translation on our fields. Now we can start adding translation support to our fields.
 
 ### Translating fields
 
-You can translate field values in several ways:
+You can translate field values in several ways, listed below.
 
 #### Translation on demand
 
-The field can be made translatable. In this scenario, the field has two possible states: translated or not translated.
+A field can be made translatable. In this scenario, the field has two possible states: translated or not translated.
 The consumer of the application decides whether he wants the translated state of the field or the non-translated state. 
 He does so by adding, or not adding, the field directive ```@translate``` to the field in his query. 
 
@@ -68,8 +68,8 @@ Querying this field will produce the following results:
 
 #### Translation to a { key label } item
 
-Alternatively, you can rewrite your string/enum/other field to make it a { key label } field.
-This can be useful if you also use Array Translations, which use the same typing (see next chapter).
+Alternatively, we can rewrite our string/enum/other field to make it a { key label } field.
+This can be useful if we also use Array Translations, which use the same typing (see next chapter).
 
 ```csharp
 public class AddressType : ObjectType<Query>
@@ -108,7 +108,7 @@ Querying this field will produce the following results:
 
 #### Array Translation to { key label } items
 
-You can translate string/enum/other arrays to { key label } arrays.
+We can translate string/enum/other arrays to { key label } arrays.
 
 ```csharp
 public class AddressType : ObjectType<Query>
@@ -167,10 +167,10 @@ The language of the thread, which you can for instance initialize via the [ASP.N
 
 #### What is the performance impact of translations?
 
-This will depend in large part on your implementation of ```IResourcesProvider```.
+This will depend in large part on your implementation of ```IResourcesProvider```. This provider is registered in the service container and can therefore use any registered service of your applicaton. 
+
 In our samples, we usually build our resource strings into our assemblies so that we can retrieve them very quickly from the memory.
 
-The ```IResourcesProvider``` is registered in the service container, it can therefore use any registered service of your applicaton. 
 If you are retrieving your resource strings from another microservice, you could consider injecting [Greendonut DataLoaders](https://github.com/ChilliCream/greendonut) or [IMemoryCache](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-5.0) to reduce calls to the external microservice. 
 
 
