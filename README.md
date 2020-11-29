@@ -162,7 +162,7 @@ The language of the thread, which you can for instance initialize via the [ASP.N
 #### What is the performance impact of translations?
 
 This will depend in large part on your implementation of ```IResourcesProvider```.
-In our samples, we usually build our resource strings into our assemblies so that we can retrieve them very quickly from memory.
+In our samples, we usually build our resource strings into our assemblies so that we can retrieve them very quickly from the memory.
 
 The ```IResourcesProvider``` is registered in the service container, it can therefore use any registered service of your applicaton. 
 If you are retrieving your resource strings from another microservice, you could consider injecting [Greendonut DataLoaders](https://github.com/ChilliCream/greendonut) or [IMemoryCache](https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-5.0). 
