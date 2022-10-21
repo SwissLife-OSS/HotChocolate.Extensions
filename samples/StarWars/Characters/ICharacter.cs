@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HotChocolate.Extensions.Translation;
 using HotChocolate.Types;
 
 namespace StarWars.Characters
@@ -28,6 +29,7 @@ namespace StarWars.Characters
         /// <summary>
         /// The episodes the character appears in.
         /// </summary>
+        [TranslateArray<Episode>("Episodes")]
         IReadOnlyList<Episode> AppearsIn { get; }
 
         /// <summary>

@@ -8,11 +8,15 @@ Start the Api and explore the Schema under `/graphql` with your favorite GraphQL
 Test the following Query against the Api: 
 ```
 {
-  characters{
-    nodes{
+  characters {
+    nodes {
       name
-      ... on Human{
-        hairColor{
+      ... on Human {
+        hairColor {
+          key
+          label
+        }
+        maritalStatus {
           key
           label
         }
@@ -22,7 +26,7 @@ Test the following Query against the Api:
 }
 ```
 
-Our default language is english, therefore the `label` field contains the english name of the character''s hair color. 
-Now repeat the query but this time add the HTTP Header `"Accept-Language": "fr"`. The label field will now contain the french name for the character''s hair color.
+Our default language is english, therefore the `label` fields contains the english translations of the hair color and marital status. 
+Now repeat the query but this time add the HTTP Header `"Accept-Language": "fr"`. The `label` fields will now contain the french translations of the hair color and marital status.
 
 

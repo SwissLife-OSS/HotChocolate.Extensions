@@ -46,6 +46,7 @@ namespace StarWars
                     .AddTranslation(c => c
                         .AddTranslatableType<HairColor>()
                         .AddTranslatableType<MaritalStatus>()
+                        .AddTranslatableType<Episode>()
                     )
 
                     .AddInMemorySubscriptions()

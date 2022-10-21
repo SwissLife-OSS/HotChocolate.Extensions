@@ -6,12 +6,12 @@ using HotChocolate.Types.Descriptors;
 namespace HotChocolate.Extensions.Translation
 {
     [AttributeUsage(
-        AttributeTargets.Property | AttributeTargets.Method,
+        AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Field,
         Inherited = false,
         AllowMultiple = false)]
-    public class TranslateAttribute : TranslateAttribute<string>
+    public class TranslateArrayAttribute : TranslateAttribute<string>
     {
-        public TranslateAttribute(
+        public TranslateArrayAttribute(
             string resourceKeyPrefix,
             bool nullable = false)
             : base(resourceKeyPrefix, nullable)
@@ -20,12 +20,12 @@ namespace HotChocolate.Extensions.Translation
     }
 
     [AttributeUsage(
-        AttributeTargets.Property | AttributeTargets.Method,
+        AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Field,
         Inherited = true,
         AllowMultiple = false)]
-    public class TranslateAttribute<T>: ObjectFieldDescriptorAttribute
+    public class TranslateArrayAttribute<T>: ObjectFieldDescriptorAttribute
     {
-        public TranslateAttribute(
+        public TranslateArrayAttribute(
             string resourceKeyPrefix,
             bool nullable = false)
         {
@@ -43,7 +43,7 @@ namespace HotChocolate.Extensions.Translation
         {
             if (descriptor is IObjectFieldDescriptor d)
             {
-                d.Translate<T>(ResourceKeyPrefix, Nullable);
+                d.TranslateArray<T>(ResourceKeyPrefix, Nullable);
             }
         }
     }

@@ -47,6 +47,7 @@ namespace HotChocolate.Extensions.Translation
         /// The  HotChocoalte fieldDescriptor for the field we want to make translated.
         /// </param>
         /// <param name="resourceKeyPrefix">The prefix of the resource key.</param>
+        /// <param name="nullable">Indicates wheather the field's type should be nullable or not</param>
         /// <returns>The HotChocoalte fieldDescriptor for the field, made translated.</returns>
         public static IObjectFieldDescriptor Translate<T>(
             this IObjectFieldDescriptor fieldDescriptor, string resourceKeyPrefix, bool nullable = false)
@@ -73,27 +74,32 @@ namespace HotChocolate.Extensions.Translation
         /// <param name="fieldDescriptor">
         /// The  HotChocoalte fieldDescriptor for the field we want to make translated.
         /// </param>
-        /// <param name="keyPrefix">The prefix of the resource key.</param>
+        /// <param name="resourceKeyPrefix">The prefix of the resource key.</param>
+        /// <param name="nullable">Indicates wheather the field's type should be nullable or not</param>
         /// <returns>The HotChocoalte fieldDescriptor for the field, made translated.</returns>
         public static IObjectFieldDescriptor TranslateArray<T>(
-            this IObjectFieldDescriptor fieldDescriptor, string keyPrefix)
+            this IObjectFieldDescriptor fieldDescriptor, string resourceKeyPrefix, bool nullable = false)
         {
-            if (string.IsNullOrWhiteSpace(keyPrefix))
+            if (!nullable)
             {
-                throw new ArgumentException(
-                    "Value cannot be null or whitespace.", nameof(keyPrefix));
+                fieldDescriptor
+                    .Type<NonNullType<ListType<NonNullType<TranslatedResourceType<T>>>>>();
+            }
+            else
+            {
+                fieldDescriptor
+                    .Type<ListType<NonNullType<TranslatedResourceType<T>>>>();
             }
 
             return fieldDescriptor
-                .Type<NonNullType<ListType<NonNullType<TranslatedResourceType<T>>>>>()
-                .Directive(new TranslatableDirective(keyPrefix, true))
+                .Directive(new TranslatableDirective(resourceKeyPrefix, toCodeLabelItem: true))
                 .Directive(new TranslateDirective<T>());
         }
 
         public static IObjectFieldDescriptor TranslateArray(
-            this IObjectFieldDescriptor fieldDescriptor, string keyprefix)
+            this IObjectFieldDescriptor fieldDescriptor, string keyprefix, bool nullable = false)
         {
-            return fieldDescriptor.TranslateArray<string>(keyprefix);
+            return fieldDescriptor.TranslateArray<string>(keyprefix, nullable);
         }
     }
 }

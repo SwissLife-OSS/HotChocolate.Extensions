@@ -24,6 +24,9 @@ namespace StarWars
                         { "MaritalStatus/Complicated", "Complicated" },
                         { "MaritalStatus/Widow", "Widow" },
                         { "MaritalStatus/Single", "Single" },
+                        { "Episodes/NewHope", "A new hope" },
+                        { "Episodes/Empire", "The empire strikes back" },
+                        { "Episodes/Jedi", "The return of the Jedi" }
                     }
                 },
                 {
@@ -38,6 +41,9 @@ namespace StarWars
                         { "MaritalStatus/Complicated", "Compliqué" },
                         { "MaritalStatus/Widow", "Veuf" },
                         { "MaritalStatus/Single", "Célibataire" },
+                        { "Episodes/NewHope", "Un nouvel espoir" },
+                        { "Episodes/Empire", "L'empire contre-attaque" },
+                        { "Episodes/Jedi", "Le retour du Jedi" }
                     }
                 },
                 {
@@ -52,6 +58,9 @@ namespace StarWars
                         { "MaritalStatus/Complicated", "Kompliziert" },
                         { "MaritalStatus/Widow", "Witwer" },
                         { "MaritalStatus/Single", "Junggeselle" },
+                        { "Episodes/NewHope", "Eine neue Hoffnung" },
+                        { "Episodes/Empire", "Das Imperium schlägt zurück" },
+                        { "Episodes/Jedi", "Die Rückkehr der Jedi-Ritter" }
                     }
                 }
             };
