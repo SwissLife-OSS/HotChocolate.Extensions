@@ -20,14 +20,14 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             IMiddlewareContext context = BuildMockContext(
                 value,
-                new Dictionary<string, string> { { "mynodepath/myvalue", "foo" } });
+                new Dictionary<string, string> { { "myNodePath/myValue", "foo" } });
 
             //Act
             TranslateDirectiveType.UpdateResult(
                 context, value, directive, TranslatableLanguage.De);
 
             //Assert
-            context.Result.Should().Be("foo/de");
+            context.Result.Should().Be("foo/De");
         }
 
         [Fact]
@@ -43,13 +43,13 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             IMiddlewareContext context = BuildMockContext(
                 value,
-                new Dictionary<string, string> { { "mynodepath/myvalue", "foo" } });
+                new Dictionary<string, string> { { "myNodePath/myValue", "foo" } });
 
             //Act
             TranslateDirectiveType.UpdateResult(context, value, directive);
 
             //Assert
-            context.Result.Should().Be("foo/fr");
+            context.Result.Should().Be("foo/Fr");
         }
 
         [Fact]
@@ -61,14 +61,14 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             IMiddlewareContext context = BuildMockContext(
                 value,
-                new Dictionary<string, string> { { "mynodepath/myvalue", "foo" } });
+                new Dictionary<string, string> { { "myNodePath/myValue", "foo" } });
 
             //Act
             TranslateDirectiveType.UpdateResult(
                 context, value, directive, TranslatableLanguage.De);
 
             //Assert
-            context.Result.Should().BeEquivalentTo(new TranslatedResource<string>("myValue", "foo/de"));
+            context.Result.Should().BeEquivalentTo(new TranslatedResource<string>("myValue", "foo/De"));
         }
 
         [InlineData((sbyte)1)]
@@ -88,11 +88,11 @@ namespace HotChocolate.Extensions.Translation.Tests
                 = new System.Globalization.CultureInfo("fr-CH");
             IMiddlewareContext context = BuildMockContext(
                 value,
-                new Dictionary<string, string> { { "mynodepath/1", "foo" } });
+                new Dictionary<string, string> { { "myNodePath/1", "foo" } });
             //Act
             TranslateDirectiveType.UpdateResult(context, value, directive);
             //Assert
-            context.Result.Should().Be("foo/fr");
+            context.Result.Should().Be("foo/Fr");
         }
 
         [Fact]
@@ -130,8 +130,8 @@ namespace HotChocolate.Extensions.Translation.Tests
             IMiddlewareContext context = BuildMockContext(
                 value,
                 new Dictionary<string, string> {
-                    { "mynodepath/myvalue1", "foo" },
-                    { "mynodepath/myvalue2", "bar" },
+                    { "myNodePath/myValue1", "foo" },
+                    { "myNodePath/myValue2", "bar" },
                 });
 
             //Act
@@ -142,8 +142,8 @@ namespace HotChocolate.Extensions.Translation.Tests
             context.Result.Should().BeEquivalentTo(
                 new List<string>
                 {
-                    "foo/de",
-                    "bar/de"
+                    "foo/De",
+                    "bar/De"
                 }
             );
         }
@@ -158,8 +158,8 @@ namespace HotChocolate.Extensions.Translation.Tests
             IMiddlewareContext context = BuildMockContext(
                 value,
                 new Dictionary<string, string> {
-                    { "mynodepath/myvalue1", "foo" },
-                    { "mynodepath/myvalue2", "bar" },
+                    { "mynodepath/myValue1", "foo" },
+                    { "mynodepath/myValue2", "bar" },
                 });
 
             //Act
@@ -171,11 +171,11 @@ namespace HotChocolate.Extensions.Translation.Tests
         }
 
         [Fact]
-        public void UpdateResult_EnumerableStringValue__SomeMissingKeys_ReturnsStringValueAndKeysWhenValueIsMissing()
+        public void UpdateResult_EnumerableStringValueWithSomeMissingKeys_ReturnsStringValueAndKeysWhenValueIsMissing()
         {
             //Arrange
             var directive = new TranslatableDirective("myNodePath", false);
-            IEnumerable<string> value = new List<string>
+            IEnumerable<string> resolverResult = new List<string>
             {
                 "myValue1",
                 "myValue2",
@@ -183,23 +183,23 @@ namespace HotChocolate.Extensions.Translation.Tests
             };
 
             IMiddlewareContext context = BuildMockContext(
-                value,
-                new Dictionary<string, string> {
-                    { "mynodepath/myvalue1", "foo" },
-                    { "mynodepath/myvalue3", "bar" },
+                resolverResult: resolverResult,
+                resourceDictionary: new Dictionary<string, string> {
+                    { "myNodePath/myValue1", "foo" },
+                    { "myNodePath/myValue3", "bar" },
                 });
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, value, directive, TranslatableLanguage.De);
+                context, resolverResult, directive, TranslatableLanguage.De);
 
             //Assert
             context.Result.Should().BeEquivalentTo(
                 new List<string>
                 {
-                    "foo/de",
+                    "foo/De",
                     "myValue2",
-                    "bar/de"
+                    "bar/De"
                 }
             );
         }
@@ -213,14 +213,14 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             IMiddlewareContext context = BuildMockContext(
                 value,
-                new Dictionary<string, string> { { "mynodepath/secondenum", "foo" } });
+                new Dictionary<string, string> { { "myNodePath/SecondEnum", "foo" } });
 
             //Act
             TranslateDirectiveType.UpdateResult(
                 context, value, directive, TranslatableLanguage.De);
 
             //Assert
-            context.Result.Should().Be("foo/de");
+            context.Result.Should().Be("foo/De");
         }
 
         public enum TestEnum
@@ -230,21 +230,21 @@ namespace HotChocolate.Extensions.Translation.Tests
         }
 
         private static IMiddlewareContext BuildMockContext(
-            object value,
-            Dictionary<string, string> dictionary)
+            object resolverResult,
+            Dictionary<string, string> resourceDictionary)
         {
             IDictionary<Mock.Language, Dictionary<string, Resource>> masterDictionary
                 = new Dictionary<Mock.Language, Dictionary<string, Resource>>();
 
-            masterDictionary.Add(Mock.Language.De, ToResourceDictionary(dictionary, Mock.Language.De));
-            masterDictionary.Add(Mock.Language.Fr, ToResourceDictionary(dictionary, Mock.Language.Fr));
-            masterDictionary.Add(Mock.Language.It, ToResourceDictionary(dictionary, Mock.Language.It));
-            masterDictionary.Add(Mock.Language.En, ToResourceDictionary(dictionary, Mock.Language.En));
+            masterDictionary.Add(Mock.Language.De, ToResourceDictionary(resourceDictionary, Mock.Language.De));
+            masterDictionary.Add(Mock.Language.Fr, ToResourceDictionary(resourceDictionary, Mock.Language.Fr));
+            masterDictionary.Add(Mock.Language.It, ToResourceDictionary(resourceDictionary, Mock.Language.It));
+            masterDictionary.Add(Mock.Language.En, ToResourceDictionary(resourceDictionary, Mock.Language.En));
 
             var contextMock = new Mock<IMiddlewareContext>();
             var resourceClientMock = new DictionaryResourcesClient(masterDictionary);
 
-            contextMock.SetupProperty(m => m.Result, value);
+            contextMock.SetupProperty(m => m.Result, resolverResult);
             IMiddlewareContext context = contextMock.Object;
 
             contextMock

@@ -5,15 +5,15 @@
     "myField": [
       {
         "key": "foo",
-        "label": "rms:prefix/foo_de"
+        "label": "rms:prefix/foo_German"
       },
       {
         "key": "bar",
-        "label": "rms:prefix/bar_de"
+        "label": "rms:prefix/bar_German"
       },
       {
         "key": "baz",
-        "label": "rms:prefix/baz_de"
+        "label": "rms:prefix/baz_German"
       }
     ]
   },

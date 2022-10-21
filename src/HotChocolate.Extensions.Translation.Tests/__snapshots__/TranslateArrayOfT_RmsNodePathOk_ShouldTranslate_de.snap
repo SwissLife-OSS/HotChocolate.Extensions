@@ -5,11 +5,11 @@
     "myField": [
       {
         "key": "FOO",
-        "label": "rms:prefix/Foo_de"
+        "label": "rms:prefix/Foo_German"
       },
       {
         "key": "QUX",
-        "label": "rms:prefix/Qux_de"
+        "label": "rms:prefix/Qux_German"
       }
     ]
   },

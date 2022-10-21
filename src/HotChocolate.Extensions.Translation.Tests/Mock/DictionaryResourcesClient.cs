@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -35,8 +36,19 @@ namespace HotChocolate.Extensions.Translation.Tests.Mock
 
         private static Language ToLanguage(CultureInfo culture)
         {
-            //TODO
-            return Language.En;
+            switch (culture.TwoLetterISOLanguageName)
+            {
+                case "en":
+                    return Language.En;
+                case "fr":
+                    return Language.Fr;
+                case "de":
+                    return Language.De;
+                case "it":
+                    return Language.It;
+                default:
+                    throw new NotSupportedException();
+            }
         }
     }
 }

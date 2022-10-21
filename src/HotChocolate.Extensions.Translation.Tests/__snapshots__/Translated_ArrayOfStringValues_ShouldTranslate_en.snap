@@ -3,9 +3,9 @@
   "Path": null,
   "Data": {
     "myField": [
-      "rms:prefix/foo_en",
-      "rms:prefix/bar_en",
-      "rms:prefix/baz_en"
+      "rms:prefix/foo_English",
+      "rms:prefix/bar_English",
+      "rms:prefix/baz_English"
     ]
   },
   "Errors": null,

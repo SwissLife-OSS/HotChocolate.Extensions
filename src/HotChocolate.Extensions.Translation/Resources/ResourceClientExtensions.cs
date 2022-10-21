@@ -11,7 +11,7 @@ namespace HotChocolate.Extensions.Translation.Resources
             CultureInfo culture,
             string fallbackValue)
         {
-            if (client.TryGetResource(key, culture, out Resource res))
+            if (client.TryGetResource(key, culture, out Resource? res))
             {
                 return res.Value;
             }

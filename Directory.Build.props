@@ -3,6 +3,10 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Versions.props', '$(MSBuildThisFileDirectory)'))"/>
 
   <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
     <Nullable>enable</Nullable>
