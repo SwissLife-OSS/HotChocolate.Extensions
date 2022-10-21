@@ -1,3 +1,4 @@
+using HotChocolate.Extensions.Translation;
 using HotChocolate.Extensions.Translation.Resources;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,7 +34,7 @@ namespace StarWars
                         .AddTypeExtension<ReviewSubscriptions>()
 
                     .AddType<Human>()
-                        .AddType<HumanTypeExtension>()
+                        .AddType<HumanType>()
                     .AddType<Droid>()
                     .AddType<Starship>()
                     .AddTypeExtension<CharacterResolvers>()
@@ -42,11 +43,16 @@ namespace StarWars
                     .AddSorting()
 
                     // Adds Translation Support to the server
-                    .AddTranslation(c => c.AddTranslatableType<HairColor>())
+                    .AddTranslation(c => c
+                        .AddTranslatableType<HairColor>()
+                        .AddTranslatableType<MaritalStatus>()
+                    )
 
                     .AddInMemorySubscriptions()
 
-                    .AddApolloTracing();
+                    .AddApolloTracing()
+
+                    .InitializeOnStartup();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

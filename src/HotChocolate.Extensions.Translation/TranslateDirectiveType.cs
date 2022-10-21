@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using HotChocolate;
 using HotChocolate.Extensions.Translation.Exceptions;
 using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Resolvers;
@@ -236,12 +235,12 @@ namespace HotChocolate.Extensions.Translation
         internal static TranslatableDirective GetDirectiveOptions(
             IDirectiveContext context)
         {
-            IDirective? directive = context.Field.Directives.FirstOrDefault(
+            IDirective? directive = context.Selection.Field.Directives.FirstOrDefault(
                 d => d.Name.Equals(TranslatableDirectiveType.DirectiveName));
 
             if (directive == null)
             {
-                throw new TranslationNotSupportedForFieldException(context.Field);
+                throw new TranslationNotSupportedForFieldException(context.Selection.Field);
             }
 
             TranslatableDirective translatableOptions

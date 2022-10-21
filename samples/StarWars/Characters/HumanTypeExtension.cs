@@ -3,7 +3,7 @@ using HotChocolate.Types;
 
 namespace StarWars.Characters
 {
-    public class HumanTypeExtension: ObjectTypeExtension<Human>
+    public class HumanType: ObjectType<Human>
     {
         protected override void Configure(IObjectTypeDescriptor<Human> descriptor)
         {

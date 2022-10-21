@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>HotChocolate.Extensions.Translation</AssemblyName>
     <RootNamespace>HotChocolate.Extensions.Translation</RootNamespace>
     <PackageId>HotChocolate.Extensions.Translation</PackageId>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

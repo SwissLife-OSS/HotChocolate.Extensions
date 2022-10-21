@@ -6,7 +6,7 @@ namespace HotChocolate.Extensions.Translation
     {
         protected override void Configure(IEnumTypeDescriptor<TranslatableLanguage> descriptor)
         {
-            descriptor.Item(TranslatableLanguage.NotSet).Name("NOTSET");
+            descriptor.Value(TranslatableLanguage.NotSet).Name("NOTSET");
         }
     }
 }

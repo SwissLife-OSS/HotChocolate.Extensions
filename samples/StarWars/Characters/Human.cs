@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HotChocolate.Extensions.Translation;
 
 namespace StarWars.Characters
 {
@@ -13,6 +14,7 @@ namespace StarWars.Characters
             IReadOnlyList<int> friends,
             IReadOnlyList<Episode> appearsIn,
             HairColor? hairColor,
+            MaritalStatus maritalStatus,
             string? homePlanet = null,
             double height = 1.72d)
         {
@@ -20,9 +22,10 @@ namespace StarWars.Characters
             Name = name;
             Friends = friends;
             AppearsIn = appearsIn;
+            HairColor = hairColor;
+            MaritalStatus = maritalStatus;
             HomePlanet = homePlanet;
             Height = height;
-            HairColor = hairColor;
         }
 
         /// <inheritdoc />
@@ -46,6 +49,12 @@ namespace StarWars.Characters
         /// Color of the Human's hair
         /// </summary>
         public HairColor? HairColor { get; }
+
+        /// <summary>
+        /// the Humans's marital status
+        /// </summary>
+        [Translate<MaritalStatus>(resourceKeyPrefix: "MaritalStatus")]
+        public MaritalStatus MaritalStatus { get; }
 
         /// <inheritdoc />
         [UseConvertUnit]

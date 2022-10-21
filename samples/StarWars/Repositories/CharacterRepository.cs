@@ -69,7 +69,8 @@ namespace StarWars.Repositories
                 new[] { 1002, 1003, 2000, 2001 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
                 hairColor: HairColor.Blond,
-                homePlanet: "Tatooine"
+                homePlanet: "Tatooine",
+                maritalStatus: MaritalStatus.Complicated
             );
 
             yield return new Human
@@ -79,7 +80,8 @@ namespace StarWars.Repositories
                 new[] { 1004 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
                 hairColor: null,
-                homePlanet: "Tatooine"
+                homePlanet: "Tatooine",
+                maritalStatus: MaritalStatus.Widow
             );
 
             yield return new Human
@@ -88,7 +90,8 @@ namespace StarWars.Repositories
                 "Han Solo",
                 new[] { 1000, 1003, 2001 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
-                hairColor: HairColor.Brown
+                hairColor: HairColor.Brown,
+                maritalStatus: MaritalStatus.Complicated
             );
 
             yield return new Human
@@ -98,7 +101,8 @@ namespace StarWars.Repositories
                 new[] { 1000, 1002, 2000, 2001 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
                 hairColor: HairColor.Black,
-                homePlanet: "Alderaan"
+                homePlanet: "Alderaan",
+                maritalStatus: MaritalStatus.Complicated
             );
 
             yield return new Human
@@ -107,7 +111,8 @@ namespace StarWars.Repositories
                 "Wilhuff Tarkin",
                 new[] { 1001 },
                 new[] { Episode.NewHope },
-                hairColor: HairColor.Black
+                hairColor: HairColor.Black,
+                maritalStatus: MaritalStatus.Married
             );
 
             yield return new Droid

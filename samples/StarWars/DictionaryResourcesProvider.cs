@@ -20,6 +20,10 @@ namespace StarWars
                         { "HairColors/Brown", "Brown" },
                         { "HairColors/Red", "Red" },
                         { "HairColors/Black", "Black" },
+                        { "MaritalStatus/Married", "Married" },
+                        { "MaritalStatus/Complicated", "Complicated" },
+                        { "MaritalStatus/Widow", "Widow" },
+                        { "MaritalStatus/Single", "Single" },
                     }
                 },
                 {
@@ -30,6 +34,10 @@ namespace StarWars
                         { "HairColors/Brown", "Brun" },
                         { "HairColors/Red", "Roux" },
                         { "HairColors/Black", "Noir" },
+                        { "MaritalStatus/Married", "Marié" },
+                        { "MaritalStatus/Complicated", "Compliqué" },
+                        { "MaritalStatus/Widow", "Veuf" },
+                        { "MaritalStatus/Single", "Célibataire" },
                     }
                 },
                 {
@@ -40,6 +48,10 @@ namespace StarWars
                         { "HairColors/Brown", "Braun" },
                         { "HairColors/Red", "Rot" },
                         { "HairColors/Black", "Schwarz" },
+                        { "MaritalStatus/Married", "Verheiratet" },
+                        { "MaritalStatus/Complicated", "Kompliziert" },
+                        { "MaritalStatus/Widow", "Witwer" },
+                        { "MaritalStatus/Single", "Junggeselle" },
                     }
                 }
             };

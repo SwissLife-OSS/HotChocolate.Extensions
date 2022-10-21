@@ -36,8 +36,7 @@ namespace HotChocolate.Extensions.Translation
             this IObjectFieldDescriptor fieldDescriptor, string keyPrefix)
         {
             return fieldDescriptor
-                .Directive(
-                    new TranslatableDirective(keyPrefix, false))
+                .Directive(new TranslatableDirective(keyPrefix, false))
                 .Directive(new TranslateDirective<string>());
         }
 
@@ -47,10 +46,10 @@ namespace HotChocolate.Extensions.Translation
         /// <param name="fieldDescriptor">
         /// The  HotChocoalte fieldDescriptor for the field we want to make translated.
         /// </param>
-        /// <param name="keyPrefix">The prefix of the resource key.</param>
+        /// <param name="resourceKeyPrefix">The prefix of the resource key.</param>
         /// <returns>The HotChocoalte fieldDescriptor for the field, made translated.</returns>
         public static IObjectFieldDescriptor Translate<T>(
-            this IObjectFieldDescriptor fieldDescriptor, string keyPrefix, bool nullable = false)
+            this IObjectFieldDescriptor fieldDescriptor, string resourceKeyPrefix, bool nullable = false)
         {
             if (!nullable)
             {
@@ -64,7 +63,7 @@ namespace HotChocolate.Extensions.Translation
             }
 
             return fieldDescriptor
-                .Directive(new TranslatableDirective(keyPrefix, true))
+                .Directive(new TranslatableDirective(resourceKeyPrefix, toCodeLabelItem: true))
                 .Directive(new TranslateDirective<T>());
         }
 
