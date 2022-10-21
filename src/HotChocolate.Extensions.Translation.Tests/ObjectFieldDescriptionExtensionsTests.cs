@@ -101,7 +101,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 var key = "foo";
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
@@ -150,7 +150,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 string[] keys = { "foo", "bar", "baz" };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
@@ -239,7 +239,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 DummyValues[] keys = { DummyValues.Foo, DummyValues.Qux };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
@@ -288,7 +288,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 string[] keys = { "foo", "bar", "baz" };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
@@ -328,7 +328,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Arrange
             var keys = (List<string>?)null;
             var services = new ServiceCollection();
-            services.AddSingleton<IResourcesProvider>(new EvergreenResourcesClient());
+            services.AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider());
 
             IReadOnlyQueryRequest request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
@@ -358,7 +358,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            services.AddSingleton<IResourcesProvider>(new EvergreenResourcesClient());
+            services.AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider());
 
             IReadOnlyQueryRequest request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")

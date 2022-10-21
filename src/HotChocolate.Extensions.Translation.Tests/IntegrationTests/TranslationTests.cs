@@ -26,7 +26,7 @@ namespace HotChocolate.Extensions.Translation.Tests.IntegrationTests
             var query = "{ foo { key label } }";
 
             IRequestExecutorBuilder builder = new ServiceCollection()
-                .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
+                .AddSingleton<IResourcesProvider>(new EvergreenResourcesProvider())
                 .AddGraphQL()
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
                 .AddDirectiveType<TranslatableDirectiveType>()

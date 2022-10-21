@@ -12,4 +12,8 @@
     <PackageReference Include="HotChocolate.Data" Version="$(HotChocolateVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\HotChocolate.Extensions.Translation\HotChocolate.Extensions.Translation.csproj" />
+  </ItemGroup>
+
 </Project>

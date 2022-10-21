@@ -3,7 +3,7 @@ using HotChocolate.Extensions.Translation.Resources;
 
 namespace HotChocolate.Extensions.Translation.Tests.Mock
 {
-    public class EvergreenResourcesClient : IResourcesProvider
+    public class EvergreenResourcesProvider : IResourcesProvider
     {
         public bool TryGetResource(string key, CultureInfo culture, out Resource res)
         {

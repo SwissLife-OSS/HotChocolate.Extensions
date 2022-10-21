@@ -1,3 +1,4 @@
+using HotChocolate.Extensions.Translation.Resources;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,22 +16,14 @@ namespace StarWars
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                // In order to use the ASP.NET Core routing we need to add the routing services.
                 .AddRouting()
 
-                // We will add some in-memory repositories that hold the in-memory data for this GraphQL server.
                 .AddSingleton<ICharacterRepository, CharacterRepository>()
                 .AddSingleton<IReviewRepository, ReviewRepository>()
+                .AddSingleton<IResourcesProvider, DictionaryResourcesProvider>()
 
-                // Next we are adding our GraphQL server configuration. 
-                // We can host multiple named GraphQL server configurations
-                // that can be exposed on different routes.
                 .AddGraphQLServer()
 
-                    // The query types are split into two classes,
-                    // by splitting the types into several class we can organize 
-                    // our query fields by topics and also am able to test
-                    // them separately.
                     .AddQueryType()
                         .AddTypeExtension<CharacterQueries>()
                         .AddTypeExtension<ReviewQueries>()
@@ -39,30 +32,20 @@ namespace StarWars
                     .AddSubscriptionType()
                         .AddTypeExtension<ReviewSubscriptions>()
 
-                    // The type discover is very good in exploring the types that we are using 
-                    // but sometimes when a GraphQL field for instance only exposes an interface 
-                    // we need to provide we need to provide the implementation types that we want
-                    // to host in our GraphQL schema.
                     .AddType<Human>()
+                        .AddType<HumanTypeExtension>()
                     .AddType<Droid>()
                     .AddType<Starship>()
                     .AddTypeExtension<CharacterResolvers>()
 
-                    // Add filtering and sorting capabilities.
                     .AddFiltering()
                     .AddSorting()
 
-                    // if you wanted to controll the pagination settings globally you could
-                    // do so by setting the paging options.
-                    // .SetPagingOptions()
+                    // Adds Translation Support to the server
+                    .AddTranslation(c => c.AddTranslatableType<HairColor>())
 
-                    // Since we are exposing a subscription type we also need a pub/sub system 
-                    // handling the subscription events. For our little demo here we will use 
-                    // an in-memory pub/sub system.
                     .AddInMemorySubscriptions()
 
-                    // Last we will add apollo tracing to our server which by default is 
-                    // only activated through the X-APOLLO-TRACING:1 header.
                     .AddApolloTracing();
         }
 
@@ -73,9 +56,8 @@ namespace StarWars
                 app.UseDeveloperExceptionPage();
             }
 
-            // in order to expose our GraphQL schema we need to map the GraphQL server 
-            // to a specific route. By default it is mapped onto /graphql.
             app
+                .UseHeaderLocalization()
                 .UseWebSockets()
                 .UseRouting()
                 .UseEndpoints(endpoint => endpoint.MapGraphQL());

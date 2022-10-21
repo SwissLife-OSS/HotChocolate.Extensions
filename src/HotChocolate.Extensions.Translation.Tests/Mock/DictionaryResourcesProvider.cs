@@ -6,9 +6,9 @@ using HotChocolate.Extensions.Translation.Resources;
 
 namespace HotChocolate.Extensions.Translation.Tests.Mock
 {
-    public class DictionaryResourcesClient : IResourcesProvider
+    public class DictionaryResourcesProvider : IResourcesProvider
     {
-        internal DictionaryResourcesClient(
+        internal DictionaryResourcesProvider(
             IDictionary<Language, Dictionary<string, Resource>> masterDictionary)
         {
             _masterDictionary = masterDictionary;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using StarWars.Characters;
@@ -68,7 +68,8 @@ namespace StarWars.Repositories
                 "Luke Skywalker",
                 new[] { 1002, 1003, 2000, 2001 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
-                "Tatooine"
+                hairColor: HairColor.Blond,
+                homePlanet: "Tatooine"
             );
 
             yield return new Human
@@ -77,7 +78,8 @@ namespace StarWars.Repositories
                 "Darth Vader",
                 new[] { 1004 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
-                "Tatooine"
+                hairColor: null,
+                homePlanet: "Tatooine"
             );
 
             yield return new Human
@@ -85,7 +87,8 @@ namespace StarWars.Repositories
                 1002,
                 "Han Solo",
                 new[] { 1000, 1003, 2001 },
-                new[] { Episode.NewHope, Episode.Empire, Episode.Jedi }
+                new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
+                hairColor: HairColor.Brown
             );
 
             yield return new Human
@@ -94,7 +97,8 @@ namespace StarWars.Repositories
                 "Leia Organa",
                 new[] { 1000, 1002, 2000, 2001 },
                 new[] { Episode.NewHope, Episode.Empire, Episode.Jedi },
-                "Alderaan"
+                hairColor: HairColor.Black,
+                homePlanet: "Alderaan"
             );
 
             yield return new Human
@@ -102,7 +106,8 @@ namespace StarWars.Repositories
                 1004,
                 "Wilhuff Tarkin",
                 new[] { 1001 },
-                new[] { Episode.NewHope }
+                new[] { Episode.NewHope },
+                hairColor: HairColor.Black
             );
 
             yield return new Droid

@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using HotChocolate.Types;
-using HotChocolate.Types.Relay;
 
 namespace StarWars.Characters
 {
@@ -10,11 +8,12 @@ namespace StarWars.Characters
     public class Human : ICharacter
     {
         public Human(
-            int id, 
-            string name, 
-            IReadOnlyList<int> friends, 
-            IReadOnlyList<Episode> appearsIn, 
-            string? homePlanet = null, 
+            int id,
+            string name,
+            IReadOnlyList<int> friends,
+            IReadOnlyList<Episode> appearsIn,
+            HairColor? hairColor,
+            string? homePlanet = null,
             double height = 1.72d)
         {
             Id = id;
@@ -23,6 +22,7 @@ namespace StarWars.Characters
             AppearsIn = appearsIn;
             HomePlanet = homePlanet;
             Height = height;
+            HairColor = hairColor;
         }
 
         /// <inheritdoc />
@@ -41,6 +41,11 @@ namespace StarWars.Characters
         /// The planet the character is originally from.
         /// </summary>
         public string? HomePlanet { get; }
+
+        /// <summary>
+        /// Color of the Human's hair
+        /// </summary>
+        public HairColor? HairColor { get; }
 
         /// <inheritdoc />
         [UseConvertUnit]
