@@ -22,6 +22,7 @@ Test the following Query against the Api:
 }
 ```
 
-Our default language is english. Now repeat the query but this time add the HTTP Header `"Accept-Language": "fr"`.
+Our default language is english, therefore the `label` field contains the english name of the character''s hair color. 
+Now repeat the query but this time add the HTTP Header `"Accept-Language": "fr"`. The label field will now contain the french name for the character''s hair color.
 
 
