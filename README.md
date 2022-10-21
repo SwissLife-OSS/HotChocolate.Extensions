@@ -49,8 +49,8 @@ public class AddressType : ObjectType<Query>
 {
     protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
     {
-        descriptor.Field("country")
-            .Resolve(c => c.Parent<Query>().CountryCodeAlpha2)
+        descriptor
+            .Field(c => c.Country) // the Country property is a Country enum
             .Translatable("Ref/Aex/Countries")
             .Type<NonNullType<StringType>>();
     }
@@ -66,9 +66,9 @@ Querying this field will produce the following results:
 }
 ```
 
-#### Translation to a { key label } item
+#### Translation to a { key label } type
 
-Alternatively, we can rewrite our string/enum/other field to make it a { key label } field.
+We can also rewrite our string/enum/other field to make it a `{ key label }` field.
 This can be useful if we also use Array Translations, which use the same typing (see next chapter).
 
 ```csharp
@@ -76,15 +76,23 @@ public class AddressType : ObjectType<Query>
 {
     protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
     {
-        descriptor.Field("country")
-            .Resolve(c => c.Parent<Query>().CountryCodeAlpha2) //CountryCodeAlpha2 is a Country enum
+        descriptor
+            .Field(c => c.Country) // The Country property is a Country enum
             .Translate("Ref/Aex/Countries");
-  
     }
 }
 ```
 
-This will generate the following Schema:
+Alternatively it is possible to translate the field via an attribute directly on the property:
+```csharp
+public class Address
+{
+    [Translate("Ref/Aex/Countries")]
+    public Country Country { get; }
+}
+```
+
+In both cases, this will generate the following Schema:
 ```graphql
 type Query {
   country: TranslatedResourceOfCountry!
@@ -108,17 +116,24 @@ Querying this field will produce the following results:
 
 #### Array Translation to { key label } items
 
-We can translate string/enum/other arrays to { key label } arrays.
+We can translate string/enum/other arrays to `{ key label }` arrays.
 
 ```csharp
 public class AddressType : ObjectType<Query>
 {
     protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
     {
-        descriptor.Field("countries")
-            .Resolve(c => new []{ Country.Fr, Country.Ch } )
-            .TranslateArray("Ref/Aex/Countries");
+        descriptor.Field(c => c.Countries)
+            .TranslateArray<Country>("Ref/Aex/Countries");
     }
+}
+```
+Alternatively it is possible to translate the field via an attribute directly on the property:
+```csharp
+public class Address
+{
+    [TranslateArray<Country>("Ref/Aex/Countries")]
+    public Country[] Countries { get; }
 }
 ```
 

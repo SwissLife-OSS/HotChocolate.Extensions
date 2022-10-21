@@ -7,7 +7,7 @@ namespace HotChocolate.Extensions.Translation
 {
     [AttributeUsage(
         AttributeTargets.Property | AttributeTargets.Method,
-        Inherited = false,
+        Inherited = true,
         AllowMultiple = false)]
     public class TranslateArrayAttribute : TranslateAttribute<string>
     {
