@@ -10,16 +10,12 @@ Test the following Query against the Api:
 {
   characters {
     nodes {
+      __typename
       name
+      appearsIn { key label }
       ... on Human {
-        hairColor {
-          key
-          label
-        }
-        maritalStatus {
-          key
-          label
-        }
+        hairColor { key label }
+        maritalStatus { key label }
       }
     }
   }

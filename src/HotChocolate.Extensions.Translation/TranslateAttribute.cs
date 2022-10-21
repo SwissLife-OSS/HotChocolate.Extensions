@@ -23,7 +23,7 @@ namespace HotChocolate.Extensions.Translation
         AttributeTargets.Property | AttributeTargets.Method,
         Inherited = true,
         AllowMultiple = false)]
-    public class TranslateAttribute<T>: ObjectFieldDescriptorAttribute
+    public class TranslateAttribute<T>: DescriptorAttribute
     {
         public TranslateAttribute(
             string resourceKeyPrefix,
@@ -36,14 +36,18 @@ namespace HotChocolate.Extensions.Translation
         public string ResourceKeyPrefix { get; set; }
         public bool Nullable { get; set; }
 
-        public override void OnConfigure(
+        protected override void TryConfigure(
             IDescriptorContext context,
-            IObjectFieldDescriptor descriptor,
-            MemberInfo member)
+            IDescriptor descriptor,
+            ICustomAttributeProvider element)
         {
             if (descriptor is IObjectFieldDescriptor d)
             {
                 d.Translate<T>(ResourceKeyPrefix, Nullable);
+            }
+            else if (descriptor is IInterfaceFieldDescriptor i)
+            {
+                i.TranslateArray<T>(Nullable);
             }
         }
     }

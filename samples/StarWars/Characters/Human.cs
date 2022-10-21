@@ -38,6 +38,7 @@ namespace StarWars.Characters
         public IReadOnlyList<int> Friends { get; }
 
         /// <inheritdoc />
+        [TranslateArray<Episode>("Episodes")]
         public IReadOnlyList<Episode> AppearsIn { get; }
 
         /// <summary>

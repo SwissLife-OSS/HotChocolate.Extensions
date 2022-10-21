@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HotChocolate.Extensions.Translation;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
 
@@ -35,6 +36,7 @@ namespace StarWars.Characters
         public IReadOnlyList<int> Friends { get; }
 
         /// <inheritdoc />
+        [TranslateArray<Episode>("Episodes")]
         public IReadOnlyList<Episode> AppearsIn { get; }
 
         /// <summary>
