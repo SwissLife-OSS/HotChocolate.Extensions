@@ -1,6 +1,6 @@
 using FluentAssertions;
-using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace HotChocolate.Extensions.Translation.Tests
@@ -12,7 +12,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             protected override void Configure(IObjectTypeDescriptor descriptor)
             {
                 descriptor.Name("Query");
-                descriptor.Field("foo").Resolver("bar")
+                descriptor.Field("foo").Resolve("bar")
                     .Type<NonNullType<StringType>>();
             }
         }
@@ -24,7 +24,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             ISchemaBuilder builder = SchemaBuilder.New();
 
             //Act
-            ISchemaBuilder builder2 = builder.RegisterTranslation();
+            ISchemaBuilder builder2 = builder.AddTranslation();
 
             //Assert
             builder2.Should().Be(builder);
@@ -38,7 +38,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .AddQueryType<QueryType>();
 
             //Act
-            builder.RegisterTranslation();
+            builder.AddTranslation();
 
             //Assert
             ISchema schema = builder.Create();

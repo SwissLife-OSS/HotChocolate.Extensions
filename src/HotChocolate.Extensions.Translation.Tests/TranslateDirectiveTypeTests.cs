@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Extensions.Translation.Tests.Mock;
 using HotChocolate.Resolvers;
 using Moq;
-using SwissLife.F2c.Resources.Contract;
-using SwissLife.Resources.ResourcesClient;
 using Xunit;
 
 namespace HotChocolate.Extensions.Translation.Tests
@@ -234,36 +233,35 @@ namespace HotChocolate.Extensions.Translation.Tests
             object value,
             Dictionary<string, string> dictionary)
         {
-            IDictionary<Language, Dictionary<string, Resource>> masterDictionary
-                = new Dictionary<Language, Dictionary<string, Resource>>();
+            IDictionary<Mock.Language, Dictionary<string, Resource>> masterDictionary
+                = new Dictionary<Mock.Language, Dictionary<string, Resource>>();
 
-            masterDictionary.Add(Language.de, ToResourceDictionary(dictionary, Language.de));
-            masterDictionary.Add(Language.fr, ToResourceDictionary(dictionary, Language.fr));
-            masterDictionary.Add(Language.it, ToResourceDictionary(dictionary, Language.it));
-            masterDictionary.Add(Language.en, ToResourceDictionary(dictionary, Language.en));
+            masterDictionary.Add(Mock.Language.De, ToResourceDictionary(dictionary, Mock.Language.De));
+            masterDictionary.Add(Mock.Language.Fr, ToResourceDictionary(dictionary, Mock.Language.Fr));
+            masterDictionary.Add(Mock.Language.It, ToResourceDictionary(dictionary, Mock.Language.It));
+            masterDictionary.Add(Mock.Language.En, ToResourceDictionary(dictionary, Mock.Language.En));
 
             var contextMock = new Mock<IMiddlewareContext>();
-            var resourceClientMock = new DictionaryResourcesClient(
-                masterDictionary);
+            var resourceClientMock = new DictionaryResourcesClient(masterDictionary);
 
             contextMock.SetupProperty(m => m.Result, value);
             IMiddlewareContext context = contextMock.Object;
 
-            contextMock.Setup(m => m.Service<IResourcesClient>())
+            contextMock
+                .Setup(m => m.Service<IResourcesProvider>())
                 .Returns(resourceClientMock);
             return context;
         }
 
         private static Dictionary<string, Resource> ToResourceDictionary(
-            IDictionary<string, string> dictionary, Language lang)
+            IDictionary<string, string> dictionary, Mock.Language lang)
         {
             return dictionary.ToDictionary(
                 i => i.Key,
-                i => new Resource
-                {
-                    Key = i.Key,
-                    Value = $"{i.Value}/{lang}"
-                });
+                i => new Resource(
+                    key: i.Key,
+                    value: $"{i.Value}/{lang}"
+                ));
         }
     }
 }

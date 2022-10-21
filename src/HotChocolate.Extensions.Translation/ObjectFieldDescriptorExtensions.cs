@@ -88,8 +88,7 @@ namespace HotChocolate.Extensions.Translation
             return fieldDescriptor
                 .Type<NonNullType<ListType<NonNullType<TranslatedResourceType<T>>>>>()
                 .Directive(new TranslatableDirective(keyPrefix, true))
-                .Directive(new TranslateDirective<T>())
-                .Description("Translated");
+                .Directive(new TranslateDirective<T>());
         }
 
         public static IObjectFieldDescriptor TranslateArray(

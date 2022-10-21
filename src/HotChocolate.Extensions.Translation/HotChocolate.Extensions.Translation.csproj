@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(CCResourceProjectProps)" Condition="Exists('$(CCResourceProjectProps)')" />
 
   <PropertyGroup>
     <AssemblyName>HotChocolate.Extensions.Translation</AssemblyName>
@@ -8,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="HotChocolate.Types" Version="$(HotChocolateVersion)" />
     <PackageReference Include="HotChocolate.Execution" Version="$(HotChocolateVersion)" />

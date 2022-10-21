@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
-using HotChocolate;
 using HotChocolate.Execution;
+using HotChocolate.Extensions.Translation.Resources;
+using HotChocolate.Extensions.Translation.Tests.Mock;
 using HotChocolate.Fetching;
 using HotChocolate.Types;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Snapshooter.Xunit;
-using SwissLife.Resources.ResourcesClient;
 using Xunit;
-using HotChocolate.Extensions.Translation.Tests.Mock;
 
 namespace HotChocolate.Extensions.Translation.Tests
 {
@@ -102,7 +101,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 var key = "foo";
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesClient>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
                     .AddBatchDispatcher<BatchScheduler>()
                     .BuildServiceProvider();
 
@@ -151,7 +150,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 string[] keys = { "foo", "bar", "baz" };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesClient>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
                     .AddBatchDispatcher<BatchScheduler>()
                     .BuildServiceProvider();
 
@@ -257,7 +256,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 DummyValues[] keys = { DummyValues.Foo, DummyValues.Qux };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesClient>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
                     .AddBatchDispatcher<BatchScheduler>()
                     .BuildServiceProvider();
 
@@ -306,7 +305,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 string[] keys = { "foo", "bar", "baz" };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesClient>(new EvergreenResourcesClient())
+                    .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
                     .AddBatchDispatcher<BatchScheduler>()
                     .BuildServiceProvider();
 
@@ -344,9 +343,9 @@ namespace HotChocolate.Extensions.Translation.Tests
         public async Task Translated_ArrayNull_ShouldReturnNull()
         {
             //Arrange
-            var keys = (List<string>)null;
+            var keys = (List<string>?)null;
             var services = new ServiceCollection();
-            services.AddSingleton<IResourcesClient>(new EvergreenResourcesClient());
+            services.AddSingleton<IResourcesProvider>(new EvergreenResourcesClient());
 
             IReadOnlyQueryRequest request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
@@ -376,7 +375,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            services.AddSingleton<IResourcesClient>(new EvergreenResourcesClient());
+            services.AddSingleton<IResourcesProvider>(new EvergreenResourcesClient());
 
             IReadOnlyQueryRequest request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
@@ -401,12 +400,12 @@ namespace HotChocolate.Extensions.Translation.Tests
             result.Errors.Should().NotBeNull();
         }
 
-        [InlineData((string)null)]
+        [InlineData((string?)null)]
         [InlineData("")]
         [InlineData(" ")]
         [Theory]
         public void TranslateArray_RmsNodePathNullOrWhitespace_ThrowsArgumentException(
-            string rmsNodePath)
+            string? rmsNodePath)
         {
             //Arrange
             var fieldMock = new Mock<IObjectFieldDescriptor>();
@@ -421,7 +420,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
         public class Dummy
         {
-            public string Foo { get; set; }
+            public string? Foo { get; set; }
         }
     }
 }

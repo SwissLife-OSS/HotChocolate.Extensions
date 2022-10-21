@@ -1,8 +1,11 @@
 <Project>
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Versions.props', '$(MSBuildThisFileDirectory)'))"/>
+
   <PropertyGroup>
-    <TargetFrameworks>$(ResourceProjectTargetFrameworks)</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <IsPackable>true</IsPackable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

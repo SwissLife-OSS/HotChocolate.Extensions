@@ -4,7 +4,8 @@
     <Product>HotChocolate.Extensions</Product>
     <Authors>Swiss Life authors and contributors</Authors>
     <Company>Swiss Life</Company>
-    <Copyright>Copyright © 2020 Swiss Life</Copyright>
+    <Version Condition="$(Version) == ''">0.0.0</Version>
+    <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
     <PackageLicenseUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions</PackageProjectUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/HotChocolate.Extensions/releases/$(Version)</PackageReleaseNotes>

@@ -4,7 +4,7 @@
   "Data": {
     "foo": {
       "key": "BAR",
-      "label": "rms:prefix/Bar_en"
+      "label": "rms:prefix/Bar_English"
     }
   },
   "Errors": null,

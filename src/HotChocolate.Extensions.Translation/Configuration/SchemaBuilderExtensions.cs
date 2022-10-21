@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SchemaBuilderExtensions
     {
-        public static ISchemaBuilder RegisterTranslation(this ISchemaBuilder builder)
+        public static ISchemaBuilder AddTranslation(this ISchemaBuilder builder)
         {
             builder.AddDirectiveType<TranslateDirectiveType>();
             builder.AddDirectiveType<TranslatableDirectiveType>();
@@ -13,8 +13,9 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static ISchemaBuilder RegisterAdditionalTranslation<T>(
+        public static ISchemaBuilder AddAdditionalTranslation<T>(
             this ISchemaBuilder builder)
+            where T : notnull
         {
             builder.AddDirectiveType<TranslateDirectiveType<T>>();
 

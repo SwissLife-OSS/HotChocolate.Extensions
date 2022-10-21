@@ -4,10 +4,10 @@ using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Types;
 using Snapshooter.Xunit;
-using SwissLife.Resources.ResourcesClient;
 using Xunit;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Translation.Tests.Mock;
+using HotChocolate.Extensions.Translation.Resources;
 
 namespace HotChocolate.Extensions.Translation.Tests.IntegrationTests
 {
@@ -26,7 +26,7 @@ namespace HotChocolate.Extensions.Translation.Tests.IntegrationTests
             var query = "{ foo { key label } }";
 
             IRequestExecutorBuilder builder = new ServiceCollection()
-                .AddSingleton<IResourcesClient>(new EvergreenResourcesClient())
+                .AddSingleton<IResourcesProvider>(new EvergreenResourcesClient())
                 .AddGraphQL()
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
                 .AddDirectiveType<TranslatableDirectiveType>()

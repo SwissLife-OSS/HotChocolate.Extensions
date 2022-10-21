@@ -1,7 +1,0 @@
-  
-<Project>
-  <PropertyGroup Label="Framework Versions">
-    <TestProjectTargetFrameworks>netcoreapp3.1</TestProjectTargetFrameworks>
-    <ResourceProjectTargetFrameworks>netcoreapp3.1</ResourceProjectTargetFrameworks>
-  </PropertyGroup>
-</Project>
