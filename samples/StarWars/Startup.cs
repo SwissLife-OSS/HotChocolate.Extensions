@@ -35,6 +35,7 @@ namespace StarWars
 
                     .AddType<Human>()
                         .AddType<HumanType>()
+                        .AddTypeExtension<HumanTypeExtension>()
                     .AddType<Droid>()
                     .AddType<Starship>()
                     .AddTypeExtension<CharacterResolvers>()
