@@ -28,7 +28,7 @@ namespace StarWars
                     deCulture,
                     frCulture,
                 },
-                DefaultRequestCulture = new RequestCulture(deCulture),
+                DefaultRequestCulture = new RequestCulture(enCulture),
                 FallBackToParentCultures = true,
                 FallBackToParentUICultures = true,
                 RequestCultureProviders = new List<IRequestCultureProvider>
