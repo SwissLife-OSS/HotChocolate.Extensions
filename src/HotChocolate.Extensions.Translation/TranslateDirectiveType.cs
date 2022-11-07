@@ -33,7 +33,7 @@ namespace HotChocolate.Extensions.Translation
             descriptor.Name(DirectiveName);
             descriptor.Location(DirectiveLocation.Field);
             descriptor.Location(DirectiveLocation.FieldDefinition);
-            descriptor.Argument(t => t.Language).Type<TranslatableLanguageType>();
+            descriptor.Argument(t => t.Language).Type<StringType>();
 
             descriptor.Use(next => context => Translate(next, context));
         }
@@ -52,11 +52,13 @@ namespace HotChocolate.Extensions.Translation
 
             try
             {
-                TranslatableLanguage language
-                    = context.Directive.ToObject<TranslateDirective<T>>().Language;
+                
+
+                CultureInfo culture = DetermineOutputCulture(context);
+
                 TranslatableDirective directiveOptions = GetDirectiveOptions(context);
 
-                UpdateResult(context, value, directiveOptions, language);
+                UpdateResult(context, value, directiveOptions, culture);
             }
             catch (TranslationException ex)
             {
@@ -73,10 +75,8 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             object value,
             TranslatableDirective directiveOptions,
-            TranslatableLanguage language = TranslatableLanguage.NotSet)
+            CultureInfo culture)
         {
-            CultureInfo culture = DetermineOutputCulture(language);
-
             IResourcesProvider client = context.Service<IResourcesProvider>();
 
             if (value is IEnumerable<T> items)
@@ -250,12 +250,10 @@ namespace HotChocolate.Extensions.Translation
         }
 
         internal static CultureInfo DetermineOutputCulture(
-            TranslatableLanguage language)
+            IDirectiveContext context)
         {
-            if (language != TranslatableLanguage.NotSet)
-            {
-                return new CultureInfo(language.ToString());
-            }
+            string? language
+                    = context.Directive.ToObject<TranslateDirective<T>>().Language;
 
             return Thread.CurrentThread.CurrentCulture;
         }

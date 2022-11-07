@@ -1,0 +1,385 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+"A character in the Star Wars universe."
+interface Character {
+  "The episodes the character appears in."
+  appearsIn: [TranslatedResourceOfEpisode!]!
+  "The ids of the character's friends."
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
+  "The height of the character."
+  height(unit: Unit = METERS): Float!
+  "The unique identifier for the character."
+  id: Int!
+  "The name of the character."
+  name: String!
+}
+
+"A connection to a list of items."
+type CharactersConnection {
+  "A list of edges."
+  edges: [CharactersEdge!]
+  "A flattened list of the nodes."
+  nodes: [Character]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+}
+
+"An edge in a connection."
+type CharactersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Character
+}
+
+"This payload allows us to query the created review object."
+type CreateReviewPayload {
+  "The episode for which a review was created."
+  episode: Episode!
+  "The review that was being created."
+  review: Review!
+}
+
+"This resolver class extends all object types implementing ICharacter."
+type Droid implements Character {
+  "The episodes the character appears in."
+  appearsIn: [TranslatedResourceOfEpisode!]! @translatable(resourceKeyPrefix: "Episodes", toCodeLabelItem: true) @translateEpisode
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
+  "The height of the character."
+  height(unit: Unit = METERS): Float!
+  "The unique identifier for the character."
+  id: Int!
+  "The name of the character."
+  name: String!
+  "The droid's primary function."
+  primaryFunction: String!
+}
+
+"A connection to a list of items."
+type FriendsConnection {
+  "A list of edges."
+  edges: [FriendsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Character]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+}
+
+"An edge in a connection."
+type FriendsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Character
+}
+
+"This resolver class extends all object types implementing ICharacter."
+type Human implements Character {
+  "The episodes the character appears in."
+  appearsIn: [TranslatedResourceOfEpisode!]! @translatable(resourceKeyPrefix: "Episodes", toCodeLabelItem: true) @translateEpisode
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
+  "Color of the Human's hair"
+  hairColor: TranslatedResourceOfHairColor @translatable(resourceKeyPrefix: "HairColors", toCodeLabelItem: true) @translateHairColor
+  hairColor2: TranslatedResourceOfHairColor @translatable(resourceKeyPrefix: "HairColors", toCodeLabelItem: true) @translateHairColor
+  "The height of the character."
+  height(unit: Unit = METERS): Float!
+  "The planet the character is originally from."
+  homePlanet: String
+  "The unique identifier for the character."
+  id: Int!
+  "the Humans's marital status"
+  maritalStatus: TranslatedResourceOfMaritalStatus! @translatable(resourceKeyPrefix: "MaritalStatus", toCodeLabelItem: true) @translateMaritalStatus
+  "The name of the character."
+  name: String!
+}
+
+"The mutations related to reviews."
+type Mutation {
+  "Creates a review for a given Star Wars episode."
+  createReview(input: CreateReviewInput!): CreateReviewPayload!
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+}
+
+"The queries related to reviews."
+type Query {
+  "Gets a character by it`s id.\n\n\n**Returns:**\nThe character."
+  character("The ids of the human to retrieve." ids: [Int!]!): [Character!]!
+  "Gets all character.\n\n\n**Returns:**\nThe character."
+  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] where: ICharacterFilterInput): CharactersConnection
+  "Retrieve a hero by a particular Star Wars episode.\n\n\n**Returns:**\nThe hero character."
+  hero("The episode to retrieve the hero." episode: Episode!): Character!
+  reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] where: ReviewFilterInput): ReviewsConnection
+  "Search the repository for objects that contain the text.\n\n\n**Returns:**\nReturns the union type ISearchResult."
+  search("The text we are searching for." text: String!): [SearchResult!]!
+}
+
+"A review of a particular movie."
+type Review {
+  "An explanation for the rating."
+  commentary: String!
+  "The ID of the review."
+  id: UUID!
+  "The number of stars given for this review."
+  stars: Int!
+}
+
+"A connection to a list of items."
+type ReviewsConnection {
+  "A list of edges."
+  edges: [ReviewsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Review!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+}
+
+"An edge in a connection."
+type ReviewsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Review!
+}
+
+"A starship in the Star Wars universe."
+type Starship {
+  "The Id of the starship."
+  id: Int!
+  "The length of the starship."
+  length(unit: Unit = METERS): Float!
+  "The name of the starship."
+  name: String!
+}
+
+"The subscriptions related to reviews."
+type Subscription {
+  "The OnReview event is invoked whenever a new review is being created.\n\n\n**Returns:**\n\nThe review that was created."
+  onReview("The episode to which you want to subscribe to." episode: Episode!): Review!
+}
+
+type TranslatedResourceOfEpisode {
+  key: Episode!
+  label: String!
+}
+
+type TranslatedResourceOfHairColor {
+  key: HairColor!
+  label: String!
+}
+
+type TranslatedResourceOfMaritalStatus {
+  key: MaritalStatus!
+  label: String!
+}
+
+union SearchResult = Human | Droid | Starship
+
+input ComparableDoubleOperationFilterInput {
+  eq: Float
+  neq: Float
+  in: [Float!]
+  nin: [Float!]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
+input ComparableGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID!]
+  nin: [UUID!]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+"This input represents the data needed to create a review."
+input CreateReviewInput {
+  "An explanation for the rating."
+  commentary: String!
+  "The review for which to create the review."
+  episode: Episode!
+  "The number of stars given for this review."
+  stars: Int!
+}
+
+input EpisodeOperationFilterInput {
+  eq: Episode
+  neq: Episode
+  in: [Episode!]
+  nin: [Episode!]
+}
+
+"A character in the Star Wars universe."
+input ICharacterFilterInput {
+  and: [ICharacterFilterInput!]
+  or: [ICharacterFilterInput!]
+  "The unique identifier for the character."
+  id: ComparableInt32OperationFilterInput
+  "The name of the character."
+  name: StringOperationFilterInput
+  "The ids of the character's friends."
+  friends: ListComparableInt32OperationFilterInput
+  "The episodes the character appears in."
+  appearsIn: ListEpisodeOperationFilterInput
+  "The height of the character."
+  height: ComparableDoubleOperationFilterInput
+}
+
+"A character in the Star Wars universe."
+input ICharacterSortInput {
+  "The unique identifier for the character."
+  id: SortEnumType
+  "The name of the character."
+  name: SortEnumType
+  "The height of the character."
+  height: SortEnumType
+}
+
+input ListComparableInt32OperationFilterInput {
+  all: ComparableInt32OperationFilterInput
+  none: ComparableInt32OperationFilterInput
+  some: ComparableInt32OperationFilterInput
+  any: Boolean
+}
+
+input ListEpisodeOperationFilterInput {
+  all: EpisodeOperationFilterInput
+  none: EpisodeOperationFilterInput
+  some: EpisodeOperationFilterInput
+  any: Boolean
+}
+
+"A review of a particular movie."
+input ReviewFilterInput {
+  and: [ReviewFilterInput!]
+  or: [ReviewFilterInput!]
+  "The ID of the review."
+  id: ComparableGuidOperationFilterInput
+  "The number of stars given for this review."
+  stars: ComparableInt32OperationFilterInput
+  "An explanation for the rating."
+  commentary: StringOperationFilterInput
+}
+
+"A review of a particular movie."
+input ReviewSortInput {
+  "The ID of the review."
+  id: SortEnumType
+  "The number of stars given for this review."
+  stars: SortEnumType
+  "An explanation for the rating."
+  commentary: SortEnumType
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+"The Star Wars episodes."
+enum Episode {
+  "Star Wars Episode IV: A New Hope"
+  NEW_HOPE
+  "Star Wars Episode V: Empire Strikes Back"
+  EMPIRE
+  "Star Wars Episode VI: Return of the Jedi"
+  JEDI
+}
+
+enum HairColor {
+  BLOND
+  BROWN
+  RED
+  BLACK
+}
+
+enum MaritalStatus {
+  SINGLE
+  COMPLICATED
+  WIDOW
+  MARRIED
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+"Different units of measurement."
+enum Unit {
+  FOOT
+  METERS
+}
+
+"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
+directive @defer("Deferred when true." if: Boolean "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
+directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
+
+directive @translatable(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
+
+directive @translate(language: String) on FIELD | FIELD_DEFINITION
+
+directive @translateEpisode(language: String) on FIELD | FIELD_DEFINITION
+
+directive @translateHairColor(language: String) on FIELD | FIELD_DEFINITION
+
+directive @translateMaritalStatus(language: String) on FIELD | FIELD_DEFINITION
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")

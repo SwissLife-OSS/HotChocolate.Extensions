@@ -1,12 +1,9 @@
-using HotChocolate.Extensions.Translation;
 using HotChocolate.Extensions.Translation.Resources;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StarWars.Characters;
 using StarWars.Repositories;
-using StarWars.Reviews;
 
 namespace StarWars
 {
@@ -24,36 +21,7 @@ namespace StarWars
                 .AddSingleton<IResourcesProvider, DictionaryResourcesProvider>()
 
                 .AddGraphQLServer()
-
-                    .AddQueryType()
-                        .AddTypeExtension<CharacterQueries>()
-                        .AddTypeExtension<ReviewQueries>()
-                    .AddMutationType()
-                        .AddTypeExtension<ReviewMutations>()
-                    .AddSubscriptionType()
-                        .AddTypeExtension<ReviewSubscriptions>()
-
-                    .AddType<Human>()
-                        .AddType<HumanType>()
-                        .AddTypeExtension<HumanTypeExtension>()
-                    .AddType<Droid>()
-                    .AddType<Starship>()
-                    .AddTypeExtension<CharacterResolvers>()
-
-                    .AddFiltering()
-                    .AddSorting()
-
-                    // Adds Translation Support to the server
-                    .AddTranslation(c => c
-                        .AddTranslatableType<HairColor>()
-                        .AddTranslatableType<MaritalStatus>()
-                        .AddTranslatableType<Episode>()
-                    )
-
-                    .AddInMemorySubscriptions()
-
-                    .AddApolloTracing()
-
+                    .AddGraphQLSchema()
                     .InitializeOnStartup();
         }
 

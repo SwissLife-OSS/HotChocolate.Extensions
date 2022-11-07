@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Common;
 using HotChocolate.Execution;
 using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Extensions.Translation.Tests.Mock;
@@ -78,7 +79,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
-                        .Resolver(keys)
+                        .Resolve(keys)
                         .Translated("prefix")
                 ).Create();
 
@@ -165,7 +166,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
-                            .Resolver(keys)
+                            .Resolve(keys)
                             .Translated("prefix")
                     ).Create();
                 IRequestExecutor executor = schema.MakeExecutable();
@@ -196,7 +197,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
-                        .Resolver(keys)
+                        .Resolve(keys)
                         .TranslateArray("prefix")
                 ).Create();
 
@@ -216,7 +217,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
-                        .Resolver(keys)
+                        .Resolve(keys)
                         .TranslateArray<DummyValues>("prefix")
                 ).Create();
 
@@ -254,7 +255,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
-                            .Resolver(keys)
+                            .Resolve(keys)
                             .TranslateArray<DummyValues>("prefix")
                     ).Create();
                 IRequestExecutor executor = schema.MakeExecutable();
@@ -303,7 +304,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
-                            .Resolver(keys)
+                            .Resolve(keys)
                             .TranslateArray("prefix")
                     ).Create();
                 IRequestExecutor executor = schema.MakeExecutable();
@@ -340,7 +341,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
-                        .Resolver(keys)
+                        .Resolve(keys)
                         .Translated("prefix")
                 ).Create();
             IRequestExecutor executor = schema.MakeExecutable();
@@ -370,7 +371,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
-                        .Resolver(new Dummy())
+                        .Resolve(new Dummy())
                         .Type<ObjectType<Dummy>>()
                         .Translated("prefix")
                 ).Create();
@@ -383,22 +384,31 @@ namespace HotChocolate.Extensions.Translation.Tests
             result.Errors.Should().NotBeNull();
         }
 
-        [InlineData((string?)null)]
         [InlineData("")]
         [InlineData(" ")]
         [Theory]
-        public void TranslateArray_RmsNodePathNullOrWhitespace_ThrowsArgumentException(
-            string? rmsNodePath)
+        public void TranslateArray_RmsNodePathEmptyOrWhitespace_ThrowsArgumentException(
+            string rmsNodePath)
         {
             //Arrange
-            var fieldMock = new Mock<IObjectFieldDescriptor>();
-            IObjectFieldDescriptor field = fieldMock.Object;
+            var services = new ServiceCollection();
 
             //Act
-            IObjectFieldDescriptor MakeTranslatable() => field.TranslateArray(rmsNodePath);
+            ISchema buildSchema() =>
+                SchemaBuilder
+                    .New()
+                    .AddServices(services.BuildServiceProvider())
+                    .AddDirectiveType<TranslateDirectiveType>()
+                    .AddDirectiveType<TranslatableDirectiveType>()
+                    .AddQueryType(d =>
+                        d.Field("myField")
+                            .Resolve(new[] { "foo", "bar" })
+                            .TranslateArray(rmsNodePath)
+                    )
+                    .Create();
 
             //Assert
-            Assert.Throws<ArgumentException>(MakeTranslatable);
+            Assert.Throws<SchemaException>(buildSchema);
         }
 
         public class Dummy

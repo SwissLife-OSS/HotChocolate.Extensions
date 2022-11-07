@@ -3,15 +3,7 @@
 }
 
 type ObjectType {
-  myField: [String] @translatable(resourceKeyPrefix: "prefix", toCodeLabelItem: false) @translate(language: NOTSET)
-}
-
-enum TranslatableLanguage {
-  NOTSET
-  DE
-  FR
-  IT
-  EN
+  myField: [String] @translatable(resourceKeyPrefix: "prefix", toCodeLabelItem: false) @translate
 }
 
 "The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
@@ -22,4 +14,4 @@ directive @stream("If this argument label has a value other than null, it will b
 
 directive @translatable(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translate(language: TranslatableLanguage) on FIELD | FIELD_DEFINITION
+directive @translate(language: String) on FIELD | FIELD_DEFINITION

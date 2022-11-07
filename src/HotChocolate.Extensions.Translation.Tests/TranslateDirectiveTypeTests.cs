@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using FluentAssertions;
 using HotChocolate.Extensions.Translation.Resources;
@@ -24,32 +25,10 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, value, directive, TranslatableLanguage.De);
+                context, value, directive, new CultureInfo("de"));
 
             //Assert
             context.Result.Should().Be("foo/De");
-        }
-
-        [Fact]
-        public void UpdateResult_StringValueAndThreadlanguage_ReturnsStringValue()
-        {
-            //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
-
-            string value = "myValue";
-
-            System.Threading.Thread.CurrentThread.CurrentCulture
-                = new System.Globalization.CultureInfo("fr-CH");
-
-            IMiddlewareContext context = BuildMockContext(
-                value,
-                new Dictionary<string, string> { { "myNodePath/myValue", "foo" } });
-
-            //Act
-            TranslateDirectiveType.UpdateResult(context, value, directive);
-
-            //Assert
-            context.Result.Should().Be("foo/Fr");
         }
 
         [Fact]
@@ -65,7 +44,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, value, directive, TranslatableLanguage.De);
+                context, value, directive, new CultureInfo("de"));
 
             //Assert
             context.Result.Should().BeEquivalentTo(new TranslatedResource<string>("myValue", "foo/De"));
@@ -80,37 +59,33 @@ namespace HotChocolate.Extensions.Translation.Tests
         [InlineData((long)1)]
         [InlineData((ulong)1)]
         [Theory]
-        public void UpdateResult_NullableIntValueAndThreadlanguage_ReturnsStringValue(object value)
+        public void UpdateResult_NullableIntValue_ReturnsStringValue(object value)
         {
             //Arrange
             var directive = new TranslatableDirective("myNodePath", false);
-            System.Threading.Thread.CurrentThread.CurrentCulture
-                = new System.Globalization.CultureInfo("fr-CH");
+
             IMiddlewareContext context = BuildMockContext(
                 value,
                 new Dictionary<string, string> { { "myNodePath/1", "foo" } });
             //Act
-            TranslateDirectiveType.UpdateResult(context, value, directive);
+            TranslateDirectiveType.UpdateResult(context, value, directive, new CultureInfo("fr"));
             //Assert
             context.Result.Should().Be("foo/Fr");
         }
 
         [Fact]
-        public void UpdateResult_StringValue_MissingKey_ReturnsKey()
+        public void UpdateResult_StringValueMissingKey_ReturnsKey()
         {
             //Arrange
             var directive = new TranslatableDirective("myNodePath", false);
             string value = "myValue";
-
-            System.Threading.Thread.CurrentThread.CurrentCulture
-                = new System.Globalization.CultureInfo("fr-CH");
 
             IMiddlewareContext context = BuildMockContext(
                 value,
                 new Dictionary<string, string>());
 
             //Act
-            TranslateDirectiveType.UpdateResult(context, value, directive);
+            TranslateDirectiveType.UpdateResult(context, value, directive, new CultureInfo("fr"));
 
             //Assert
             context.Result.Should().Be("myValue");
@@ -136,7 +111,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, value, directive, TranslatableLanguage.De);
+                context, value, directive, new CultureInfo("de"));
 
             //Assert
             context.Result.Should().BeEquivalentTo(
@@ -164,7 +139,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, value, directive, TranslatableLanguage.De);
+                context, value, directive, new CultureInfo("de"));
 
             //Assert
             context.Result.Should().BeEquivalentTo(new List<string>());
@@ -191,7 +166,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, resolverResult, directive, TranslatableLanguage.De);
+                context, resolverResult, directive, new CultureInfo("de"));
 
             //Assert
             context.Result.Should().BeEquivalentTo(
@@ -217,7 +192,7 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             //Act
             TranslateDirectiveType.UpdateResult(
-                context, value, directive, TranslatableLanguage.De);
+                context, value, directive, new CultureInfo("de"));
 
             //Assert
             context.Result.Should().Be("foo/De");
