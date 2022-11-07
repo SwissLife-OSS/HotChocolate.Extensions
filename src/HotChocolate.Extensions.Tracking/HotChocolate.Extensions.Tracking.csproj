@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="HotChocolate" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.Types" Version="$(HotChocolateVersion)" />
     <PackageReference Include="System.Threading.Channels" Version="4.7.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />

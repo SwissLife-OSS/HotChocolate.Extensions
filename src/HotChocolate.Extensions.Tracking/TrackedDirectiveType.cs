@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using HotChocolate.Extensions.Tracking;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
 

@@ -1,4 +1,6 @@
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Extensions.Tracking;
+using HotChocolate.Extensions.Tracking.FieldsLifetime;
 using Microsoft.Extensions.DependencyInjection;
 using StarWars.Characters;
 using StarWars.Reviews;
@@ -38,6 +40,9 @@ namespace StarWars
                 .AddInMemorySubscriptions()
 
                 .AddApolloTracing()
+
+                .RegisterTracking()
+                .TryAddDeprecatedFieldsTracking()
 
                 .ModifyOptions(o => o.SortFieldsByName = true);
         }

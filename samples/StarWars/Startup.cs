@@ -1,9 +1,11 @@
+using HotChocolate.Extensions.Tracking;
 using HotChocolate.Extensions.Translation.Resources;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StarWars.Repositories;
+using StarWars.Tracking;
 
 namespace StarWars
 {
@@ -19,6 +21,10 @@ namespace StarWars
                 .AddSingleton<ICharacterRepository, CharacterRepository>()
                 .AddSingleton<IReviewRepository, ReviewRepository>()
                 .AddSingleton<IResourcesProvider, DictionaryResourcesProvider>()
+
+                /* HotChocolate.Extensions.Tracking Pipeline */
+                .AddTrackingPipeline(
+                      builder => builder.UseDummyRepository())
 
                 .AddGraphQLServer()
                     .AddGraphQLSchema()
