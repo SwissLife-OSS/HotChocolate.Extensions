@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\HotChocolate.Extensions.Tracking\HotChocolate.Extensions.Tracking.csproj" />
     <ProjectReference Include="..\..\src\HotChocolate.Extensions.Translation\HotChocolate.Extensions.Translation.csproj" />
   </ItemGroup>
 

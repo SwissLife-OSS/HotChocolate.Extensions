@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HotChocolate.Extensions.Translation;
 
@@ -59,6 +60,7 @@ namespace StarWars.Characters
 
         /// <inheritdoc />
         [UseConvertUnit]
+        [Obsolete(message: "invocations of this field will be tracked!")]
         public double Height { get; }
     }
 }

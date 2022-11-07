@@ -7,14 +7,20 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
     public static class SchemaRequestExecutorBuilderExtensions
     {
         public static IRequestExecutorBuilder TryAddDeprecatedFieldsTracking(
-        this IRequestExecutorBuilder builder)
+            this IRequestExecutorBuilder builder)
         {
             if (builder is null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            return builder.TryAddTypeInterceptor<DeprecatedFieldsTypeInterceptor>();
+            builder.Services
+                .AddSingleton<IDeprecatedFieldsTrackingEntryFactory,
+                DeprecatedFieldsTrackingEntryFactory>();
+
+            return builder
+                .AddDirectiveType<DeprecatedFieldsTrackingDirectiveType>()
+                .TryAddTypeInterceptor<DeprecatedFieldsTypeInterceptor>();
         }
     }
 }

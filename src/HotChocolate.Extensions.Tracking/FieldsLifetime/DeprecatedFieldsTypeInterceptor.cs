@@ -24,18 +24,13 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
                 ObjectFieldDefinition[] deprecatedFields = otd.Fields
                     .Where(x => x.IsDeprecated)
                     .ToArray();
-                
-                var directive = new TrackedDirective(
-                    new DeprecatedFieldsTrackingEntryFactory());
 
-                //var directiveDefinition = new DirectiveDefinition(
-                //    new DirectiveNode(directive);
+                var directiveDefinition = new DirectiveDefinition(
+                    new DirectiveNode(DeprecatedFieldsTrackingDirectiveType.DirectiveName));
 
                 foreach (ObjectFieldDefinition deprecatedField in deprecatedFields)
                 {
-                    deprecatedField.Directives.Add(new DirectiveDefinition(
-                        directive,
-                        completionContext.TypeInterceptor.GetTypeRef(directive.GetType())));
+                    deprecatedField.Directives.Add(directiveDefinition);
                 }
             }
         }
