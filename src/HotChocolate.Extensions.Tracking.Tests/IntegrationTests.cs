@@ -128,7 +128,7 @@ public class IntegrationTests
     }
 
     [Fact]
-    public async Task Trackable_With_Factory_SchemaTest()
+    public async Task Trackable_WithFactory_SchemaTest()
     {
         // arrange
         var factory = new Mock<ITrackingEntryFactory>();
