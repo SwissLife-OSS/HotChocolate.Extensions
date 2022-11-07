@@ -208,12 +208,12 @@ If you are retrieving your resource strings from another microservice, you could
 ## HotChocolate.Extensions.Tracking
 ***
 
-This project enables tracking via features on HotChocolate Query and mutation fields.
-In order to save the tracking items, a repository needs to be specified. 
+This project enables tracking via middlewares on HotChocolate Query and mutation fields.
+In order to save the tracking items, a custom repository needs to be injected. 
 As for now, the only provided repository is the MassTransitRepository, which essentially sends the tracking item to an azure ServiceBus topic.
 
-Notes on the usage of MassTransit: In order to not slow down the resolver pipelines of Tracked HotChocolate Fields, the publishing into MassTransit is done asynchronously in another thread, potentially after the user's request is already ended.
-As a consequence, some tracking items could be lost if the server were to crash. Although this is an edge case under normal circumstances. 
+Note: In order to not slow down the resolver pipelines of Tracked HotChocolate Fields, the context data of the tracked Field is passed into a System.Threading.Channels.Channel and then persisted asynchonously.
+As a consequence, some tracking items could be lost if the server were to shut down unexpectedly.
 
 ### Setting up the depencies and schema
 
