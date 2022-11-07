@@ -1,4 +1,3 @@
-using HotChocolate;
 using HotChocolate.Execution;
 
 namespace HotChocolate.Extensions.Tracking.MassTransit.Tests;
