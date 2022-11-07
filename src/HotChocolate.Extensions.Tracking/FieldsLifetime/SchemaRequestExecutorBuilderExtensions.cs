@@ -19,7 +19,7 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
                 DeprecatedFieldsTrackingEntryFactory>();
 
             return builder
-                .AddDirectiveType<DeprecatedFieldsTrackingDirectiveType>()
+                //.AddType<DeprecatedFieldsTrackingDirectiveType>()
                 .TryAddTypeInterceptor<DeprecatedFieldsTypeInterceptor>();
         }
     }

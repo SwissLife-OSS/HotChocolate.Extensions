@@ -22,6 +22,8 @@ namespace StarWars
                 .AddSingleton<IReviewRepository, ReviewRepository>()
                 .AddSingleton<IResourcesProvider, DictionaryResourcesProvider>()
 
+                .AddHttpContextAccessor()
+
                 /* HotChocolate.Extensions.Tracking Pipeline */
                 .AddTrackingPipeline(
                       builder => builder.UseDummyRepository())

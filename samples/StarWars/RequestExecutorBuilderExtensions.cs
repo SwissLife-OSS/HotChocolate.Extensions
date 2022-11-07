@@ -42,7 +42,7 @@ namespace StarWars
                 .AddApolloTracing()
 
                 .RegisterTracking()
-                //.TryAddDeprecatedFieldsTracking()
+                .TryAddDeprecatedFieldsTracking()
 
                 .ModifyOptions(o => o.SortFieldsByName = true);
         }

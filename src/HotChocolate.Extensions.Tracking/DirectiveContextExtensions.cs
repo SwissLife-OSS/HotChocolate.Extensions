@@ -12,7 +12,7 @@ namespace HotChocolate.Extensions.Tracking;
 internal static class DirectiveContextExtensions
 {
     internal static async Task SubmitTrack(
-        this IDirectiveContext context,
+        this IMiddlewareContext context,
         ITrackingEntryFactory trackingEntryFactory,
         CancellationToken cancellationToken)
     {
@@ -32,7 +32,8 @@ internal static class DirectiveContextExtensions
         }
     }
 
-    internal static void LogAndReportError(this IDirectiveContext context, Exception ex)
+    internal static void LogAndReportError(
+        this IMiddlewareContext context, Exception ex)
     {
         context.ReportError(
             ErrorBuilder.New()
