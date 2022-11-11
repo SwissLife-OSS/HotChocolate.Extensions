@@ -2,8 +2,8 @@ using HotChocolate.Extensions.Tracking;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using HotChocolate.Extensions.Tracking.Persistence;
+using Newtonsoft.Json;
 
 namespace StarWars.Tracking
 {
@@ -21,7 +21,7 @@ namespace StarWars.Tracking
             CancellationToken cancellationToken)
         {
             _loggerFactory.CreateLogger<ITrackingEntry>()
-                .LogInformation(JsonSerializer.Serialize(trackingEntry));
+                .LogWarning($"Use of deprecated field: {JsonConvert.SerializeObject(trackingEntry)}");
             return Task.CompletedTask;
         }
     }
