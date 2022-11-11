@@ -33,16 +33,15 @@ public class IntegrationTests
 
         IServiceProvider services = new ServiceCollection()
             .AddGraphQL()
-            .AddQueryType(c =>
-                c.Name("Query")
-                    .Field("foo")
-                    .Type<StringType>()
-                    .Resolve("bar")
-                    .Trackable("tracked"))
-            .RegisterTracking()
+                .AddQueryType(c =>
+                    c.Name("Query")
+                        .Field("foo")
+                        .Type<StringType>()
+                        .Resolve("bar")
+                        .Trackable("tracked"))
+                .AddTrackingPipeline(b => b.AddRepository<NotifyOnFirstEntryRepository>())
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
-            .AddTrackingPipeline(b => b.AddRepository<NotifyOnFirstEntryRepository>())
             .BuildServiceProvider();
 
         IHostedService trackingService = await StartTrackingBackgroundService(services);
@@ -73,28 +72,6 @@ public class IntegrationTests
         }
     }
 
-    [Fact]
-    public async Task Trackable_WithFactory_SchemaTest()
-    {
-        // arrange
-        var factory = new Mock<ITrackingEntryFactory>();
-
-        // act
-        ISchema schema = await new ServiceCollection()
-            .AddGraphQL()
-            .AddQueryType(c =>
-                c.Name("Query")
-                    .Field("foo")
-                    .Type<StringType>()
-                    .Resolve("bar")
-                    .Trackable(factory.Object))
-            .RegisterTracking()
-            .BuildSchemaAsync();
-
-        // assert
-        schema.Print().MatchSnapshot();
-    }
-
     [InlineData("{ foo }")]
     [InlineData("{ foo @track(if:false) }")]
     [Theory]
@@ -109,16 +86,15 @@ public class IntegrationTests
 
         IServiceProvider services = new ServiceCollection()
             .AddGraphQL()
-            .AddQueryType(c =>
-                c.Name("Query")
-                    .Field("foo")
-                    .Type<StringType>()
-                    .Resolve("bar")
-                    .Track("tracked"))
-            .RegisterTracking()
+                .AddQueryType(c =>
+                    c.Name("Query")
+                        .Field("foo")
+                        .Type<StringType>()
+                        .Resolve("bar")
+                        .Track("tracked"))
+                .AddTrackingPipeline(b => b.AddRepository<NeverCallThisRepository>())
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
-            .AddTrackingPipeline(b => b.AddRepository<NeverCallThisRepository>())
             .BuildServiceProvider();
 
         IHostedService trackingService = await StartTrackingBackgroundService(services);

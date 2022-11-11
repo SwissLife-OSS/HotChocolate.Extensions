@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Channels;
+using HotChocolate.Execution.Configuration;
+using HotChocolate.Extensions.Tracking;
 using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Extensions.Tracking.Pipeline;
 using HotChocolate.Extensions.Tracking.Pipeline.Exceptions;
@@ -9,20 +11,31 @@ using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class ServiceCollectionExtensions
+public static class SchemaBuilderExtensions
 {
-    public static IServiceCollection AddTrackingPipeline(
-        this IServiceCollection services,
+    public static IRequestExecutorBuilder AddTrackingPipeline(
+        this IRequestExecutorBuilder requestExecutorBuilder,
         Action<PipelineBuilder> build)
     {
-        var builder = new PipelineBuilder(services);
-        build(builder);
+        var trackingBuilder = new PipelineBuilder(requestExecutorBuilder);
+        build(trackingBuilder);
 
-        InitThreadChannel(services);
-        InitRepositories(services, builder);
+        InitThreadChannel(requestExecutorBuilder.Services);
+        InitRepositories(requestExecutorBuilder.Services, trackingBuilder);
 
-        services.AddSingleton<IHostedService, TrackingHostedService>();
-        return services;
+        requestExecutorBuilder.AddTrackingDirectives();
+        requestExecutorBuilder.Services.AddSingleton<IHostedService, TrackingHostedService>();
+
+        return requestExecutorBuilder;
+    }
+
+    private static IRequestExecutorBuilder AddTrackingDirectives(
+        this IRequestExecutorBuilder builder)
+    {
+        return builder
+            .AddDirectiveType<TrackableDirectiveType>()
+            .AddDirectiveType<TrackDirectiveType>()
+            .AddDirectiveType<TrackedDirectiveType>();
     }
 
     private static void InitThreadChannel(IServiceCollection services)

@@ -4,6 +4,7 @@ using HotChocolate.Extensions.Tracking.FieldsLifetime;
 using Microsoft.Extensions.DependencyInjection;
 using StarWars.Characters;
 using StarWars.Reviews;
+using StarWars.Tracking;
 
 namespace StarWars
 {
@@ -41,8 +42,11 @@ namespace StarWars
 
                 .AddApolloTracing()
 
-                .RegisterTracking()
-                .TryAddDeprecatedFieldsTracking()
+                /* HotChocolate.Extensions.Tracking Pipeline */
+                .AddTrackingPipeline(builder => builder
+                    .AddRepository<DeprecatedFieldsTracingRepository>()
+                        .AddSupportedType<DeprecatedFieldTrace>()
+                    .AddDeprecatedFieldsTracking())
 
                 .ModifyOptions(o => o.SortFieldsByName = true);
         }
