@@ -1,0 +1,15 @@
+﻿{
+  "Label": null,
+  "Path": null,
+  "Data": {
+    "myField": [
+      "rms:prefix/foo_Italian",
+      "rms:prefix/bar_Italian",
+      "rms:prefix/baz_Italian"
+    ]
+  },
+  "Errors": null,
+  "Extensions": null,
+  "ContextData": null,
+  "HasNext": null
+}

@@ -1,0 +1,20 @@
+﻿{
+  "Label": null,
+  "Path": null,
+  "Data": {
+    "myField": [
+      {
+        "key": "FOO",
+        "label": "rms:prefix/Foo_Italian"
+      },
+      {
+        "key": "QUX",
+        "label": "rms:prefix/Qux_Italian"
+      }
+    ]
+  },
+  "Errors": null,
+  "Extensions": null,
+  "ContextData": null,
+  "HasNext": null
+}

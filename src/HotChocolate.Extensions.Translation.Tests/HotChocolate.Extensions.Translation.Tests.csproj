@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('TestProject.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <AssemblyName>HotChocolate.Extensions.Translation.Tests</AssemblyName>
+    <RootNamespace>HotChocolate.Extensions.Translation.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HotChocolate.Extensions.Translation\HotChocolate.Extensions.Translation.csproj" />
+  </ItemGroup>
+
+</Project>
