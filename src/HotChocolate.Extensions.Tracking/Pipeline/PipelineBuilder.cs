@@ -25,6 +25,8 @@ public class PipelineBuilder
         var builder = new RepositoryCandidateBuilder(BuildPlan, typeof(TRepository));
         BuildPlan.RepositoryCandidateBuilders.Add(builder);
 
+        Services.AddSingleton<TRepository>();
+
         return builder;
     }
 

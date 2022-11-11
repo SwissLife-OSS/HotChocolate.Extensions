@@ -32,7 +32,6 @@ public class IntegrationTests
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
-            .AddSingleton<NotifyOnFirstEntryRepository>()
             .AddGraphQL()
             .AddQueryType(c =>
                 c.Name("Query")
@@ -109,7 +108,6 @@ public class IntegrationTests
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
-            .AddSingleton<NeverCallThisRepository>()
             .AddGraphQL()
             .AddQueryType(c =>
                 c.Name("Query")

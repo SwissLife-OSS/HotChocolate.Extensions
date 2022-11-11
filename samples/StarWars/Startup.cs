@@ -29,7 +29,6 @@ namespace StarWars
                 .AddTrackingPipeline(builder => builder
                       .AddRepository<DeprecatedFieldsTracingRepository>()
                         .AddSupportedType<DeprecatedFieldTrace>())
-                .AddSingleton<DeprecatedFieldsTracingRepository>()
 
                 .AddGraphQLServer()
                     .AddGraphQLSchema()
