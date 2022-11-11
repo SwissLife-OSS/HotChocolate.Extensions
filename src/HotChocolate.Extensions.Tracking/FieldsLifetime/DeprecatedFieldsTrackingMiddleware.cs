@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Resolvers;
 
@@ -19,15 +15,15 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
         }
 
         public async Task InvokeAsync(
-            IMiddlewareContext context)
+            IMiddlewareContext context,
+            IDeprecatedFieldsTrackingEntryFactory trackingFactory)
         {
             await _next(context).ConfigureAwait(false);
 
             try
             {
-                //TODO inject factory
                 await context.SubmitTrack(
-                    new DeprecatedFieldsTrackingEntryFactory(),
+                    trackingFactory,
                     context.RequestAborted);
             }
             catch (Exception ex)

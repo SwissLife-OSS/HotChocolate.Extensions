@@ -1,4 +1,6 @@
 using HotChocolate.Extensions.Tracking.Pipeline;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace StarWars.Tracking
@@ -10,7 +12,10 @@ namespace StarWars.Tracking
         {
             builder.GetRepository = (IServiceProvider prov) =>
             {
-                return new DummyTrackingRepository();
+                return new DummyTrackingRepository(
+                    prov
+                        .GetRequiredService<ILoggerFactory>()
+                        .CreateLogger<DummyTrackingRepository>());
             };
 
             return builder;

@@ -30,14 +30,17 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
                     return;
                 }
 
-                FieldMiddleware fesfvesf = FieldClassMiddlewareFactory.Create<DeprecatedFieldsTrackingMiddleware>();
+                FieldMiddleware trackingMiddleware
+                    = FieldClassMiddlewareFactory.Create<DeprecatedFieldsTrackingMiddleware>();
 
-                FieldMiddlewareDefinition serviceMiddleware = new FieldMiddlewareDefinition(fesfvesf, isRepeatable: false);
+                FieldMiddlewareDefinition trackingMiddlewareDefinition
+                    = new FieldMiddlewareDefinition(
+                        trackingMiddleware, isRepeatable: false);
 
                 foreach (ObjectFieldDefinition deprecatedField in deprecatedFields)
                 {
                     deprecatedField.MiddlewareDefinitions.Insert(
-                        0, serviceMiddleware);
+                        0, trackingMiddlewareDefinition);
                 }
             }
         }
