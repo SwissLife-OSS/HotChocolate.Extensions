@@ -1,13 +1,14 @@
 using System;
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Extensions.Tracking.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HotChocolate.Extensions.Tracking.FieldsLifetime
 {
-    public static class SchemaRequestExecutorBuilderExtensions
+    public static class PipelineBuilderExtensions
     {
-        public static IRequestExecutorBuilder TryAddDeprecatedFieldsTracking(
-            this IRequestExecutorBuilder builder)
+        public static IRequestExecutorBuilder AddDeprecatedFieldsTracking(
+            this PipelineBuilder builder)
         {
             if (builder is null)
             {
@@ -18,7 +19,7 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
                 .AddSingleton<IDeprecatedFieldsTrackingEntryFactory,
                     DeprecatedFieldsTrackingEntryFactory>();
 
-            return builder
+            return builder.BuildPlan.RequestExecutorBuilder
                 .TryAddTypeInterceptor<DeprecatedFieldsTypeInterceptor>();
         }
     }

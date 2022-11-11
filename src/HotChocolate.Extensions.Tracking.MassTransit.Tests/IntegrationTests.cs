@@ -37,13 +37,12 @@ public class IntegrationTests
                         .Type<StringType>()
                         .Resolve("bar")
                         .Trackable("tracked"))
-                .RegisterTracking()
+                .AddTrackingPipeline(
+                    builder => builder.AddMassTransitRepository(
+                        new MassTransitOptions(
+                            new ServiceBusOptions("InMemory"))))
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
-            .AddTrackingPipeline(
-                builder => builder.AddMassTransitRepository(
-                    new MassTransitOptions(
-                        new ServiceBusOptions("InMemory"))))
             .BuildServiceProvider();
 
         /* needed for the asserts */
@@ -93,8 +92,10 @@ public class IntegrationTests
     private static Mock<IHttpContextAccessor> ArrangeHttpContextAccessor()
     {
         var httpContext = new DefaultHttpContext();
-        var testClaims = new List<Claim>();
-        testClaims.Add(new Claim("email", "test@email.com"));
+        var testClaims = new List<Claim>
+        {
+            new Claim("email", "test@email.com")
+        };
         httpContext.User = new DummyClaimsPrincipal(testClaims);
 
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
