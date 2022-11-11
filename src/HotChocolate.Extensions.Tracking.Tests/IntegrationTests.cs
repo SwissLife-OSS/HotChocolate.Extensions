@@ -15,6 +15,7 @@ using Snapshooter.Xunit;
 using HotChocolate.Extensions.Tracking.Default;
 using Xunit;
 using HotChocolate.Extensions.Tracking.Persistence;
+using HotChocolate.Extensions.Tracking.Pipeline;
 
 namespace HotChocolate.Extensions.Tracking.Tests;
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HotChocolate.Execution;
 using HotChocolate.Extensions.Tracking.Default;
+using HotChocolate.Extensions.Tracking.Pipeline;
 using HotChocolate.Types;
 using MassTransit;
 using Microsoft.AspNetCore.Http;

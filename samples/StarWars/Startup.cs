@@ -1,4 +1,5 @@
-using HotChocolate.Extensions.Tracking;
+using HotChocolate.Extensions.Tracking.FieldsLifetime;
+using HotChocolate.Extensions.Tracking.Pipeline;
 using HotChocolate.Extensions.Translation.Resources;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,8 +26,9 @@ namespace StarWars
                 .AddHttpContextAccessor()
 
                 /* HotChocolate.Extensions.Tracking Pipeline */
-                .AddTrackingPipeline(
-                      builder => builder.UseDummyRepository())
+                .AddTrackingPipeline(builder => builder
+                      .AddRepository<DeprecatedFieldsTracingRepository>()
+                        .AddSupportedType<DeprecatedFieldTrace>())
 
                 .AddGraphQLServer()
                     .AddGraphQLSchema()

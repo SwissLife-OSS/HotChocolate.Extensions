@@ -5,10 +5,9 @@ using System.Threading.Channels;
 using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Extensions.Tracking.Pipeline;
 using HotChocolate.Extensions.Tracking.Pipeline.Exceptions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace HotChocolate.Extensions.Tracking;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
@@ -63,7 +62,7 @@ public static class ServiceCollectionExtensions
         candidates.Add(fallbackCandidate);
         candidates.AddRange(otherCandidates);
 
-        var factory = new RepositoryFactory(candidates);
+        var factory = new TrackingRepositoryFactory(candidates);
 
         services.AddSingleton(factory);
     }

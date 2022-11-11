@@ -7,11 +7,11 @@ using HotChocolate.Extensions.Tracking.Persistence;
 
 namespace StarWars.Tracking
 {
-    public class DummyTrackingRepository : ITrackingRepository
+    public class DeprecatedFieldsTracingRepository : ITrackingRepository
     {
         private readonly ILogger _logger;
 
-        public DummyTrackingRepository(ILogger logger)
+        public DeprecatedFieldsTracingRepository(ILogger logger)
         {
             _logger = logger;
         }

@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HotChocolate.Extensions.Tracking.Persistence.Exceptions;
 using HotChocolate.Types;
 
 namespace HotChocolate.Extensions.Tracking.Persistence
 {
-    internal class RepositoryFactory
+    public class TrackingRepositoryFactory : ITrackingRepositoryFactory
     {
         private readonly IReadOnlyList<IRepositoryCandidate> _candidates;
 
-        public RepositoryFactory(IReadOnlyList<IRepositoryCandidate> candidates)
+        public TrackingRepositoryFactory(IReadOnlyList<IRepositoryCandidate> candidates)
         {
             _candidates = candidates;
         }
 
-        internal ITrackingRepository Create<T>()
+        public ITrackingRepository Create<T>()
             where T : ITrackingEntry
         {
             IRepositoryCandidate? candidate = _candidates
@@ -33,7 +34,7 @@ namespace HotChocolate.Extensions.Tracking.Persistence
         }
     }
 
-    internal interface IRepositoryCandidate
+    public interface IRepositoryCandidate
     {
         ITrackingRepository Repository { get; }
         bool CanHandle<T>();
@@ -72,17 +73,5 @@ namespace HotChocolate.Extensions.Tracking.Persistence
         {
             return _supportedTypes.Contains(typeof(T));
         }
-    }
-
-    internal class TrackingEntryWithoutRepositoryException : Exception
-    {
-        public TrackingEntryWithoutRepositoryException(Type type)
-            : base($"No registered tracking repository can handle " +
-                  $"the tracking entry of type {type.Name}")
-        {
-            Type = type;
-        }
-
-        public Type Type { get; }
     }
 }
