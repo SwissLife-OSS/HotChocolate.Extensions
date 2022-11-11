@@ -1,7 +1,7 @@
 using HotChocolate.Extensions.Tracking.MassTransit;
 using HotChocolate.Extensions.Tracking.Pipeline;
 
-namespace Microsoft.Extensions.DependencyInjection;;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class PipelineBuilderExtensions
 {
