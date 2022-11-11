@@ -29,8 +29,6 @@ public class IntegrationTests
 
         /* repository where the KPIs will be stored. In real life this could
             be for instance a Mongo repo or a masstransit repo */
-        var kpiRepo = new NotifyOnFirstEntryRepository();
-
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
@@ -61,8 +59,9 @@ public class IntegrationTests
             //Assert
             res.ToMinifiedJson()
                 .Should().Be("{\"data\":{\"foo\":\"bar\"}}");
-            ITrackingEntry trackedEntity = await kpiRepo.GetTrackedEntity;
-            TrackingEntry? trackedEntry = trackedEntity.Should()
+            ITrackingEntry trackedEntity
+                = await services.GetRequiredService<NotifyOnFirstEntryRepository>().GetTrackedEntity;
+            TrackingEntry trackedEntry = trackedEntity.Should()
                 .BeOfType<TrackingEntry>().Subject;
             trackedEntry.Tag.Should().Be("tracked");
             trackedEntry.UserEmail.Should().Be("test@email.com");
