@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Channels;
-using HotChocolate.Extensions.Tracking.Exceptions;
 using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Extensions.Tracking.Pipeline;
+using HotChocolate.Extensions.Tracking.Pipeline.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -18,7 +20,7 @@ public static class ServiceCollectionExtensions
         build(builder);
 
         InitThreadChannel(services);
-        InitRepository(services, builder);
+        InitRepositories(services, builder);
 
         services.AddSingleton<IHostedService, TrackingHostedService>();
         return services;
@@ -37,13 +39,32 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(channel);
     }
 
-    private static void InitRepository(IServiceCollection services, PipelineBuilder builder)
+    private static void InitRepositories(IServiceCollection services, PipelineBuilder builder)
     {
-        if (builder.GetRepository == default)
+        if (!builder.BuildPlan.RepositoryCandidateBuilders.Any())
         {
             throw new NoTrackingRepositoryConfiguredException();
         }
 
-        services.AddSingleton(prov => builder.GetRepository(prov));
+        if (builder.BuildPlan.RepositoryCandidateBuilders.Count(b => b.ForAll) > 1)
+        {
+            throw new MoreThanOneGlobalTrackingRepositoryException();
+        }
+
+        RepositoryCandidateBuilder fallbackCandidateBuilder
+            = builder.BuildPlan.RepositoryCandidateBuilders.Single(b => b.ForAll);
+        var fallbackCandidate = new RepositoryCandidateForAll(fallbackCandidateBuilder.RepositoryType);
+
+        var otherCandidates = builder.BuildPlan.RepositoryCandidateBuilders
+            .Where(b => !b.ForAll)
+            .Select(b => new RepositoryCandidate(b.RepositoryType, b.SupportedTypes));
+
+        var candidates = new List<IRepositoryCandidate>();
+        candidates.Add(fallbackCandidate);
+        candidates.AddRange(otherCandidates);
+
+        var factory = new RepositoryFactory(candidates);
+
+        services.AddSingleton(factory);
     }
 }

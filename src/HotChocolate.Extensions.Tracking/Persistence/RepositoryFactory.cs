@@ -14,7 +14,7 @@ namespace HotChocolate.Extensions.Tracking.Persistence
             _candidates = candidates;
         }
 
-        ITrackingRepository Create<T>()
+        internal ITrackingRepository Create<T>()
             where T : ITrackingEntry
         {
             IRepositoryCandidate? candidate = _candidates
@@ -56,13 +56,14 @@ namespace HotChocolate.Extensions.Tracking.Persistence
 
     internal class RepositoryCandidate : IRepositoryCandidate
     {
-        private readonly IList<Type> _supportedTypes;
+        private readonly IReadOnlyList<Type> _supportedTypes;
 
         public RepositoryCandidate(
-            ITrackingRepository repository)
+            ITrackingRepository repository,
+            IReadOnlyList<Type> supportedTypes)
         {
-            _supportedTypes = new List<Type>();
             Repository = repository;
+            _supportedTypes = supportedTypes;
         }
 
         public ITrackingRepository Repository { get; }

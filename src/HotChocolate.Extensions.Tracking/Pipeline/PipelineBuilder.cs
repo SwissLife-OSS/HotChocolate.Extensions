@@ -24,10 +24,9 @@ public class PipelineBuilder
     {
         var builder = new RepositoryCandidateBuilder(BuildPlan, typeof(TRepository));
         BuildPlan.RepositoryCandidateBuilders.Add(builder);
+
         return builder;
     }
-
-    //public Func<IServiceProvider, ITrackingRepository>? GetRepository { get; set; }
 
     public IServiceCollection Services => BuildPlan.Services;
 }

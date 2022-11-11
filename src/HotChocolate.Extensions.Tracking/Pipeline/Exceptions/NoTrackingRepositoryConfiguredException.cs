@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace HotChocolate.Extensions.Tracking.Exceptions;
+namespace HotChocolate.Extensions.Tracking.Pipeline.Exceptions;
 
 [Serializable]
 public sealed class NoTrackingRepositoryConfiguredException : Exception
