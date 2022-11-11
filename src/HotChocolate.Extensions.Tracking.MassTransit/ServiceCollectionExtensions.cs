@@ -1,7 +1,7 @@
+using HotChocolate.Extensions.Tracking.MassTransit;
 using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace HotChocolate.Extensions.Tracking.MassTransit;
+namespace Microsoft.Extensions.DependencyInjection;
 
 internal static class ServiceCollectionExtensions
 {

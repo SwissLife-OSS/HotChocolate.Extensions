@@ -41,7 +41,7 @@ public class IntegrationTests
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
             .AddTrackingPipeline(
-                builder => builder.UseMassTransitRepository(
+                builder => builder.AddMassTransitRepository(
                     new MassTransitOptions(
                         new ServiceBusOptions("InMemory"))))
             .BuildServiceProvider();

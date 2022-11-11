@@ -1,10 +1,11 @@
+using HotChocolate.Extensions.Tracking.MassTransit;
 using HotChocolate.Extensions.Tracking.Pipeline;
 
-namespace HotChocolate.Extensions.Tracking.MassTransit;
+namespace Microsoft.Extensions.DependencyInjection;;
 
 public static class PipelineBuilderExtensions
 {
-    public static PipelineBuilder UseMassTransitRepository(
+    public static PipelineBuilder AddMassTransitRepository(
         this PipelineBuilder builder,
         MassTransitOptions options)
     {

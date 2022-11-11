@@ -27,7 +27,7 @@ namespace StarWars
 
                 /* HotChocolate.Extensions.Tracking Pipeline */
                 .AddTrackingPipeline(builder => builder
-                      .AddRepository<DeprecatedFieldsTracingRepository>()
+                    .AddRepository<DeprecatedFieldsTracingRepository>()
                         .AddSupportedType<DeprecatedFieldTrace>())
 
                 .AddGraphQLServer()

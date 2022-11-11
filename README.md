@@ -222,10 +222,11 @@ Register the tracking pipeline in the service collection.
   var services = new ServiceCollection();
   services
       .AddHttpContextAccessor()
-      .AddTrackingPipeline(
-          builder => builder.UseMassTransitRepository(
-              new MassTransitOptions(
-                  new ServiceBusOptions("ServiceBusConnectionString"))));
+      .AddTrackingPipeline(builder => builder
+          .AddRepository<MyRepository>()
+              .AddSupportedType<MyTrace>())
+          .AddMassTransitRepository(new MassTransitOptions(new ServiceBusOptions("ServiceBusConnectionString")))
+              .AddSupportedType<MyOtherTrace>());
 ```
 
 Register the HotChocolate directives in your HotChocolate Schema:
