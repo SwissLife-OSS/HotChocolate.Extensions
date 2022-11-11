@@ -14,14 +14,14 @@ namespace HotChocolate.Extensions.Tracking.Persistence;
 public sealed class TrackingHostedService : BackgroundService
 {
     private readonly ChannelReader<TrackingMessage> _channelReader;
-    private readonly ITrackingRepository _trackingRepository;
+    private readonly ITrackingRepositoryFactory _trackingRepositoryFactory;
 
     public TrackingHostedService(
         Channel<TrackingMessage> trackingChannel,
-        ITrackingRepository trackingRepository)
+        ITrackingRepositoryFactory trackingRepositoryFactory)
     {
         _channelReader = trackingChannel.Reader;
-        _trackingRepository = trackingRepository;
+        _trackingRepositoryFactory = trackingRepositoryFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -31,8 +31,8 @@ public sealed class TrackingHostedService : BackgroundService
         await foreach (TrackingMessage message in ReadAllAsync(stoppingToken))
         {
             Log.SavingTrackingMessage(message.TrackingEntry);
-            await _trackingRepository.SaveTrackingEntryAsync(
-                message.TrackingEntry, stoppingToken);
+            await _trackingRepositoryFactory.Create(message.TrackingEntry.GetType())
+                .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
         }
     }
 

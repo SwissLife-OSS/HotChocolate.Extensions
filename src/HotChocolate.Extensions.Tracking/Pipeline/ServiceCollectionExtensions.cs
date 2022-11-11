@@ -50,20 +50,28 @@ public static class ServiceCollectionExtensions
             throw new MoreThanOneGlobalTrackingRepositoryException();
         }
 
-        RepositoryCandidateBuilder fallbackCandidateBuilder
-            = builder.BuildPlan.RepositoryCandidateBuilders.Single(b => b.ForAll);
-        var fallbackCandidate = new RepositoryCandidateForAll(fallbackCandidateBuilder.RepositoryType);
+        services.AddSingleton<ITrackingRepositoryFactory>(sp => {
 
-        var otherCandidates = builder.BuildPlan.RepositoryCandidateBuilders
+            List<IRepositoryCandidate> candidates = builder.BuildPlan.RepositoryCandidateBuilders
             .Where(b => !b.ForAll)
-            .Select(b => new RepositoryCandidate(b.RepositoryType, b.SupportedTypes));
+            .Select(b => (IRepositoryCandidate) new RepositoryCandidate(
+                (ITrackingRepository)sp.GetRequiredService(b.RepositoryType),
+                b.SupportedTypes))
+            .ToList();
 
-        var candidates = new List<IRepositoryCandidate>();
-        candidates.Add(fallbackCandidate);
-        candidates.AddRange(otherCandidates);
+            RepositoryCandidateBuilder? fallbackCandidateBuilder
+                = builder.BuildPlan.RepositoryCandidateBuilders.SingleOrDefault(b => b.ForAll);
+            if(fallbackCandidateBuilder != null)
+            {
+                var fallbackCandidate
+                    = new RepositoryCandidateForAll(
+                        (ITrackingRepository)sp.GetRequiredService(
+                            fallbackCandidateBuilder.RepositoryType));
+                candidates.Add(fallbackCandidate);
 
-        var factory = new TrackingRepositoryFactory(candidates);
+            }
 
-        services.AddSingleton(factory);
+            return new TrackingRepositoryFactory(candidates);
+        });
     }
 }

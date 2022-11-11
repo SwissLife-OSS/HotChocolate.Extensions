@@ -45,7 +45,7 @@ public sealed class PipelineBuildingPlan
 
 public class RepositoryCandidateBuilder: PipelineBuilder
 {
-    private readonly IList<Type> _supportedTypes;
+    private readonly List<Type> _supportedTypes;
 
     internal RepositoryCandidateBuilder(
         PipelineBuildingPlan buildPlan,
@@ -59,7 +59,7 @@ public class RepositoryCandidateBuilder: PipelineBuilder
 
     public Type RepositoryType { get; }
     public bool ForAll { get; private set; }
-    public IReadOnlyList<Type> SupportedTypes => SupportedTypes;
+    public IReadOnlyList<Type> SupportedTypes => _supportedTypes;
 
     public RepositoryCandidateBuilder AddSupportedType<T>()
         where T: ITrackingEntry

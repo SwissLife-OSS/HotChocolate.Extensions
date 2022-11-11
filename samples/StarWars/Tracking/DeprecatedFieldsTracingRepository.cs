@@ -9,18 +9,19 @@ namespace StarWars.Tracking
 {
     public class DeprecatedFieldsTracingRepository : ITrackingRepository
     {
-        private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public DeprecatedFieldsTracingRepository(ILogger logger)
+        public DeprecatedFieldsTracingRepository(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _loggerFactory = loggerFactory;
         }
 
         public Task SaveTrackingEntryAsync(
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation(JsonSerializer.Serialize(trackingEntry));
+            _loggerFactory.CreateLogger<ITrackingEntry>()
+                .LogInformation(JsonSerializer.Serialize(trackingEntry));
             return Task.CompletedTask;
         }
     }

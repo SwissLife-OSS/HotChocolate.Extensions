@@ -86,7 +86,7 @@ type Human implements Character {
   hairColor: TranslatedResourceOfHairColor @translatable(resourceKeyPrefix: "HairColors", toCodeLabelItem: true) @translateHairColor
   hairColor2: TranslatedResourceOfHairColor @translatable(resourceKeyPrefix: "HairColors", toCodeLabelItem: true) @translateHairColor
   "The height of the character."
-  height(unit: Unit = METERS): Float!
+  height(unit: Unit = METERS): Float! @deprecated(reason: "invocations of this field will be tracked!")
   "The planet the character is originally from."
   homePlanet: String
   "The unique identifier for the character."
@@ -371,6 +371,12 @@ directive @specifiedBy("The specifiedBy URL points to a human-readable specifica
 
 "The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
 directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
+
+directive @track(if: Boolean) on FIELD
+
+directive @trackable on FIELD_DEFINITION
+
+directive @tracked on FIELD_DEFINITION
 
 directive @translatable(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 

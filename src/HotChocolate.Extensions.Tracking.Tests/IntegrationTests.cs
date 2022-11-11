@@ -6,74 +6,20 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HotChocolate;
 using HotChocolate.Execution;
+using HotChocolate.Extensions.Tracking.Default;
+using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using Snapshooter.Xunit;
-using HotChocolate.Extensions.Tracking.Default;
 using Xunit;
-using HotChocolate.Extensions.Tracking.Persistence;
-using HotChocolate.Extensions.Tracking.Pipeline;
 
 namespace HotChocolate.Extensions.Tracking.Tests;
 
 public class IntegrationTests
 {
-    [Fact]
-    [Obsolete]
-    public async Task Tracked_IntegrationTest_ShouldAddATrackingEntry()
-    {
-        //Arrange
-
-        string query = "{ foo }";
-        var kpiRepo = new NotifyOnFirstEntryRepository();
-
-        Mock<IHttpContextAccessor>? mockHttpContextAccessor = ArrangeHttpContextAccessor();
-
-        IServiceProvider services = new ServiceCollection()
-            .AddGraphQL()
-            .AddQueryType(c =>
-                c.Name("Query")
-                    .Field("foo")
-                    .Type<StringType>()
-                    .Resolver("bar")
-                    .Track("tracked"))
-            .RegisterTracking()
-            .Services
-            .AddSingleton(mockHttpContextAccessor.Object)
-            .AddTrackingPipeline(b => b.GetRepository = sp => kpiRepo)
-            .BuildServiceProvider();
-
-        IHostedService trackingService = await StartTrackingBackgroundService(services);
-
-        try
-        {
-            //Act
-            IRequestExecutor executor =
-                await services.GetRequiredService<IRequestExecutorResolver>()
-                    .GetRequestExecutorAsync();
-
-            IExecutionResult res = await executor.ExecuteAsync(query);
-
-            //Assert
-            res.ToMinifiedJson()
-                .Should().Be("{\"data\":{\"foo\":\"bar\"}}");
-            ITrackingEntry trackedEntity = await kpiRepo.GetTrackedEntity;
-            TrackingEntry? trackedEntry = trackedEntity.Should()
-                .BeOfType<TrackingEntry>().Subject;
-            trackedEntry.Tag.Should().Be("tracked");
-            trackedEntry.UserEmail.Should().Be("test@email.com");
-            trackedEntry.Date.Should().BeAfter(DateTimeOffset.UtcNow.AddMinutes(-1));
-            trackedEntry.Date.Should().BeBefore(DateTimeOffset.UtcNow);
-        }
-        finally
-        {
-            await trackingService.StopAsync(CancellationToken.None);
-        }
-    }
-
     [InlineData("{ foo @track }")]
     [InlineData("{ foo @track(if:true) }")]
     [Theory]
@@ -88,6 +34,7 @@ public class IntegrationTests
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
+            .AddSingleton<NotifyOnFirstEntryRepository>()
             .AddGraphQL()
             .AddQueryType(c =>
                 c.Name("Query")
@@ -98,7 +45,7 @@ public class IntegrationTests
             .RegisterTracking()
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
-            .AddTrackingPipeline(b => b.GetRepository = sp => kpiRepo)
+            .AddTrackingPipeline(b => b.AddRepository<NotifyOnFirstEntryRepository>())
             .BuildServiceProvider();
 
         IHostedService trackingService = await StartTrackingBackgroundService(services);
@@ -163,6 +110,7 @@ public class IntegrationTests
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
+            .AddSingleton<NeverCallThisRepository>()
             .AddGraphQL()
             .AddQueryType(c =>
                 c.Name("Query")
@@ -173,7 +121,7 @@ public class IntegrationTests
             .RegisterTracking()
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
-            .AddTrackingPipeline(b => b.GetRepository = sp => kpiRepo)
+            .AddTrackingPipeline(b => b.AddRepository<NeverCallThisRepository>())
             .BuildServiceProvider();
 
         IHostedService trackingService = await StartTrackingBackgroundService(services);
@@ -203,7 +151,7 @@ public class IntegrationTests
     private static async Task<IHostedService> StartTrackingBackgroundService(
         IServiceProvider serviceProvider)
     {
-        IHostedService trackingService = serviceProvider.GetService<IHostedService>();
+        IHostedService trackingService = serviceProvider.GetRequiredService<IHostedService>();
         await trackingService.StartAsync(CancellationToken.None);
         return trackingService;
     }
@@ -211,8 +159,10 @@ public class IntegrationTests
     private static Mock<IHttpContextAccessor> ArrangeHttpContextAccessor()
     {
         var httpContext = new DefaultHttpContext();
-        var testClaims = new List<Claim>();
-        testClaims.Add(new Claim("email", "test@email.com"));
+        var testClaims = new List<Claim>
+        {
+            new Claim("email", "test@email.com")
+        };
         httpContext.User = new DummyClaimsPrincipal(testClaims);
 
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
@@ -250,8 +200,11 @@ public class IntegrationTests
 
             Task.Factory.StartNew(() =>
             {
-                Thread.Sleep(TimeSpan.FromSeconds(5));
-                _tcs1.SetException(new Exception("No tracking entry after 5 seconds."));
+                Thread.Sleep(TimeSpan.FromSeconds(10));
+                if (!_tcs1.Task.IsCompleted)
+                {
+                    _tcs1.SetException(new Exception("No tracking entry after 5 seconds."));
+                }
             });
         }
 
