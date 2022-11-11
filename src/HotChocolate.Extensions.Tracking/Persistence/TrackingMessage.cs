@@ -1,4 +1,4 @@
-namespace HotChocolate.Extensions.Tracking.Pipeline;
+namespace HotChocolate.Extensions.Tracking.Persistence;
 
 public sealed class TrackingMessage
 {

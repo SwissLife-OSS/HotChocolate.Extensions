@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using static SwissLife.GraphQL.Extensions.Tracking.EventSources.TrackingEventSource;
 
-namespace HotChocolate.Extensions.Tracking.Pipeline;
+namespace HotChocolate.Extensions.Tracking.Persistence;
 
 /// <summary>
 /// Reads tracking messages from the ThreadChannel and posts them to MassTransit

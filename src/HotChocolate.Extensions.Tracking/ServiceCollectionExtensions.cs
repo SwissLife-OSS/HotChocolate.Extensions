@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Channels;
 using HotChocolate.Extensions.Tracking.Exceptions;
+using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Extensions.Tracking.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

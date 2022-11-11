@@ -31,7 +31,6 @@ public sealed class TrackDirectiveType : DirectiveType<TrackDirective>
         FieldDelegate next,
         IDirectiveContext context)
     {
-        // first run the field's resolver pipeline to it's end
         await next.Invoke(context);
 
         try

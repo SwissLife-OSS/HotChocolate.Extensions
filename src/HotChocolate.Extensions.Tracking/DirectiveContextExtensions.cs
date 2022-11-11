@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using HotChocolate.Extensions.Tracking.Pipeline;
+using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
 using static SwissLife.GraphQL.Extensions.Tracking.EventSources.TrackingEventSource;

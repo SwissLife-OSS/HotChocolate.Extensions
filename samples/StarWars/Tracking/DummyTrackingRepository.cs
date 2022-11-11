@@ -1,9 +1,9 @@
-using HotChocolate.Extensions.Tracking.Pipeline;
 using HotChocolate.Extensions.Tracking;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using HotChocolate.Extensions.Tracking.Persistence;
 
 namespace StarWars.Tracking
 {

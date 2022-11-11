@@ -13,8 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using Snapshooter.Xunit;
 using HotChocolate.Extensions.Tracking.Default;
-using HotChocolate.Extensions.Tracking.Pipeline;
 using Xunit;
+using HotChocolate.Extensions.Tracking.Persistence;
 
 namespace HotChocolate.Extensions.Tracking.Tests;
 

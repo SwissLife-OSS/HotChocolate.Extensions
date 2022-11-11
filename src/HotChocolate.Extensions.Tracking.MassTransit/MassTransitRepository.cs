@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using HotChocolate.Extensions.Tracking.Pipeline;
+using HotChocolate.Extensions.Tracking.Persistence;
 
 namespace HotChocolate.Extensions.Tracking.MassTransit;
 
