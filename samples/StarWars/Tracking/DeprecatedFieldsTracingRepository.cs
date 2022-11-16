@@ -20,7 +20,7 @@ namespace StarWars.Tracking
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
-            _loggerFactory.CreateLogger<ITrackingEntry>()
+            _loggerFactory.CreateLogger<DeprecatedFieldsTracingRepository>()
                 .LogWarning($"Use of deprecated field: {JsonConvert.SerializeObject(trackingEntry)}");
             return Task.CompletedTask;
         }
