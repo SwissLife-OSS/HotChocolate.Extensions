@@ -1,4 +1,5 @@
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Extensions.Tracking.FieldsLifetime;
 using HotChocolate.Extensions.Tracking.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,6 +29,15 @@ public class PipelineBuilder
         BuildPlan.RepositoryCandidateBuilders.Add(builder);
 
         Services.AddSingleton<TRepository>();
+
+        return builder;
+    }
+
+    public virtual RepositoryCandidateBuilder AddDeprecatedFieldsRepository<TRepository>()
+        where TRepository : class, ITrackingRepository
+    {
+        RepositoryCandidateBuilder builder = AddRepository<TRepository>();
+        builder.AddSupportedType<DeprecatedFieldTrace>();
 
         return builder;
     }

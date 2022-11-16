@@ -45,9 +45,7 @@ namespace StarWars
                 .AddTrackingPipeline(builder => builder
                     .AddRepository<KpiTrackingRepository>()
                         .AddSupportedType<ReviewTrackingEntry>()
-                    .AddRepository<DeprecatedFieldsTracingRepository>()
-                        .AddSupportedType<DeprecatedFieldTrace>()
-                    .AddDeprecatedFieldsTracking())
+                    .AddDeprecatedFieldsTracking<DeprecatedFieldsTracingRepository>())
 
                 .ModifyOptions(o => o.SortFieldsByName = true);
         }
