@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.Extensions.Tracking;
 using HotChocolate.Subscriptions;
 using HotChocolate.Types;
 using StarWars.Repositories;
+using StarWars.Tracking;
 
 namespace StarWars.Reviews
 {
@@ -15,6 +17,7 @@ namespace StarWars.Reviews
         /// <summary>
         /// Creates a review for a given Star Wars episode.
         /// </summary>
+        [Track<ReviewTrackingEntryFactory>]
         public async Task<CreateReviewPayload> CreateReview(
             CreateReviewInput input,
             [Service]IReviewRepository repository,

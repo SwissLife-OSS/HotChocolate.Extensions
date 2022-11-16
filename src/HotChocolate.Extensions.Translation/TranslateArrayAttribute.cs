@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using HotChocolate.Extensions.Translation.Exceptions;
 using HotChocolate.Types;
 using HotChocolate.Types.Descriptors;
 

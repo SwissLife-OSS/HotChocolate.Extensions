@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using HotChocolate.Extensions.Translation.Exceptions;
 using HotChocolate.Types;
 using HotChocolate.Types.Descriptors;
 
@@ -47,7 +48,7 @@ namespace HotChocolate.Extensions.Translation
             }
             else if (descriptor is IInterfaceFieldDescriptor i)
             {
-                i.TranslateArray<T>(Nullable);
+                i.Translate<T>(Nullable);
             }
         }
     }

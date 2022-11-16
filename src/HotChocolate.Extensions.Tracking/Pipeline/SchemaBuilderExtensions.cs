@@ -33,8 +33,6 @@ public static class SchemaBuilderExtensions
         this IRequestExecutorBuilder builder)
     {
         return builder
-            .AddDirectiveType<TrackableDirectiveType>()
-            .AddDirectiveType<TrackDirectiveType>()
             .AddDirectiveType<TrackedDirectiveType>();
     }
 

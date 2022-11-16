@@ -36,7 +36,7 @@ public sealed class TrackedDirectiveType : DirectiveType<TrackedDirective>
                 context.Directive.ToObject<TrackedDirective>();
 
             await context.SubmitTrack(
-                trackedDirectivePayload.TrackingEntryFactory,
+                trackedDirectivePayload.GetTrackingEntryFactory(context.Services),
                 context.RequestAborted);
         }
         catch (Exception ex)

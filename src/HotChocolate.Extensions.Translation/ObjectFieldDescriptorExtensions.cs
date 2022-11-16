@@ -68,6 +68,23 @@ namespace HotChocolate.Extensions.Translation
                 .Directive(new TranslateDirective<T>());
         }
 
+        public static IInterfaceFieldDescriptor Translate<T>(
+            this IInterfaceFieldDescriptor fieldDescriptor, bool nullable = false)
+        {
+            if (!nullable)
+            {
+                fieldDescriptor
+                    .Type<NonNullType<TranslatedResourceType<T>>>();
+            }
+            else
+            {
+                fieldDescriptor
+                    .Type<TranslatedResourceType<T>>();
+            }
+
+            return fieldDescriptor;
+        }
+
         /// <summary>
         /// Transforms an array of Scalar-types into an array of { key label } items.
         /// </summary>
@@ -96,15 +113,6 @@ namespace HotChocolate.Extensions.Translation
                 .Directive(new TranslateDirective<T>());
         }
 
-        /// <summary>
-        /// Transforms an array of Scalar-types into an array of { key label } items.
-        /// </summary>
-        /// <param name="fieldDescriptor">
-        /// The  HotChocoalte fieldDescriptor for the field we want to make translated.
-        /// </param>
-        /// <param name="resourceKeyPrefix">The prefix of the resource key.</param>
-        /// <param name="nullable">Indicates wheather the field's type should be nullable or not</param>
-        /// <returns>The HotChocoalte fieldDescriptor for the field, made translated.</returns>
         public static IInterfaceFieldDescriptor TranslateArray<T>(
             this IInterfaceFieldDescriptor fieldDescriptor, bool nullable = false)
         {
@@ -123,9 +131,9 @@ namespace HotChocolate.Extensions.Translation
         }
 
         public static IObjectFieldDescriptor TranslateArray(
-            this IObjectFieldDescriptor fieldDescriptor, string keyprefix, bool nullable = false)
+            this IObjectFieldDescriptor fieldDescriptor, string keyPrefix, bool nullable = false)
         {
-            return fieldDescriptor.TranslateArray<string>(keyprefix, nullable);
+            return fieldDescriptor.TranslateArray<string>(keyPrefix, nullable);
         }
     }
 }
