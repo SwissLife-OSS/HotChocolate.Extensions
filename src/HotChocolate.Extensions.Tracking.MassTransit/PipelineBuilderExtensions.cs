@@ -10,7 +10,7 @@ public static class PipelineBuilderExtensions
         MassTransitOptions options)
     {
         builder.Services.AddIntegrationBus(options);
-        builder.AddRepository<MassTransitRepository>();
+        builder.AddExporter<MassTransitRepository>();
 
         return builder;
     }

@@ -61,12 +61,12 @@ public static class SchemaBuilderExtensions
             throw new MoreThanOneGlobalTrackingRepositoryException();
         }
 
-        services.AddSingleton<ITrackingRepositoryFactory>(sp => {
+        services.AddSingleton<ITrackingExporterFactory>(sp => {
 
             List<IRepositoryCandidate> candidates = builder.BuildPlan.RepositoryCandidateBuilders
             .Where(b => !b.ForAll)
             .Select(b => (IRepositoryCandidate) new RepositoryCandidate(
-                (ITrackingRepository)sp.GetRequiredService(b.RepositoryType),
+                (ITrackingExporter)sp.GetRequiredService(b.RepositoryType),
                 b.SupportedTypes))
             .ToList();
 
@@ -76,7 +76,7 @@ public static class SchemaBuilderExtensions
             {
                 var fallbackCandidate
                     = new RepositoryCandidateForAll(
-                        (ITrackingRepository)sp.GetRequiredService(
+                        (ITrackingExporter)sp.GetRequiredService(
                             fallbackCandidateBuilder.RepositoryType));
                 candidates.Add(fallbackCandidate);
 

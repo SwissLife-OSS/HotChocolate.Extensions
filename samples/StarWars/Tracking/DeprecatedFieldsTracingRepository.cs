@@ -7,11 +7,11 @@ using Newtonsoft.Json;
 
 namespace StarWars.Tracking
 {
-    public class DeprecatedFieldsTracingRepository : ITrackingRepository
+    public class DeprecatedFieldsTracingExporter : ITrackingExporter
     {
         private readonly ILoggerFactory _loggerFactory;
 
-        public DeprecatedFieldsTracingRepository(ILoggerFactory loggerFactory)
+        public DeprecatedFieldsTracingExporter(ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory;
         }
@@ -20,7 +20,7 @@ namespace StarWars.Tracking
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
-            _loggerFactory.CreateLogger<DeprecatedFieldsTracingRepository>()
+            _loggerFactory.CreateLogger<DeprecatedFieldsTracingExporter>()
                 .LogWarning($"Use of deprecated field: {JsonConvert.SerializeObject(trackingEntry)}");
             return Task.CompletedTask;
         }

@@ -14,11 +14,11 @@ namespace HotChocolate.Extensions.Tracking.Persistence;
 public sealed class TrackingHostedService : BackgroundService
 {
     private readonly ChannelReader<TrackingMessage> _channelReader;
-    private readonly ITrackingRepositoryFactory _trackingRepositoryFactory;
+    private readonly ITrackingExporterFactory _trackingRepositoryFactory;
 
     public TrackingHostedService(
         Channel<TrackingMessage> trackingChannel,
-        ITrackingRepositoryFactory trackingRepositoryFactory)
+        ITrackingExporterFactory trackingRepositoryFactory)
     {
         _channelReader = trackingChannel.Reader;
         _trackingRepositoryFactory = trackingRepositoryFactory;

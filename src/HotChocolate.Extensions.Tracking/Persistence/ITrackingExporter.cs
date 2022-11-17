@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace HotChocolate.Extensions.Tracking.Persistence;
 
-public interface ITrackingRepository
+public interface ITrackingExporter
 {
     Task SaveTrackingEntryAsync(
         ITrackingEntry trackingEntry,

@@ -2,8 +2,8 @@ using System;
 
 namespace HotChocolate.Extensions.Tracking.Persistence
 {
-    public interface ITrackingRepositoryFactory
+    public interface ITrackingExporterFactory
     {
-        ITrackingRepository Create(Type t);
+        ITrackingExporter Create(Type t);
     }
 }

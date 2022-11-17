@@ -9,14 +9,14 @@ namespace HotChocolate.Extensions.Tracking.Persistence
         private readonly IReadOnlyList<Type> _supportedTypes;
 
         public RepositoryCandidate(
-            ITrackingRepository repository,
+            ITrackingExporter repository,
             IReadOnlyList<Type> supportedTypes)
         {
             Repository = repository;
             _supportedTypes = supportedTypes;
         }
 
-        public ITrackingRepository Repository { get; }
+        public ITrackingExporter Repository { get; }
 
         public bool CanHandle(Type t)
         {

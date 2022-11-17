@@ -4,7 +4,7 @@ namespace HotChocolate.Extensions.Tracking.Persistence
 {
     public interface IRepositoryCandidate
     {
-        ITrackingRepository Repository { get; }
+        ITrackingExporter Repository { get; }
         bool CanHandle(Type t);
     }
 }

@@ -92,7 +92,7 @@ public class IntegrationTests
                         .Type<StringType>()
                         .Resolve("bar")
                         .Track("tracked"))
-                .AddTrackingPipeline(b => b.AddRepository<NeverCallThisRepository>())
+                .AddTrackingPipeline(b => b.AddExporter<NeverCallThisRepository>())
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
             .BuildServiceProvider();
@@ -162,7 +162,7 @@ public class IntegrationTests
     /// This task can be awaited in a Unit Test, to assert that a parallel Thread
     /// calls the method SaveTrackingEntryAsync.
     /// </summary>
-    public class NotifyOnFirstEntryRepository : ITrackingRepository
+    public class NotifyOnFirstEntryRepository : ITrackingExporter
     {
         private readonly TaskCompletionSource<ITrackingEntry> _tcs1;
 
@@ -194,7 +194,7 @@ public class IntegrationTests
     /// <summary>
     /// This repository will throw an exception if a tracking entry is added
     /// </summary>
-    public class NeverCallThisRepository : ITrackingRepository
+    public class NeverCallThisRepository : ITrackingExporter
     {
         public Task SaveTrackingEntryAsync(ITrackingEntry trackingEntry, CancellationToken cancellationToken)
         {

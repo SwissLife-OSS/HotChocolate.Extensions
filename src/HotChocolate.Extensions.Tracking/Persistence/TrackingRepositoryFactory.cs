@@ -6,7 +6,7 @@ using HotChocolate.Types;
 
 namespace HotChocolate.Extensions.Tracking.Persistence
 {
-    public class TrackingRepositoryFactory : ITrackingRepositoryFactory
+    public class TrackingRepositoryFactory : ITrackingExporterFactory
     {
         private readonly IReadOnlyList<IRepositoryCandidate> _candidates;
 
@@ -15,7 +15,7 @@ namespace HotChocolate.Extensions.Tracking.Persistence
             _candidates = candidates;
         }
 
-        public ITrackingRepository Create(
+        public ITrackingExporter Create(
             Type t)
         {
             IRepositoryCandidate? candidate = _candidates

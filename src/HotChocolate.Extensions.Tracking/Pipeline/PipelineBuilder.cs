@@ -21,8 +21,8 @@ public class PipelineBuilder
         BuildPlan = new PipelineBuildingPlan(requestExecutorBuilder);
     }
 
-    public virtual RepositoryCandidateBuilder AddRepository<TRepository>()
-        where TRepository : class, ITrackingRepository
+    public virtual RepositoryCandidateBuilder AddExporter<TRepository>()
+        where TRepository : class, ITrackingExporter
     {
         var builder = new RepositoryCandidateBuilder(
             BuildPlan, typeof(TRepository));
@@ -34,9 +34,9 @@ public class PipelineBuilder
     }
 
     public virtual RepositoryCandidateBuilder AddDeprecatedFieldsRepository<TRepository>()
-        where TRepository : class, ITrackingRepository
+        where TRepository : class, ITrackingExporter
     {
-        RepositoryCandidateBuilder builder = AddRepository<TRepository>();
+        RepositoryCandidateBuilder builder = AddExporter<TRepository>();
         builder.AddSupportedType<DeprecatedFieldTrace>();
 
         return builder;
