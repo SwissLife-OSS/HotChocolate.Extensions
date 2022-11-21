@@ -71,7 +71,6 @@ public class IntegrationTests
             TagTrackingEntry trackedEntry =
                 publishedEntity.Should().BeOfType<TagTrackingEntry>().Subject;
             trackedEntry.Tag.Should().Be("tracked");
-            trackedEntry.UserEmail.Should().Be("test@email.com");
             trackedEntry.Date.Should().BeAfter(DateTimeOffset.UtcNow.AddMinutes(-1));
             trackedEntry.Date.Should().BeBefore(DateTimeOffset.UtcNow);
         }
