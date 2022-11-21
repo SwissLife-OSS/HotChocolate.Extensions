@@ -18,5 +18,5 @@ public static class ObjectFieldDescriptorExtensions
     public static IObjectFieldDescriptor Track(
         this IObjectFieldDescriptor fieldDescriptor,
         string trackingTag)
-        => fieldDescriptor.Track(new TrackingEntryFactory(trackingTag));
+        => fieldDescriptor.Track(new TagTrackingEntryFactory(trackingTag));
 }

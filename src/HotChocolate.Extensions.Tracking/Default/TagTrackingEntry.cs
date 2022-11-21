@@ -2,9 +2,9 @@ using System;
 
 namespace HotChocolate.Extensions.Tracking.Default;
 
-public class TrackingEntry : ITrackingEntry
+public class TagTrackingEntry : ITrackingEntry
 {
-    public TrackingEntry(
+    public TagTrackingEntry(
         DateTimeOffset dateTimeOffset,
         string tag)
     {

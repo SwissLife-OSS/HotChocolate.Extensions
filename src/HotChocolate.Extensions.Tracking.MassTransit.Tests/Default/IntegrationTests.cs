@@ -68,8 +68,8 @@ public class IntegrationTests
             res.ToMinifiedJson().Should().Be("{\"data\":{\"foo\":\"bar\"}}");
 
             var publishedEntity = await publishObserver.GetPublishedEntity;
-            TrackingEntry trackedEntry =
-                publishedEntity.Should().BeOfType<TrackingEntry>().Subject;
+            TagTrackingEntry trackedEntry =
+                publishedEntity.Should().BeOfType<TagTrackingEntry>().Subject;
             trackedEntry.Tag.Should().Be("tracked");
             trackedEntry.UserEmail.Should().Be("test@email.com");
             trackedEntry.Date.Should().BeAfter(DateTimeOffset.UtcNow.AddMinutes(-1));

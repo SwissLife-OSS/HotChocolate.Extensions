@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace HotChocolate.Extensions.Tracking.Default;
 
-public sealed class TrackingEntryFactory : ITrackingEntryFactory
+public sealed class TagTrackingEntryFactory : ITrackingEntryFactory
 {
     private readonly string _tag;
 
-    internal TrackingEntryFactory(string tag)
+    internal TagTrackingEntryFactory(string tag)
     {
         _tag = tag;
     }
@@ -17,6 +17,6 @@ public sealed class TrackingEntryFactory : ITrackingEntryFactory
         IHttpContextAccessor httpContextAccessor,
         IResolverContext context)
     {
-        return new TrackingEntry(DateTimeOffset.UtcNow, _tag);
+        return new TagTrackingEntry(DateTimeOffset.UtcNow, _tag);
     }
 }
