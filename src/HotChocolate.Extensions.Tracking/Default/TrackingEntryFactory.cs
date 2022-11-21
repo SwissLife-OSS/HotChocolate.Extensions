@@ -20,7 +20,7 @@ public sealed class TrackingEntryFactory : ITrackingEntryFactory
         IHttpContextAccessor httpContextAccessor,
         IResolverContext context)
     {
-        IEnumerable<Claim> claims = httpContextAccessor.HttpContext.User.Claims;
+        IEnumerable<Claim> claims = httpContextAccessor.HttpContext!.User.Claims;
         Claim? emailClaim = claims.Single(c => c.Type == "email");
 
         if (emailClaim.Value == null)
