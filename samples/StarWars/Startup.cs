@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StarWars.Repositories;
+using StarWars.Tracking;
 
 namespace StarWars
 {
@@ -21,6 +22,8 @@ namespace StarWars
                 .AddSingleton<IResourcesProvider, DictionaryResourcesProvider>()
 
                 .AddHttpContextAccessor()
+
+                .AddSingleton<ReviewTrackingEntryFactory>()
 
                 .AddGraphQLServer()
                     .AddGraphQLSchema()

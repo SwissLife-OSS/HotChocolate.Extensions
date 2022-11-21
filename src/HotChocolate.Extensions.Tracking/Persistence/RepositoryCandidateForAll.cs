@@ -4,12 +4,12 @@ namespace HotChocolate.Extensions.Tracking.Persistence
 {
     internal class RepositoryCandidateForAll : IRepositoryCandidate
     {
-        public RepositoryCandidateForAll(ITrackingRepository repository)
+        public RepositoryCandidateForAll(ITrackingExporter repository)
         {
             Repository = repository;
         }
 
-        public ITrackingRepository Repository { get; }
+        public ITrackingExporter Repository { get; }
 
         public bool CanHandle(Type t)
         {

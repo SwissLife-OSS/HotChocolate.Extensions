@@ -1,5 +1,5 @@
-using System;
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Extensions.Tracking.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,13 +7,11 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
 {
     public static class PipelineBuilderExtensions
     {
-        public static IRequestExecutorBuilder AddDeprecatedFieldsTracking(
+        public static IRequestExecutorBuilder AddDeprecatedFieldsTracking<TRepository>(
             this PipelineBuilder builder)
+            where TRepository : class, ITrackingExporter
         {
-            if (builder is null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
+            builder.AddDeprecatedFieldsRepository<TRepository>();
 
             builder.Services
                 .AddSingleton<IDeprecatedFieldsTrackingEntryFactory,

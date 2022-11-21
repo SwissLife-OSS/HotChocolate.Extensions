@@ -1,11 +1,18 @@
+using System;
+
 namespace HotChocolate.Extensions.Tracking;
 
 public class TrackedDirective
 {
-    public TrackedDirective(ITrackingEntryFactory trackingEntryFactory)
+    public TrackedDirective(Func<IServiceProvider, ITrackingEntryFactory> getTrackingEntryFactory)
     {
-        TrackingEntryFactory = trackingEntryFactory;
+        GetTrackingEntryFactory = getTrackingEntryFactory;
     }
 
-    public ITrackingEntryFactory TrackingEntryFactory { get; }
+    public TrackedDirective(ITrackingEntryFactory trackingEntryFactory)
+    {
+        GetTrackingEntryFactory = sp => trackingEntryFactory;
+    }
+
+    public Func<IServiceProvider, ITrackingEntryFactory> GetTrackingEntryFactory { get; }
 }

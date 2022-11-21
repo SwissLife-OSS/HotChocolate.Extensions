@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HotChocolate;
 using HotChocolate.Execution;
+using HotChocolate.Extensions.Tracking;
 using HotChocolate.Extensions.Tracking.Default;
 using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Types;
@@ -13,67 +14,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
-using Snapshooter.Xunit;
 using Xunit;
 
-namespace HotChocolate.Extensions.Tracking.Tests;
+namespace HotChocolate.Extensions.Tracking.Tests.Default;
 
 public class IntegrationTests
 {
-    [InlineData("{ foo @track }")]
-    [InlineData("{ foo @track(if:true) }")]
-    [Theory]
-    public async Task Trackable_IntegrationTest_ShouldAddATrackingEntry(string query)
-    {
-        //Arrange
-
-        /* repository where the KPIs will be stored. In real life this could
-            be for instance a Mongo repo or a masstransit repo */
-        Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
-
-        IServiceProvider services = new ServiceCollection()
-            .AddGraphQL()
-                .AddQueryType(c =>
-                    c.Name("Query")
-                        .Field("foo")
-                        .Type<StringType>()
-                        .Resolve("bar")
-                        .Trackable("tracked"))
-                .AddTrackingPipeline(b => b.AddRepository<NotifyOnFirstEntryRepository>())
-            .Services
-            .AddSingleton(mockHttpContextAccessor.Object)
-            .BuildServiceProvider();
-
-        IHostedService trackingService = await StartTrackingBackgroundService(services);
-
-        try
-        {
-            //Act
-            IRequestExecutor executor =
-                await services.GetRequiredService<IRequestExecutorResolver>()
-                    .GetRequestExecutorAsync();
-            IExecutionResult res = await executor.ExecuteAsync(query);
-
-            //Assert
-            res.ToMinifiedJson()
-                .Should().Be("{\"data\":{\"foo\":\"bar\"}}");
-            ITrackingEntry trackedEntity
-                = await services.GetRequiredService<NotifyOnFirstEntryRepository>().GetTrackedEntity;
-            TrackingEntry trackedEntry = trackedEntity.Should()
-                .BeOfType<TrackingEntry>().Subject;
-            trackedEntry.Tag.Should().Be("tracked");
-            trackedEntry.UserEmail.Should().Be("test@email.com");
-            trackedEntry.Date.Should().BeAfter(DateTimeOffset.UtcNow.AddMinutes(-1));
-            trackedEntry.Date.Should().BeBefore(DateTimeOffset.UtcNow);
-        }
-        finally
-        {
-            await trackingService.StopAsync(CancellationToken.None);
-        }
-    }
-
     [InlineData("{ foo }")]
-    [InlineData("{ foo @track(if:false) }")]
     [Theory]
     public async Task Trackable_IntegrationTestWithoutTag_ShouldNotAddATrackingEntry(string query)
     {
@@ -92,7 +39,7 @@ public class IntegrationTests
                         .Type<StringType>()
                         .Resolve("bar")
                         .Track("tracked"))
-                .AddTrackingPipeline(b => b.AddRepository<NeverCallThisRepository>())
+                .AddTrackingPipeline(b => b.AddExporter<NeverCallThisRepository>())
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
             .BuildServiceProvider();
@@ -162,7 +109,7 @@ public class IntegrationTests
     /// This task can be awaited in a Unit Test, to assert that a parallel Thread
     /// calls the method SaveTrackingEntryAsync.
     /// </summary>
-    public class NotifyOnFirstEntryRepository : ITrackingRepository
+    public class NotifyOnFirstEntryRepository : ITrackingExporter
     {
         private readonly TaskCompletionSource<ITrackingEntry> _tcs1;
 
@@ -194,7 +141,7 @@ public class IntegrationTests
     /// <summary>
     /// This repository will throw an exception if a tracking entry is added
     /// </summary>
-    public class NeverCallThisRepository : ITrackingRepository
+    public class NeverCallThisRepository : ITrackingExporter
     {
         public Task SaveTrackingEntryAsync(ITrackingEntry trackingEntry, CancellationToken cancellationToken)
         {

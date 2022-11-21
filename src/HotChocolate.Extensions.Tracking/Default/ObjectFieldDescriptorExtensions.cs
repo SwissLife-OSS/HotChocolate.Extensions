@@ -5,22 +5,6 @@ namespace HotChocolate.Extensions.Tracking.Default;
 public static class ObjectFieldDescriptorExtensions
 {
     /// <summary>
-    /// Makes a Field trackable with the default
-    /// TrackingEntry structure { email DateTimeOffset tag action }
-    /// </summary>
-    /// <param name="fieldDescriptor">the HotChocolate Field</param>
-    /// <param name="trackingTag">The tag that shall be saved.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// A trackable Field is only tracked if the caller adds
-    /// the @track directive to it in his query
-    /// </remarks>
-    public static IObjectFieldDescriptor Trackable(
-        this IObjectFieldDescriptor fieldDescriptor,
-        string trackingTag)
-        => fieldDescriptor.Trackable(new TrackingEntryFactory(trackingTag));
-
-    /// <summary>
     /// Makes a Field tracked with the default
     /// TrackingEntry structure { email DateTimeOffset tag action }
     /// </summary>
@@ -34,5 +18,5 @@ public static class ObjectFieldDescriptorExtensions
     public static IObjectFieldDescriptor Track(
         this IObjectFieldDescriptor fieldDescriptor,
         string trackingTag)
-        => fieldDescriptor.Track(new TrackingEntryFactory(trackingTag));
+        => fieldDescriptor.Track(new TagTrackingEntryFactory(trackingTag));
 }

@@ -4,9 +4,10 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using HotChocolate;
 using HotChocolate.Execution;
+using HotChocolate.Extensions.Tracking;
 using HotChocolate.Extensions.Tracking.Default;
-using HotChocolate.Extensions.Tracking.Pipeline;
 using HotChocolate.Types;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
@@ -15,14 +16,13 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using Xunit;
 
-namespace HotChocolate.Extensions.Tracking.MassTransit.Tests;
+namespace HotChocolate.Extensions.Tracking.MassTransit.Tests.Default;
 
 public class IntegrationTests
 {
-    [InlineData("{ foo @track }")]
-    [InlineData("{ foo @track(if:true) }")]
+    [InlineData("{ foo }")]
     [Theory]
-    public async Task IntegrationTest(string query)
+    public async Task RequestWithTrackedField_WithTrackingFactory_ShouldPublishTrackingEntryToBus(string query)
     {
         //Arrange
 
@@ -36,7 +36,7 @@ public class IntegrationTests
                         .Field("foo")
                         .Type<StringType>()
                         .Resolve("bar")
-                        .Trackable("tracked"))
+                        .Track("tracked"))
                 .AddTrackingPipeline(
                     builder => builder.AddMassTransitRepository(
                         new MassTransitOptions(
@@ -67,9 +67,9 @@ public class IntegrationTests
             //Assert
             res.ToMinifiedJson().Should().Be("{\"data\":{\"foo\":\"bar\"}}");
 
-            object? publishedEntity = await publishObserver.GetPublishedEntity;
-            TrackingEntry trackedEntry =
-                publishedEntity.Should().BeOfType<TrackingEntry>().Subject;
+            var publishedEntity = await publishObserver.GetPublishedEntity;
+            TagTrackingEntry trackedEntry =
+                publishedEntity.Should().BeOfType<TagTrackingEntry>().Subject;
             trackedEntry.Tag.Should().Be("tracked");
             trackedEntry.UserEmail.Should().Be("test@email.com");
             trackedEntry.Date.Should().BeAfter(DateTimeOffset.UtcNow.AddMinutes(-1));
