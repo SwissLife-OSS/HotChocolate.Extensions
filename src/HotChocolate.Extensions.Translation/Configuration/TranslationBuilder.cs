@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public TranslationBuilder AddTranslatableType<T>()
+            where T : notnull
         {
             _requestExecutorBuilder.AddDirectiveType<TranslateDirectiveType<T>>();
 
