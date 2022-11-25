@@ -33,7 +33,7 @@ public sealed class TrackingHostedService : BackgroundService
 
         await foreach (TrackingMessage message in ReadAllAsync(stoppingToken))
         {
-            _logger.LogInformation($"Saving tracking message: {message.TrackingEntry}");
+            _logger.LogInformation("Saving tracking message", message.TrackingEntry);
             await _trackingRepositoryFactory.Create(message.TrackingEntry.GetType())
                 .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
         }
