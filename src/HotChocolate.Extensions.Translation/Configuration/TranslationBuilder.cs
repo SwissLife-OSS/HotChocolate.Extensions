@@ -28,7 +28,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public TranslationBuilder SetTranslatedResourceNamingConvention(string format)
         {
+            _requestExecutorBuilder
+                .TryAddTypeInterceptor<TranslatedResourceTypeInterceptor>();
 
+            return this;
         }
 
         public TranslationBuilder SetTranslationInterfaceName(string name)
