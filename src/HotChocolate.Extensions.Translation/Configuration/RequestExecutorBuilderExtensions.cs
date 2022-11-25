@@ -1,6 +1,7 @@
 using System;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Translation;
+using HotChocolate.Types;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -16,15 +17,21 @@ namespace Microsoft.Extensions.DependencyInjection
             this IRequestExecutorBuilder builder,
             Action<TranslationBuilder>? configure)
         {
-            IRequestExecutorBuilder b = builder
-                .AddDirectiveType<TranslateDirectiveType>()
-                .AddDirectiveType<TranslatableDirectiveType>();
+            var translateDirective = new TranslateDirectiveType();
+            var translatableDirective = new TranslatableDirectiveType();
+            var translationInterfaceType = new TranslationInterfaceType();
 
-            if(configure != null)
+            if (configure != null)
             {
-                var translationBuilder = new TranslationBuilder(b);
+                var translationBuilder = new TranslationBuilder(
+                    builder, translationInterfaceType);
                 configure(translationBuilder);
             }
+
+            IRequestExecutorBuilder b = builder
+                .AddDirectiveType(translateDirective)
+                .AddDirectiveType(translatableDirective)
+                .AddType(translationInterfaceType);
 
             return b;
         }

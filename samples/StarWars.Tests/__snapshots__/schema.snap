@@ -18,6 +18,10 @@ interface Character {
   name: String!
 }
 
+interface ITranslation {
+  label: String!
+}
+
 "A connection to a list of items."
 type CharactersConnection {
   "A list of edges."
@@ -172,17 +176,17 @@ type Subscription {
   onReview("The episode to which you want to subscribe to." episode: Episode!): Review!
 }
 
-type TranslatedResourceOfEpisode {
+type TranslatedResourceOfEpisode implements ITranslation {
   key: Episode!
   label: String!
 }
 
-type TranslatedResourceOfHairColor {
+type TranslatedResourceOfHairColor implements ITranslation {
   key: HairColor!
   label: String!
 }
 
-type TranslatedResourceOfMaritalStatus {
+type TranslatedResourceOfMaritalStatus implements ITranslation {
   key: MaritalStatus!
   label: String!
 }

@@ -1,6 +1,6 @@
 namespace HotChocolate.Extensions.Translation
 {
-    public class TranslatedResource<T>
+    public class TranslatedResource<T>: ITranslation
     {
         public TranslatedResource(T key, string label)
         {
