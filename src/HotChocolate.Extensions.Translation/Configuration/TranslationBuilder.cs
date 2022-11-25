@@ -23,6 +23,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return this;
         }
 
+        //public TranslationBuilder SetTranslatedResourceNamingConvention(string format)
+        //{
+
+        //}
+
         public TranslationBuilder SetTranslationInterfaceName(string name)
         {
             _translationInterfaceType.InterfaceName = name;

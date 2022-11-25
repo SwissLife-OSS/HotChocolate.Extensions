@@ -1,22 +1,20 @@
 ﻿schema {
-  query: Query
+  query: ObjectType
 }
 
-interface ITranslation {
+type DummyValuesTranslation {
+  key: DummyValues!
   label: String!
 }
 
-type DummyEnumTranslation implements ITranslation {
-  key: DummyEnum!
-  label: String!
+type ObjectType {
+  myField: DummyValuesTranslation @translatable(resourceKeyPrefix: "prefix", toCodeLabelItem: true) @translateDummyValues
 }
 
-type Query {
-  bar: DummyEnumTranslation! @translatable(resourceKeyPrefix: "translation_path", toCodeLabelItem: true) @translateDummyEnum
-  foo: String!
-}
-
-enum DummyEnum {
+enum DummyValues {
+  FOO
+  BAR
+  BAZ
   QUX
 }
 
@@ -28,6 +26,4 @@ directive @stream("If this argument label has a value other than null, it will b
 
 directive @translatable(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translate(language: String) on FIELD | FIELD_DEFINITION
-
-directive @translateDummyEnum(language: String) on FIELD | FIELD_DEFINITION
+directive @translateDummyValues(language: String) on FIELD | FIELD_DEFINITION
