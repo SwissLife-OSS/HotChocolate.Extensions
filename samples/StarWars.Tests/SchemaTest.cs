@@ -26,6 +26,5 @@ namespace StarWars.Tests
             //Assert
             schema.ToString().MatchSnapshot("schema");
         }
-
     }
 }
