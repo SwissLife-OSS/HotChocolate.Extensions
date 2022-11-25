@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>HotChocolate.Extensions.Translation</AssemblyName>
@@ -11,10 +11,6 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="HotChocolate.Types" Version="$(HotChocolateVersion)" />
     <PackageReference Include="HotChocolate.Execution" Version="$(HotChocolateVersion)" />
-    <PackageReference Include="Thor.Core" Version="$(ThorVersion)" />
-    <PackageReference Include="Thor.Generator" Version="$(ThorGenVersion)">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
   <PropertyGroup>

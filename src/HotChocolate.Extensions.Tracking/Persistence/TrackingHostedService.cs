@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using static SwissLife.GraphQL.Extensions.Tracking.EventSources.TrackingEventSource;
+using Microsoft.Extensions.Logging;
 
 namespace HotChocolate.Extensions.Tracking.Persistence;
 
@@ -15,22 +15,25 @@ public sealed class TrackingHostedService : BackgroundService
 {
     private readonly ChannelReader<TrackingMessage> _channelReader;
     private readonly ITrackingExporterFactory _trackingRepositoryFactory;
+    private readonly ILogger<TrackingHostedService> _logger;
 
     public TrackingHostedService(
         Channel<TrackingMessage> trackingChannel,
-        ITrackingExporterFactory trackingRepositoryFactory)
+        ITrackingExporterFactory trackingRepositoryFactory,
+        ILogger<TrackingHostedService> logger)
     {
         _channelReader = trackingChannel.Reader;
         _trackingRepositoryFactory = trackingRepositoryFactory;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Log.TrackingPipelineStarted();
+        _logger.LogInformation("Tracking Pipeline Started");
 
         await foreach (TrackingMessage message in ReadAllAsync(stoppingToken))
         {
-            Log.SavingTrackingMessage(message.TrackingEntry);
+            _logger.LogInformation($"Saving tracking message: {message.TrackingEntry}");
             await _trackingRepositoryFactory.Create(message.TrackingEntry.GetType())
                 .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
         }
@@ -38,7 +41,7 @@ public sealed class TrackingHostedService : BackgroundService
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        Log.TrackingPipelineStopped();
+        _logger.LogWarning("Tracking Pipeline Started");
         return Task.CompletedTask;
     }
 

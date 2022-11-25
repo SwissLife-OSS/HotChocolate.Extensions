@@ -20,8 +20,6 @@
     <PackageReference Include="System.Threading.Channels" Version="4.7.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageReference Include="Thor.Core" Version="$(ThorVersion)" />
-    <PackageReference Include="Thor.Generator" Version="$(ThorGenVersion)" />
   </ItemGroup>
 
 </Project>

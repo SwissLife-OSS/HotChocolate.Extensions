@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
-using static SwissLife.GraphQL.Extensions.Tracking.EventSources.TrackingEventSource;
 
 namespace HotChocolate.Extensions.Tracking;
 
@@ -40,7 +39,5 @@ internal static class DirectiveContextExtensions
                 .SetException(ex)
                 .SetMessage(ex.Message)
                 .Build());
-
-        Log.ExceptionDuringTracking(context.Selection.Field.Name, ex);
     }
 }

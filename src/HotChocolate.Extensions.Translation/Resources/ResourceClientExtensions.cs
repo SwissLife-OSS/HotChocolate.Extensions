@@ -1,5 +1,4 @@
 using System.Globalization;
-using HotChocolate.Extensions.Translation.EventSources;
 
 namespace HotChocolate.Extensions.Translation.Resources
 {
@@ -16,7 +15,6 @@ namespace HotChocolate.Extensions.Translation.Resources
                 return res.Value;
             }
 
-            TranslationEventSource.Log.ResourceMissing(key);
             return fallbackValue;
         }
     }
