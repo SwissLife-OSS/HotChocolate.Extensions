@@ -9,8 +9,8 @@ namespace HotChocolate.Extensions.Translation
         {
             descriptor.Name(
                 typeof(T) == typeof(string)
-                ? "Translation"
-                : $"{typeof(T).Name}Translation");
+                ? "Translated"
+                : $"{typeof(T).Name}Translated");
 
             descriptor.BindFieldsImplicitly();
         }

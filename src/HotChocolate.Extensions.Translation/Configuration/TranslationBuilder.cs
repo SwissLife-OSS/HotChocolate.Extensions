@@ -1,5 +1,6 @@
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Translation;
+using HotChocolate.Extensions.Translation.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -7,6 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         private readonly IRequestExecutorBuilder _requestExecutorBuilder;
         private readonly TranslationInterfaceType _translationInterfaceType;
+        private readonly TranslationOptions _translationOptions;
 
         public TranslationBuilder(
             IRequestExecutorBuilder requestExecutorBuilder,
@@ -14,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             _requestExecutorBuilder = requestExecutorBuilder;
             _translationInterfaceType = translationInterfaceType;
+            _translationOptions = new TranslationOptions();
         }
 
         public TranslationBuilder AddTranslatableType<T>()
@@ -23,10 +26,10 @@ namespace Microsoft.Extensions.DependencyInjection
             return this;
         }
 
-        //public TranslationBuilder SetTranslatedResourceNamingConvention(string format)
-        //{
+        public TranslationBuilder SetTranslatedResourceNamingConvention(string format)
+        {
 
-        //}
+        }
 
         public TranslationBuilder SetTranslationInterfaceName(string name)
         {
