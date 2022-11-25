@@ -32,6 +32,7 @@ public class IntegrationTests
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
+            .AddLogging()
             .AddGraphQL()
                 .AddQueryType(c =>
                     c.Name("Query")
