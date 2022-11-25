@@ -13,7 +13,7 @@ namespace HotChocolate.Extensions.Translation.Tests.Configuration
         public class Query
         {
             public string Foo { get; } = "bar";
-            public DummyEnum Baz { get; } = DummyEnum.Qux;
+            public DummyEnum Bar { get; } = DummyEnum.Qux;
         }
 
         public enum DummyEnum
@@ -30,7 +30,7 @@ namespace HotChocolate.Extensions.Translation.Tests.Configuration
                 .AddGraphQLServer()
                 .AddQueryType<Query>(d =>
                 {
-                    d.Field(q => q.Baz).Translate<DummyEnum>("translation_path");
+                    d.Field(q => q.Bar).Translate<DummyEnum>("translation_path");
                 });
 
             //Act

@@ -7,7 +7,7 @@ interface ITranslation {
 }
 
 type Query {
-  baz: TranslatedResourceOfDummyEnum! @translatable(resourceKeyPrefix: "translation_path", toCodeLabelItem: true) @translateDummyEnum
+  bar: TranslatedResourceOfDummyEnum! @translatable(resourceKeyPrefix: "translation_path", toCodeLabelItem: true) @translateDummyEnum
   foo: String!
 }
 
