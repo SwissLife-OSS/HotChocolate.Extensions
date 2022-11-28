@@ -14,7 +14,7 @@ namespace HotChocolate.Extensions.Translation.Resources
 
         public override Task OnMissingResource(string key)
         {
-            _logger.LogWarning("Missing translation resource: {0}", key);
+            _logger.LogWarning("Missing translation resource: {key}", key);
 
             return base.OnMissingResource(key);
         }
