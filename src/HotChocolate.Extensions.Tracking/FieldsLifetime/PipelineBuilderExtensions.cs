@@ -7,11 +7,11 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
 {
     public static class PipelineBuilderExtensions
     {
-        public static IRequestExecutorBuilder AddDeprecatedFieldsTracking<TRepository>(
+        public static IRequestExecutorBuilder AddDeprecatedFieldsTracking<TExporter>(
             this PipelineBuilder builder)
-            where TRepository : class, ITrackingExporter
+            where TExporter : class, ITrackingExporter
         {
-            builder.AddDeprecatedFieldsRepository<TRepository>();
+            builder.AddDeprecatedFieldsExporter<TExporter>();
 
             builder.Services
                 .AddSingleton<IDeprecatedFieldsTrackingEntryFactory,

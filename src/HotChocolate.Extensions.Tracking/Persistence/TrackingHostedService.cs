@@ -15,16 +15,16 @@ namespace HotChocolate.Extensions.Tracking.Persistence;
 public sealed class TrackingHostedService : BackgroundService
 {
     private readonly ChannelReader<TrackingMessage> _channelReader;
-    private readonly ITrackingExporterFactory _trackingRepositoryFactory;
+    private readonly ITrackingExporterFactory _trackingExporterFactory;
     private readonly ILogger<TrackingHostedService> _logger;
 
     public TrackingHostedService(
         Channel<TrackingMessage> trackingChannel,
-        ITrackingExporterFactory trackingRepositoryFactory,
+        ITrackingExporterFactory trackingExporterFactory,
         ILogger<TrackingHostedService> logger)
     {
         _channelReader = trackingChannel.Reader;
-        _trackingRepositoryFactory = trackingRepositoryFactory;
+        _trackingExporterFactory = trackingExporterFactory;
         _logger = logger;
     }
 
@@ -36,7 +36,7 @@ public sealed class TrackingHostedService : BackgroundService
         {
             using Activity? activity = TrackingActivity.StartTrackingEntityHandling();
 
-            await _trackingRepositoryFactory.Create(message.TrackingEntry.GetType())
+            await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
                 .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
         }
     }

@@ -4,11 +4,11 @@ using HotChocolate.Extensions.Tracking.Persistence;
 
 namespace HotChocolate.Extensions.Tracking.MassTransit;
 
-public class MassTransitRepository : ITrackingExporter
+public class MassTransitExporter : ITrackingExporter
 {
     private readonly IMassTransitTrackingBus _bus;
 
-    public MassTransitRepository(IMassTransitTrackingBus bus)
+    public MassTransitExporter(IMassTransitTrackingBus bus)
     {
         _bus = bus;
     }

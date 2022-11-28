@@ -7,10 +7,10 @@ public sealed class PipelineBuildingPlan
 {
     public PipelineBuildingPlan(IRequestExecutorBuilder requestExecutorBuilder)
     {
-        RepositoryCandidateBuilders = new List<RepositoryCandidateBuilder>();
+        ExporterCandidateBuilders = new List<ExporterCandidateBuilder>();
         RequestExecutorBuilder = requestExecutorBuilder;
     }
 
-    internal List<RepositoryCandidateBuilder> RepositoryCandidateBuilders { get; }
+    internal List<ExporterCandidateBuilder> ExporterCandidateBuilders { get; }
     public IRequestExecutorBuilder RequestExecutorBuilder { get; }
 }

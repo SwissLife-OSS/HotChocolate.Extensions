@@ -2,10 +2,10 @@ using System;
 
 namespace HotChocolate.Extensions.Tracking.Persistence.Exceptions
 {
-    internal class TrackingEntryWithoutRepositoryException : Exception
+    internal class TrackingEntryWithoutExporterException : Exception
     {
-        public TrackingEntryWithoutRepositoryException(Type type)
-            : base($"No registered tracking repository can handle " +
+        public TrackingEntryWithoutExporterException(Type type)
+            : base($"No registered tracking exporter can handle " +
                   $"the tracking entry of type {type.Name}")
         {
             Type = type;

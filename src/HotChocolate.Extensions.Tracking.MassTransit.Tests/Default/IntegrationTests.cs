@@ -39,7 +39,7 @@ public class IntegrationTests
                         .Resolve("bar")
                         .Track("tracked"))
                 .AddTrackingPipeline(
-                    builder => builder.AddMassTransitRepository(
+                    builder => builder.AddMassTransitExporter(
                         new MassTransitOptions(
                             new ServiceBusOptions("InMemory"))))
             .Services
