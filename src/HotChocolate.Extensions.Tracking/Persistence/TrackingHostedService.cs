@@ -43,7 +43,7 @@ public sealed class TrackingHostedService : BackgroundService
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogWarning("Tracking Pipeline stopped.");
+        _logger.LogInformation("Tracking Pipeline stopped.");
         return Task.CompletedTask;
     }
 }
