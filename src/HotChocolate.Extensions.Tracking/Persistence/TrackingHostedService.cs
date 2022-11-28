@@ -31,21 +31,26 @@ public sealed class TrackingHostedService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Tracking Pipeline started.");
-
-        await foreach (TrackingMessage message in _channelReader.ReadAllAsync(stoppingToken))
+        while (!stoppingToken.IsCancellationRequested)
         {
-            using Activity? activity = TrackingActivity.StartTrackingEntityHandling();
+            _logger.LogInformation("Tracking Pipeline started.");
 
             try
             {
-                await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
-                    .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
+                await foreach (TrackingMessage message in _channelReader.ReadAllAsync(stoppingToken))
+                {
+                    using Activity? activity = TrackingActivity.StartTrackingEntityHandling();
+
+
+                    await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
+                        .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
+
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(
-                    $"Error on attempt to export Message: {message?.TrackingEntry?.Date}", ex);
+                    $"Error while reading tracking entry message", ex);
             }
         }
     }
