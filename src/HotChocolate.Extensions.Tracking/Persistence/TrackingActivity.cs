@@ -4,7 +4,8 @@ namespace HotChocolate.Extensions.Tracking.Persistence
 {
     internal static class TrackingActivity
     {
-        private static readonly ActivitySource ActivitySource = new("Tracking");
+        private static readonly ActivitySource ActivitySource
+            = new("HotChocolate.Extensions.Tracking");
 
         public static Activity? StartTrackingEntityHandling()
         {

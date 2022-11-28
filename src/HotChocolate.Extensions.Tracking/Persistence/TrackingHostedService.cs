@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -36,8 +37,16 @@ public sealed class TrackingHostedService : BackgroundService
         {
             using Activity? activity = TrackingActivity.StartTrackingEntityHandling();
 
-            await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
-                .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
+            try
+            {
+                await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
+                    .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(
+                    $"Error on attempt to export Message: {message?.TrackingEntry?.Date}", ex);
+            }
         }
     }
 
