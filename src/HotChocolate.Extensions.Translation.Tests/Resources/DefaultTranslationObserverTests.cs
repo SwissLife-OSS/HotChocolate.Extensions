@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using HotChocolate.Extensions.Translation.Resources;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,9 +18,7 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
             var key = Guid.NewGuid().ToString();
 
             //Arrange dependencies
-            var logger = new Mock<ILogger<TranslationObserver>>(MockBehavior.Strict);
-            logger
-                .Setup(x => x.LogWarning("Missing translation resource: {0}", key));
+            var logger = new Mock<ILogger<TranslationObserver>>();
 
             var observer = new DefaultTranslationObserver(logger.Object);
 
@@ -26,7 +26,8 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
             await observer.OnMissingResource(key);
 
             //Assert
-            logger.VerifyAll();
+            var log = logger.Invocations.Single();
+            log.Arguments.OfType<LogLevel>().Should().ContainSingle().Which.Should().Be(LogLevel.Warning);
 
         }
     }
