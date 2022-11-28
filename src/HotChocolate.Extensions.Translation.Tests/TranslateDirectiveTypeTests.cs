@@ -217,14 +217,14 @@ namespace HotChocolate.Extensions.Translation.Tests
             masterDictionary.Add(Mock.Language.En, ToResourceDictionary(resourceDictionary, Mock.Language.En));
 
             var contextMock = new Mock<IMiddlewareContext>();
-            var resourceClientMock = new DictionaryResourcesProvider(masterDictionary);
+            var resourceClientAdapterMock = new DictionaryResourcesProviderAdapter(masterDictionary);
 
             contextMock.SetupProperty(m => m.Result, resolverResult);
             IMiddlewareContext context = contextMock.Object;
 
             contextMock
-                .Setup(m => m.Service<IResourcesProvider>())
-                .Returns(resourceClientMock);
+                .Setup(m => m.Service<IResourcesProviderAdapter>())
+                .Returns(resourceClientAdapterMock);
             return context;
         }
 

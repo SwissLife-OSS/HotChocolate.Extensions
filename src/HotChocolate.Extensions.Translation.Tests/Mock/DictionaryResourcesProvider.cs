@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using HotChocolate.Extensions.Translation.Resources;
 
 namespace HotChocolate.Extensions.Translation.Tests.Mock
 {
-    public class DictionaryResourcesProvider : IResourcesProvider
+    public class DictionaryResourcesProviderAdapter : IResourcesProviderAdapter
     {
-        internal DictionaryResourcesProvider(
+        internal DictionaryResourcesProviderAdapter(
             IDictionary<Language, Dictionary<string, Resource>> masterDictionary)
         {
             _masterDictionary = masterDictionary;
@@ -16,22 +15,20 @@ namespace HotChocolate.Extensions.Translation.Tests.Mock
 
         private IDictionary<Language, Dictionary<string, Resource>> _masterDictionary;
 
-        public bool TryGetResource(string key, CultureInfo culture, [NotNullWhen(returnValue: true)] out Resource? res)
+        public string TryGetResourceAsString(string key, CultureInfo culture, string fallbackValue)
         {
-            res = null;
             Language language = ToLanguage(culture);
 
             if (!_masterDictionary.ContainsKey(language))
             {
-                return false;
+                return fallbackValue;
             }
             if (!_masterDictionary[language].ContainsKey(key))
             {
-                return false;
+                return fallbackValue;
             }
 
-            res = _masterDictionary[language][key];
-            return true;
+            return _masterDictionary[language][key].Value;
         }
 
         private static Language ToLanguage(CultureInfo culture)

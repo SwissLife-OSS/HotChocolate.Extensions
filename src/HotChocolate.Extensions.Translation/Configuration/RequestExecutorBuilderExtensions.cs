@@ -1,6 +1,7 @@
 using System;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Translation;
+using HotChocolate.Extensions.Translation.Resources;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -31,6 +32,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddDirectiveType(translateDirective)
                 .AddDirectiveType(translatableDirective)
                 .AddType(translationInterfaceType);
+
+            b.Services.AddSingleton<IResourcesProviderAdapter, ResourcesProviderAdapter>();
+            b.Services.AddSingleton<TranslationObserver, DefaultTranslationObserver>();
 
             return b;
         }
