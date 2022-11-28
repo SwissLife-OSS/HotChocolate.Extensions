@@ -16,7 +16,7 @@ namespace HotChocolate.Extensions.Translation.Resources
             _observers = observers;
         }
 
-        public string TryGetResourceAsString(
+        public string TryGetTranslationAsString(
             string key,
             CultureInfo culture,
             string fallbackValue)

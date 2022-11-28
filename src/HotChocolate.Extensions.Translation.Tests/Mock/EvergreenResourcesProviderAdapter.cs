@@ -5,7 +5,7 @@ namespace HotChocolate.Extensions.Translation.Tests.Mock
 {
     public class EvergreenResourcesProviderAdapter : IResourcesProviderAdapter
     {
-        public string TryGetResourceAsString(string key, CultureInfo culture, string fallbackValue)
+        public string TryGetTranslationAsString(string key, CultureInfo culture, string fallbackValue)
         {
             return $"rms:{key}_{culture.DisplayName}";
         }

@@ -15,7 +15,7 @@ namespace HotChocolate.Extensions.Translation.Tests.Mock
 
         private IDictionary<Language, Dictionary<string, Resource>> _masterDictionary;
 
-        public string TryGetResourceAsString(string key, CultureInfo culture, string fallbackValue)
+        public string TryGetTranslationAsString(string key, CultureInfo culture, string fallbackValue)
         {
             Language language = ToLanguage(culture);
 

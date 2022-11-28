@@ -162,7 +162,7 @@ namespace HotChocolate.Extensions.Translation
             IResourcesProviderAdapter client,
             Enum e)
         {
-            context.Result = client.TryGetResourceAsString(
+            context.Result = client.TryGetTranslationAsString(
                 $"{directiveOptions.ResourceKeyPrefix}/{value}",
                 culture,
                 e.ToString());
@@ -176,7 +176,7 @@ namespace HotChocolate.Extensions.Translation
             IResourcesProviderAdapter client,
             string s)
         {
-            context.Result = client.TryGetResourceAsString(
+            context.Result = client.TryGetTranslationAsString(
                 $"{directiveOptions.ResourceKeyPrefix}/{value}",
                 culture,
                 s);
@@ -190,7 +190,7 @@ namespace HotChocolate.Extensions.Translation
             IReadOnlyList<T> items)
         {
             context.Result = items
-                .Select(t => client.TryGetResourceAsString(
+                .Select(t => client.TryGetTranslationAsString(
                         $"{directiveOptions.ResourceKeyPrefix}/{t}",
                         culture,
                         t.ToString()))
@@ -207,7 +207,7 @@ namespace HotChocolate.Extensions.Translation
             context.Result = items
                 .Select(item => new TranslatedResource<T>(
                     item,
-                    client.TryGetResourceAsString(
+                    client.TryGetTranslationAsString(
                         $"{directiveOptions.ResourceKeyPrefix}/{item}",
                         culture,
                         item.ToString())
@@ -225,7 +225,7 @@ namespace HotChocolate.Extensions.Translation
                 ? null
                 : new TranslatedResource<T>(
                     item,
-                    client.TryGetResourceAsString(
+                    client.TryGetTranslationAsString(
                         $"{directiveOptions.ResourceKeyPrefix}/{item}",
                         culture,
                         item.ToString())
