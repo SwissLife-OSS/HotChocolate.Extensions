@@ -53,7 +53,7 @@ namespace StarWars
                         { "HairColors/Blond", "Blond" },
                         { "HairColors/Brown", "Braun" },
                         { "HairColors/Red", "Rot" },
-                        //{ "HairColors/Black", "Schwarz" },
+                        { "HairColors/Black", "Schwarz" },
                         { "MaritalStatus/Married", "Verheiratet" },
                         { "MaritalStatus/Complicated", "Kompliziert" },
                         { "MaritalStatus/Widow", "Witwer" },
