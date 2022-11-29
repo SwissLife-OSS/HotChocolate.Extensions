@@ -51,38 +51,38 @@ public static class SchemaBuilderExtensions
 
     private static void InitRepositories(IServiceCollection services, PipelineBuilder builder)
     {
-        if (!builder.BuildPlan.RepositoryCandidateBuilders.Any())
+        if (!builder.BuildPlan.ExporterCandidateBuilders.Any())
         {
-            throw new NoTrackingRepositoryConfiguredException();
+            throw new NoTrackingExporterConfiguredException();
         }
 
-        if (builder.BuildPlan.RepositoryCandidateBuilders.Count(b => b.ForAll) > 1)
+        if (builder.BuildPlan.ExporterCandidateBuilders.Count(b => b.ForAll) > 1)
         {
-            throw new MoreThanOneGlobalTrackingRepositoryException();
+            throw new MoreThanOneGlobalTrackingExporterException();
         }
 
         services.AddSingleton<ITrackingExporterFactory>(sp => {
 
-            List<IRepositoryCandidate> candidates = builder.BuildPlan.RepositoryCandidateBuilders
+            List<IExporterCandidate> candidates = builder.BuildPlan.ExporterCandidateBuilders
             .Where(b => !b.ForAll)
-            .Select(b => (IRepositoryCandidate) new RepositoryCandidate(
-                (ITrackingExporter)sp.GetRequiredService(b.RepositoryType),
+            .Select(b => (IExporterCandidate) new ExporterCandidate(
+                (ITrackingExporter)sp.GetRequiredService(b.ExporterType),
                 b.SupportedTypes))
             .ToList();
 
-            RepositoryCandidateBuilder? fallbackCandidateBuilder
-                = builder.BuildPlan.RepositoryCandidateBuilders.SingleOrDefault(b => b.ForAll);
+            ExporterCandidateBuilder? fallbackCandidateBuilder
+                = builder.BuildPlan.ExporterCandidateBuilders.SingleOrDefault(b => b.ForAll);
             if(fallbackCandidateBuilder != null)
             {
                 var fallbackCandidate
-                    = new RepositoryCandidateForAll(
+                    = new ExporterCandidateForAll(
                         (ITrackingExporter)sp.GetRequiredService(
-                            fallbackCandidateBuilder.RepositoryType));
+                            fallbackCandidateBuilder.ExporterType));
                 candidates.Add(fallbackCandidate);
 
             }
 
-            return new TrackingRepositoryFactory(candidates);
+            return new TrackingExporterFactory(candidates);
         });
     }
 }

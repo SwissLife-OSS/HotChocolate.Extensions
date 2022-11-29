@@ -4,19 +4,19 @@ using System.Linq;
 
 namespace HotChocolate.Extensions.Tracking.Persistence
 {
-    internal class RepositoryCandidate : IRepositoryCandidate
+    internal class ExporterCandidate : IExporterCandidate
     {
         private readonly IReadOnlyList<Type> _supportedTypes;
 
-        public RepositoryCandidate(
-            ITrackingExporter repository,
+        public ExporterCandidate(
+            ITrackingExporter exporter,
             IReadOnlyList<Type> supportedTypes)
         {
-            Repository = repository;
+            Exporter = exporter;
             _supportedTypes = supportedTypes;
         }
 
-        public ITrackingExporter Repository { get; }
+        public ITrackingExporter Exporter { get; }
 
         public bool CanHandle(Type t)
         {

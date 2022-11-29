@@ -77,7 +77,7 @@ namespace HotChocolate.Extensions.Translation
             TranslatableDirective directiveOptions,
             CultureInfo culture)
         {
-            IResourcesProvider client = context.Service<IResourcesProvider>();
+            IResourcesProviderAdapter client = context.Service<IResourcesProviderAdapter>();
 
             if (value is IEnumerable<T> items)
             {
@@ -99,7 +99,7 @@ namespace HotChocolate.Extensions.Translation
             object value,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client)
+            IResourcesProviderAdapter client)
         {
             if (value is string s)
             {
@@ -139,7 +139,7 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client,
+            IResourcesProviderAdapter client,
             IReadOnlyList<T> items)
         {
             if (directiveOptions.ToCodeLabelItem)
@@ -159,10 +159,10 @@ namespace HotChocolate.Extensions.Translation
             object value,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client,
+            IResourcesProviderAdapter client,
             Enum e)
         {
-            context.Result = client.TryGetResourceAsString(
+            context.Result = client.TryGetTranslationAsString(
                 $"{directiveOptions.ResourceKeyPrefix}/{value}",
                 culture,
                 e.ToString());
@@ -173,10 +173,10 @@ namespace HotChocolate.Extensions.Translation
             object value,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client,
+            IResourcesProviderAdapter client,
             string s)
         {
-            context.Result = client.TryGetResourceAsString(
+            context.Result = client.TryGetTranslationAsString(
                 $"{directiveOptions.ResourceKeyPrefix}/{value}",
                 culture,
                 s);
@@ -186,11 +186,11 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client,
+            IResourcesProviderAdapter client,
             IReadOnlyList<T> items)
         {
             context.Result = items
-                .Select(t => client.TryGetResourceAsString(
+                .Select(t => client.TryGetTranslationAsString(
                         $"{directiveOptions.ResourceKeyPrefix}/{t}",
                         culture,
                         t.ToString()))
@@ -201,13 +201,13 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client,
+            IResourcesProviderAdapter client,
             IReadOnlyList<T> items)
         {
             context.Result = items
                 .Select(item => new TranslatedResource<T>(
                     item,
-                    client.TryGetResourceAsString(
+                    client.TryGetTranslationAsString(
                         $"{directiveOptions.ResourceKeyPrefix}/{item}",
                         culture,
                         item.ToString())
@@ -218,14 +218,14 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             TranslatableDirective directiveOptions,
             CultureInfo culture,
-            IResourcesProvider client,
+            IResourcesProviderAdapter client,
             T item)
         {
             context.Result = item == null
                 ? null
                 : new TranslatedResource<T>(
                     item,
-                    client.TryGetResourceAsString(
+                    client.TryGetTranslationAsString(
                         $"{directiveOptions.ResourceKeyPrefix}/{item}",
                         culture,
                         item.ToString())

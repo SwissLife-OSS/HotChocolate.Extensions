@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using static SwissLife.GraphQL.Extensions.Tracking.EventSources.TrackingEventSource;
+using Microsoft.Extensions.Logging;
 
 namespace HotChocolate.Extensions.Tracking.Persistence;
 
@@ -14,44 +14,46 @@ namespace HotChocolate.Extensions.Tracking.Persistence;
 public sealed class TrackingHostedService : BackgroundService
 {
     private readonly ChannelReader<TrackingMessage> _channelReader;
-    private readonly ITrackingExporterFactory _trackingRepositoryFactory;
+    private readonly ITrackingExporterFactory _trackingExporterFactory;
+    private readonly ILogger<TrackingHostedService> _logger;
 
     public TrackingHostedService(
         Channel<TrackingMessage> trackingChannel,
-        ITrackingExporterFactory trackingRepositoryFactory)
+        ITrackingExporterFactory trackingExporterFactory,
+        ILogger<TrackingHostedService> logger)
     {
         _channelReader = trackingChannel.Reader;
-        _trackingRepositoryFactory = trackingRepositoryFactory;
+        _trackingExporterFactory = trackingExporterFactory;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Log.TrackingPipelineStarted();
-
-        await foreach (TrackingMessage message in ReadAllAsync(stoppingToken))
+        while (!stoppingToken.IsCancellationRequested)
         {
-            Log.SavingTrackingMessage(message.TrackingEntry);
-            await _trackingRepositoryFactory.Create(message.TrackingEntry.GetType())
-                .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
+            _logger.LogInformation("Tracking Pipeline started.");
+
+            try
+            {
+                await foreach (TrackingMessage message in _channelReader.ReadAllAsync(stoppingToken))
+                {
+                    using Activity? activity = TrackingActivity.StartTrackingEntityHandling();
+
+                    await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
+                        .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Error while reading tracking entry message", ex);
+            }
         }
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        Log.TrackingPipelineStopped();
+        _logger.LogInformation("Tracking Pipeline stopped.");
         return Task.CompletedTask;
-    }
-
-    private async IAsyncEnumerable<TrackingMessage> ReadAllAsync(
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        while (await _channelReader.WaitToReadAsync(cancellationToken)
-                .ConfigureAwait(false))
-        {
-            while (_channelReader.TryRead(out TrackingMessage? item))
-            {
-                yield return item;
-            }
-        }
     }
 }

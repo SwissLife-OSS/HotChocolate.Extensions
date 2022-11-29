@@ -26,12 +26,13 @@ public class IntegrationTests
     {
         //Arrange
 
-        /* This repository will throw an exception if a tracking entry is added */
-        var kpiRepo = new NeverCallThisRepository();
+        /* This exporter will throw an exception if a tracking entry is added */
+        var kpiRepo = new NeverCallThisExporter();
 
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
+            .AddLogging()
             .AddGraphQL()
                 .AddQueryType(c =>
                     c.Name("Query")
@@ -39,7 +40,7 @@ public class IntegrationTests
                         .Type<StringType>()
                         .Resolve("bar")
                         .Track("tracked"))
-                .AddTrackingPipeline(b => b.AddExporter<NeverCallThisRepository>())
+                .AddTrackingPipeline(b => b.AddExporter<NeverCallThisExporter>())
             .Services
             .AddSingleton(mockHttpContextAccessor.Object)
             .BuildServiceProvider();
@@ -101,7 +102,7 @@ public class IntegrationTests
     }
 
     /// <summary>
-    /// This repository exposes a task with a lifetime of 15 seconds.
+    /// This exporter exposes a task with a lifetime of 15 seconds.
     /// If SaveTrackingEntryAsync is invoked before the end of the 15 seconds,
     /// then the task gets completed and returns the trackingEntry parameter
     /// of the method SaveTrackingEntryAsync.
@@ -109,11 +110,11 @@ public class IntegrationTests
     /// This task can be awaited in a Unit Test, to assert that a parallel Thread
     /// calls the method SaveTrackingEntryAsync.
     /// </summary>
-    public class NotifyOnFirstEntryRepository : ITrackingExporter
+    public class NotifyOnFirstEntryExporter : ITrackingExporter
     {
         private readonly TaskCompletionSource<ITrackingEntry> _tcs1;
 
-        public NotifyOnFirstEntryRepository()
+        public NotifyOnFirstEntryExporter()
         {
             _tcs1 = new TaskCompletionSource<ITrackingEntry>();
             GetTrackedEntity = _tcs1.Task;
@@ -139,9 +140,9 @@ public class IntegrationTests
     }
 
     /// <summary>
-    /// This repository will throw an exception if a tracking entry is added
+    /// This exporter will throw an exception if a tracking entry is added
     /// </summary>
-    public class NeverCallThisRepository : ITrackingExporter
+    public class NeverCallThisExporter : ITrackingExporter
     {
         public Task SaveTrackingEntryAsync(ITrackingEntry trackingEntry, CancellationToken cancellationToken)
         {

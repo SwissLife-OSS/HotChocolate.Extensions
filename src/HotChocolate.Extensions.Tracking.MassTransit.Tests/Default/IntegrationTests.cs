@@ -29,6 +29,7 @@ public class IntegrationTests
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
         IServiceProvider services = new ServiceCollection()
+            .AddLogging()
             .AddSingleton(mockHttpContextAccessor.Object)
             .AddGraphQL()
                 .AddQueryType(c =>
@@ -38,7 +39,7 @@ public class IntegrationTests
                         .Resolve("bar")
                         .Track("tracked"))
                 .AddTrackingPipeline(
-                    builder => builder.AddMassTransitRepository(
+                    builder => builder.AddMassTransitExporter(
                         new MassTransitOptions(
                             new ServiceBusOptions("InMemory"))))
             .Services

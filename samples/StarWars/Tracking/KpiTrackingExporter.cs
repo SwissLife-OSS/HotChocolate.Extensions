@@ -20,7 +20,7 @@ namespace StarWars.Tracking
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
-            await Task.Delay(5000); // Added some delay on the Repository to show that it is run asynchronously even after the end of the GraphQL Query
+            await Task.Delay(5000); // Added some delay on the Exporter to show that it is run asynchronously even after the end of the GraphQL Query
             _loggerFactory.CreateLogger<KpiTrackingExporter>()
                 .LogInformation($"New KPI Value: {JsonConvert.SerializeObject(trackingEntry)}");
         }

@@ -2,9 +2,9 @@ using System;
 
 namespace HotChocolate.Extensions.Tracking.Persistence
 {
-    public interface IRepositoryCandidate
+    public interface IExporterCandidate
     {
-        ITrackingExporter Repository { get; }
+        ITrackingExporter Exporter { get; }
         bool CanHandle(Type t);
     }
 }

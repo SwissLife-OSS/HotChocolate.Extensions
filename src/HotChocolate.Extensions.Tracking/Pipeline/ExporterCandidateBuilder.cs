@@ -3,25 +3,25 @@ using System.Collections.Generic;
 
 namespace HotChocolate.Extensions.Tracking.Pipeline;
 
-public class RepositoryCandidateBuilder: PipelineBuilder
+public class ExporterCandidateBuilder: PipelineBuilder
 {
     private readonly List<Type> _supportedTypes;
 
-    internal RepositoryCandidateBuilder(
+    internal ExporterCandidateBuilder(
         PipelineBuildingPlan buildPlan,
-        Type repositoryType)
+        Type exporterType)
         : base(buildPlan)
     {
-        RepositoryType = repositoryType;
+        ExporterType = exporterType;
         ForAll = true;
         _supportedTypes = new List<Type>();
     }
 
-    public Type RepositoryType { get; }
+    public Type ExporterType { get; }
     public bool ForAll { get; private set; }
     public IReadOnlyList<Type> SupportedTypes => _supportedTypes;
 
-    public RepositoryCandidateBuilder AddSupportedType<T>()
+    public ExporterCandidateBuilder AddSupportedType<T>()
         where T: ITrackingEntry
     {
         _supportedTypes.Add(typeof(T));

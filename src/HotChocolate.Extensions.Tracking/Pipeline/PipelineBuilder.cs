@@ -21,22 +21,22 @@ public class PipelineBuilder
         BuildPlan = new PipelineBuildingPlan(requestExecutorBuilder);
     }
 
-    public virtual RepositoryCandidateBuilder AddExporter<TRepository>()
-        where TRepository : class, ITrackingExporter
+    public virtual ExporterCandidateBuilder AddExporter<TExporter>()
+        where TExporter : class, ITrackingExporter
     {
-        var builder = new RepositoryCandidateBuilder(
-            BuildPlan, typeof(TRepository));
-        BuildPlan.RepositoryCandidateBuilders.Add(builder);
+        var builder = new ExporterCandidateBuilder(
+            BuildPlan, typeof(TExporter));
+        BuildPlan.ExporterCandidateBuilders.Add(builder);
 
-        Services.AddSingleton<TRepository>();
+        Services.AddSingleton<TExporter>();
 
         return builder;
     }
 
-    public virtual RepositoryCandidateBuilder AddDeprecatedFieldsRepository<TRepository>()
-        where TRepository : class, ITrackingExporter
+    public virtual ExporterCandidateBuilder AddDeprecatedFieldsExporter<TExporter>()
+        where TExporter : class, ITrackingExporter
     {
-        RepositoryCandidateBuilder builder = AddExporter<TRepository>();
+        ExporterCandidateBuilder builder = AddExporter<TExporter>();
         builder.AddSupportedType<DeprecatedFieldTrace>();
 
         return builder;

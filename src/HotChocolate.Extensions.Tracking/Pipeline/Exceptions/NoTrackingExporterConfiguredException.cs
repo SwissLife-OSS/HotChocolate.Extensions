@@ -4,14 +4,14 @@ using System.Runtime.Serialization;
 namespace HotChocolate.Extensions.Tracking.Pipeline.Exceptions;
 
 [Serializable]
-public sealed class NoTrackingRepositoryConfiguredException : Exception
+public sealed class NoTrackingExporterConfiguredException : Exception
 {
-    public NoTrackingRepositoryConfiguredException()
-        : base("No repository defined for storing the tracking messages")
+    public NoTrackingExporterConfiguredException()
+        : base("No exporter defined for storing the tracking messages")
     {
     }
 
-    private NoTrackingRepositoryConfiguredException(
+    private NoTrackingExporterConfiguredException(
         SerializationInfo info,
         StreamingContext context)
         : base(info, context)

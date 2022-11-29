@@ -16,13 +16,13 @@ namespace StarWars.Tracking
             _loggerFactory = loggerFactory;
         }
 
-        public Task SaveTrackingEntryAsync(
+        public async Task SaveTrackingEntryAsync(
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
+            await Task.Delay(5000); // Added some delay on the Exporter to show that it is run asynchronously even after the end of the GraphQL Query
             _loggerFactory.CreateLogger<DeprecatedFieldsTracingExporter>()
                 .LogWarning($"Use of deprecated field: {JsonConvert.SerializeObject(trackingEntry)}");
-            return Task.CompletedTask;
         }
     }
 }
