@@ -39,10 +39,8 @@ public sealed class TrackingHostedService : BackgroundService
                 {
                     using Activity? activity = TrackingActivity.StartTrackingEntityHandling();
 
-
                     await _trackingExporterFactory.Create(message.TrackingEntry.GetType())
                         .SaveTrackingEntryAsync(message.TrackingEntry, stoppingToken);
-
                 }
             }
             catch (Exception ex)

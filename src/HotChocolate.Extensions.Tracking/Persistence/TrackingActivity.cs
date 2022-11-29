@@ -10,7 +10,7 @@ namespace HotChocolate.Extensions.Tracking.Persistence
         public static Activity? StartTrackingEntityHandling()
         {
             Activity? activity = ActivitySource.StartActivity(
-                "Start handling message in Background Service.");
+                "Tracking entity.");
 
             return activity;
         }
