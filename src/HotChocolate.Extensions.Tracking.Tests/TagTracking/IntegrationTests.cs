@@ -1,72 +1,72 @@
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HotChocolate;
 using HotChocolate.Execution;
-using HotChocolate.Extensions.Tracking;
-using HotChocolate.Extensions.Tracking.Default;
 using HotChocolate.Extensions.Tracking.Persistence;
-using HotChocolate.Types;
+using HotChocolate.Extensions.Tracking.TagTracking;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using Xunit;
 
-namespace HotChocolate.Extensions.Tracking.Tests.Default;
+namespace HotChocolate.Extensions.Tracking.Tests.TagTracking;
 
 public class IntegrationTests
 {
-    [InlineData("{ foo }")]
-    [Theory]
-    public async Task Trackable_IntegrationTestWithoutTag_ShouldNotAddATrackingEntry(string query)
+    [Fact]
+    public async Task Track_TagOnQuery_ShouldAddATrackingEntryForTrackAndDate()
     {
         //Arrange
-
-        /* This exporter will throw an exception if a tracking entry is added */
-        var kpiRepo = new NeverCallThisExporter();
-
+        string query = "{ foo }";
         Mock<IHttpContextAccessor> mockHttpContextAccessor = ArrangeHttpContextAccessor();
 
-        IServiceProvider services = new ServiceCollection()
-            .AddLogging()
-            .AddGraphQL()
-                .AddQueryType(c =>
-                    c.Name("Query")
-                        .Field("foo")
-                        .Type<StringType>()
-                        .Resolve("bar")
-                        .Track("tracked"))
-                .AddTrackingPipeline(b => b.AddExporter<NeverCallThisExporter>())
-            .Services
-            .AddSingleton(mockHttpContextAccessor.Object)
-            .BuildServiceProvider();
+        var services = new ServiceCollection();
+        services.AddSingleton(mockHttpContextAccessor.Object);
+        services.AddLogging();
 
-        IHostedService trackingService = await StartTrackingBackgroundService(services);
+        ISchema schema = await services
+            .AddGraphQLServer()
+                .AddTrackingPipeline(builder => builder
+                    .AddExporter<NotifyOnFirstEntryExporter>())
+                .AddQueryType<Query>()
+                .BuildSchemaAsync();
 
+        IServiceProvider serviceProvider = schema.Services!;
+
+        IHostedService trackingService = await StartTrackingBackgroundService(serviceProvider);
+
+        IRequestExecutor executor =
+               await serviceProvider.GetRequiredService<IRequestExecutorResolver>()
+                   .GetRequestExecutorAsync();
         try
         {
             //Act
-            IRequestExecutor executor =
-                await services.GetRequiredService<IRequestExecutorResolver>()
-                    .GetRequestExecutorAsync();
             IExecutionResult res = await executor.ExecuteAsync(query);
 
             //Assert
             res.ToMinifiedJson()
                 .Should().Be("{\"data\":{\"foo\":\"bar\"}}");
+            ITrackingEntry trackedEntity
+                = await serviceProvider.GetRequiredService<NotifyOnFirstEntryExporter>().GetTrackedEntity;
 
-            /* not very elegant, but its the easiest way to make sure
-               nothing was sent to the threadchannel */
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+            TagTrackingEntry trackedEntry = trackedEntity.Should().BeOfType<TagTrackingEntry>().Subject;
+
+            trackedEntry.Tag.Should().Be("FooInvoked");
+            trackedEntry.Date.Should().BeCloseTo(DateTimeOffset.UtcNow, precision: 30000);
         }
         finally
         {
             await trackingService.StopAsync(CancellationToken.None);
         }
+    }
+
+    public class Query
+    {
+        [Track("FooInvoked")]
+        public string Foo => "bar";
     }
 
     private static async Task<IHostedService> StartTrackingBackgroundService(
@@ -80,25 +80,11 @@ public class IntegrationTests
     private static Mock<IHttpContextAccessor> ArrangeHttpContextAccessor()
     {
         var httpContext = new DefaultHttpContext();
-        var testClaims = new List<Claim>
-        {
-            new Claim("email", "test@email.com")
-        };
-        httpContext.User = new DummyClaimsPrincipal(testClaims);
 
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         httpContextAccessor.SetupGet(h => h.HttpContext).Returns(httpContext);
+
         return httpContextAccessor;
-    }
-
-    public class DummyClaimsPrincipal : ClaimsPrincipal
-    {
-        public DummyClaimsPrincipal(IEnumerable<Claim> claims)
-        {
-            Claims = claims;
-        }
-
-        public override IEnumerable<Claim> Claims { get; }
     }
 
     /// <summary>
@@ -136,17 +122,6 @@ public class IntegrationTests
         {
             _tcs1.SetResult(trackingEntry); //completes the task "GetTrackedEntity"
             return Task.CompletedTask;
-        }
-    }
-
-    /// <summary>
-    /// This exporter will throw an exception if a tracking entry is added
-    /// </summary>
-    public class NeverCallThisExporter : ITrackingExporter
-    {
-        public Task SaveTrackingEntryAsync(ITrackingEntry trackingEntry, CancellationToken cancellationToken)
-        {
-            throw new Exception("You came to the wrong place.");
         }
     }
 }
