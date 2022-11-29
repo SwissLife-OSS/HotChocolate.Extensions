@@ -1,6 +1,6 @@
 using HotChocolate.Types;
 
-namespace HotChocolate.Extensions.Tracking.Default;
+namespace HotChocolate.Extensions.Tracking.TagTracking;
 
 public static class ObjectFieldDescriptorExtensions
 {

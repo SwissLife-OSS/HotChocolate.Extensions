@@ -7,7 +7,7 @@ using FluentAssertions;
 using HotChocolate;
 using HotChocolate.Execution;
 using HotChocolate.Extensions.Tracking;
-using HotChocolate.Extensions.Tracking.Default;
+using HotChocolate.Extensions.Tracking.TagTracking;
 using HotChocolate.Types;
 using MassTransit;
 using Microsoft.AspNetCore.Http;

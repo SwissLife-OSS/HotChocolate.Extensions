@@ -104,7 +104,7 @@ type Human implements Character {
 "The mutations related to reviews."
 type Mutation {
   "Creates a review for a given Star Wars episode."
-  createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked
+  createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked @tracked
 }
 
 "Information about pagination in a connection."
@@ -376,7 +376,7 @@ directive @specifiedBy("The specifiedBy URL points to a human-readable specifica
 "The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
 directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
 
-directive @tracked on FIELD_DEFINITION
+directive @tracked repeatable on FIELD_DEFINITION
 
 directive @translatable(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 

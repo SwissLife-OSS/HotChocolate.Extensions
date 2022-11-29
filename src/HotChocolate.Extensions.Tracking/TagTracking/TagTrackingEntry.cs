@@ -1,6 +1,6 @@
 using System;
 
-namespace HotChocolate.Extensions.Tracking.Default;
+namespace HotChocolate.Extensions.Tracking.TagTracking;
 
 public class TagTrackingEntry : ITrackingEntry
 {
