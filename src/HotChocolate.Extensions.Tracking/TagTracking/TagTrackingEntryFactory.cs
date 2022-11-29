@@ -2,7 +2,7 @@ using System;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
 
-namespace HotChocolate.Extensions.Tracking.Default;
+namespace HotChocolate.Extensions.Tracking.TagTracking;
 
 public sealed class TagTrackingEntryFactory : ITrackingEntryFactory
 {

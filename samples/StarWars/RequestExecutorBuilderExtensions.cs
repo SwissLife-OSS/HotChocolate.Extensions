@@ -44,7 +44,6 @@ namespace StarWars
                 /* HotChocolate.Extensions.Tracking Pipeline */
                 .AddTrackingPipeline(builder => builder
                     .AddExporter<KpiTrackingExporter>()
-                       // .AddSupportedType<ReviewTrackingEntry>()
                     .AddDeprecatedFieldsTracking<DeprecatedFieldsTracingExporter>())
 
                 .ModifyOptions(o => o.SortFieldsByName = true);
