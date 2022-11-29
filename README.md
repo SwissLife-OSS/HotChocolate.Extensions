@@ -1,3 +1,6 @@
+
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=SwissLife-OSS_HotChocolate_Extensions&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=SwissLife-OSS_HotChocolate_Extensions) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SwissLife-OSS_HotChocolate_Extensions&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SwissLife-OSS_HotChocolate_Extensions) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=SwissLife-OSS_HotChocolate_Extensions&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=SwissLife-OSS_HotChocolate_Extensions) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=SwissLife-OSS_HotChocolate_Extensions&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=SwissLife-OSS_HotChocolate_Extensions) 
+
 This repository contains features that can be added to your HotChocolate Server to enhance your HotChocolate experience.
 
 - [HotChocolate.Extensions.Translations](#hotchocolateextensionstranslations)
@@ -5,13 +8,13 @@ This repository contains features that can be added to your HotChocolate Server 
   * [Translating fields](#translating-fields)
     + [Translation on demand](#translation-on-demand)
     + [Translation to a { key label } type](#translation-to-a---key-label---type)
-    + [Array Translation to { key label } items](#array-translation-to---key-label---items)
+    + [Translate arrays to { key label } items](#translate-arrays-to---key-label---items)
   * [FAQ](#faq)
     + [What language is used by default by this extension?](#what-language-is-used-by-default-by-this-extension-)
     + [What is the performance impact of translations?](#what-is-the-performance-impact-of-translations-)
 - [HotChocolate.Extensions.Tracking](#hotchocolateextensionstracking)
   * [Setting up the depencies and schema](#setting-up-the-depencies-and-schema)
-  * [Default tracking](#default-tracking)
+  * [Basic tracking by Tags](#basic-tracking-by-tags)
   * [Custom tracking](#custom-tracking)
 - [Community](#community)
 
@@ -130,7 +133,7 @@ Querying this field will produce the following results:
 }
 ```
 
-#### Array Translation to { key label } items
+#### Translate arrays to { key label } items
 
 We can translate string/enum/other arrays to `{ key label }` arrays.
 
@@ -217,46 +220,35 @@ As a consequence, some tracking items could be lost if the server were to shut d
 
 ### Setting up the depencies and schema
 
-Register the tracking pipeline in the service collection.
+Register the tracking pipeline in the GraphQL Schema.
 ```
-  var services = new ServiceCollection();
-  services
-      .AddHttpContextAccessor()
-      .AddTrackingPipeline(builder => builder
-          .AddRepository<MyRepository>()
-              .AddSupportedType<MyTrace>())
-          .AddMassTransitRepository(new MassTransitOptions(new ServiceBusOptions("ServiceBusConnectionString")))
-              .AddSupportedType<MyOtherTrace>());
+  Schema schema = await services
+            .AddGraphQLServer()
+                .AddTrackingPipeline(builder => builder
+                    .AddExporter<NotifyOnFirstEntryExporter>()
+                        .AddSupportedType<MyTrace>()
+                        .AddSupportedType<MyOtherTrace>());
 ```
 
-Register the HotChocolate directives in your HotChocolate Schema:
-```
-ISchema schema = SchemaBuilder.New()
-                .RegisterTracking()
-                ...
-                .AddServices(serviceProvider)
-                .Create();
-```
+### Basic tracking by Tags
 
-### Default tracking
-
-The default field tracking saves the following data:
-- email: extracted from HttpContext.Claims["email"]
+The basic field invocation tracking produces a message with the following data:
 - a tag
 - a timestamp
 
-You can add systematic Tracking on fields :
-```
+You can add tracking on a field in the following way:
+```csharp
 fieldDescriptor.Field("myField").Track(tag:"myFieldWasCalled");
 ```
 
-- Or you can make the field trackable, in which case the consumer has to tell you if he wants you to track the call or not:
+Alternatively, you can also add tracking on the field via an attribute on the field/resolver:
+```csharp
+public class Query
+{
+    [Track("FooInvoked")]
+    public string Foo => "bar";
+}
 ```
-fieldDescriptor.Field("myField").Trackable(tag:"myFieldWasCalled");
-```
-This feature can be usefull in a scenario where a consumer invokes a field repeatedly, but only wants to track the call once.
-The consumer can trigger the tracking by using the field directive @track in his query:
-```query foo { myField @track(if:true) }``` or ```query foo { myField @track }```
 
 
 ### Custom tracking
@@ -277,7 +269,14 @@ If you want to save custom data fields, you have the possibility to write your o
 You can then add custom tracking to your fields:
 ```fieldDescriptor.Field("myField").Track(new MyTrackingEntryFactory());```
 
-```fieldDescriptor.Field("myField").Trackable(new MyTrackingEntryFactory());```
+Or alternatively via an attribute:
+```csharp
+public class Query
+{
+    [Track<MyTrackingEntryFactory>]
+    public string Foo => "bar";
+}
+```
 
 
 ## Community
