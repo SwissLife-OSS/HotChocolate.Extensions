@@ -20,6 +20,7 @@ public sealed class TrackedDirectiveType : DirectiveType<TrackedDirective>
         descriptor.Location(DirectiveLocation.FieldDefinition);
         descriptor.BindArgumentsExplicitly();
         descriptor.Repeatable();
+        descriptor.Internal();
 
         descriptor.Use(next => context => Track(next, context));
     }
