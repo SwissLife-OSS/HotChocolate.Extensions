@@ -6,24 +6,6 @@ namespace HotChocolate.Extensions.Translation
     public static class ObjectFieldDescriptorExtensions
     {
         /// <summary>
-        /// Makes a field translatable. A translatable field is not-translated by default.
-        /// To translate it, the user has to query this field with the
-        /// field-directive @translate attached to it. Example:
-        /// { foo @translate }
-        /// </summary>
-        /// <param name="fieldDescriptor">
-        /// The  HotChocoalte fieldDescriptor for the field we want to make translatable.
-        /// </param>
-        /// <param name="keyPrefix">The prefix of the resource key.</param>
-        /// <returns>The HotChocoalte fieldDescriptor for the field, made translatable.</returns>
-        public static IObjectFieldDescriptor Translatable(
-            this IObjectFieldDescriptor fieldDescriptor, string keyPrefix)
-        {
-            return fieldDescriptor
-                .Directive(new TranslatableDirective(keyPrefix, false));
-        }
-
-        /// <summary>
         /// Makes a field translated. In this case, the field value always gets
         /// translated to a language resource when invoked. 
         /// </summary>
@@ -32,12 +14,12 @@ namespace HotChocolate.Extensions.Translation
         /// </param>
         /// <param name="keyPrefix">The prefix of the resource key.</param>
         /// <returns>The HotChocoalte fieldDescriptor for the field, made translated.</returns>
+        [Obsolete("Use key-label pattern instead.")]
         public static IObjectFieldDescriptor Translated(
             this IObjectFieldDescriptor fieldDescriptor, string keyPrefix)
         {
             return fieldDescriptor
-                .Directive(new TranslatableDirective(keyPrefix, false))
-                .Directive(new TranslateDirective<string>());
+                .Directive(new TranslateDirective<string>(keyPrefix, false));
         }
 
         /// <summary>
@@ -64,8 +46,7 @@ namespace HotChocolate.Extensions.Translation
             }
 
             return fieldDescriptor
-                .Directive(new TranslatableDirective(resourceKeyPrefix, toCodeLabelItem: true))
-                .Directive(new TranslateDirective<T>());
+                .Directive(new TranslateDirective<T>(resourceKeyPrefix, toCodeLabelItem: true));
         }
 
         public static IInterfaceFieldDescriptor Translate<T>(
@@ -109,8 +90,7 @@ namespace HotChocolate.Extensions.Translation
             }
 
             return fieldDescriptor
-                .Directive(new TranslatableDirective(resourceKeyPrefix, toCodeLabelItem: true))
-                .Directive(new TranslateDirective<T>());
+                .Directive(new TranslateDirective<T>(resourceKeyPrefix, toCodeLabelItem: true));
         }
 
         public static IInterfaceFieldDescriptor TranslateArray<T>(

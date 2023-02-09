@@ -16,7 +16,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_StringValueAndLanguageSet_ReturnsStringValue()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
             string value = "myValue";
 
             IMiddlewareContext context = BuildMockContext(
@@ -35,7 +35,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_StringValueToCodeLabelItem_ReturnsStringValue()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", toCodeLabelItem: true);
+            var directive = new TranslateDirective("myNodePath", toCodeLabelItem: true);
             string value = "myValue";
 
             IMiddlewareContext context = BuildMockContext(
@@ -62,7 +62,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_NullableIntValue_ReturnsStringValue(object value)
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
 
             IMiddlewareContext context = BuildMockContext(
                 value,
@@ -77,7 +77,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_StringValueMissingKey_ReturnsKey()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
             string value = "myValue";
 
             IMiddlewareContext context = BuildMockContext(
@@ -95,7 +95,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_EnumerableStringValue_ReturnsStringValue()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
             IEnumerable<string> value = new List<string>
             {
                 "myValue1",
@@ -127,7 +127,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_ArrayEmpty_ShouldNotThrowException()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
             IEnumerable<string> value = new List<string>();
 
             IMiddlewareContext context = BuildMockContext(
@@ -149,7 +149,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_EnumerableStringValueWithSomeMissingKeys_ReturnsStringValueAndKeysWhenValueIsMissing()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
             IEnumerable<string> resolverResult = new List<string>
             {
                 "myValue1",
@@ -183,7 +183,7 @@ namespace HotChocolate.Extensions.Translation.Tests
         public void UpdateResult_EnumValue_ReturnsStringValue()
         {
             //Arrange
-            var directive = new TranslatableDirective("myNodePath", false);
+            var directive = new TranslateDirective("myNodePath", false);
             TestEnum value = TestEnum.SecondEnum;
 
             IMiddlewareContext context = BuildMockContext(

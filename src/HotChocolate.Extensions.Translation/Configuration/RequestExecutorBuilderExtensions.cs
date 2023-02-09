@@ -18,7 +18,6 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<TranslationBuilder>? configure)
         {
             var translateDirective = new TranslateDirectiveType();
-            var translatableDirective = new TranslatableDirectiveType();
             var translationInterfaceType = new TranslationInterfaceType();
 
             if (configure != null)
@@ -30,7 +29,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             IRequestExecutorBuilder b = builder
                 .AddDirectiveType(translateDirective)
-                .AddDirectiveType(translatableDirective)
                 .AddType(translationInterfaceType);
 
             b.Services.AddSingleton<IResourcesProviderAdapter, ResourcesProviderAdapter>();

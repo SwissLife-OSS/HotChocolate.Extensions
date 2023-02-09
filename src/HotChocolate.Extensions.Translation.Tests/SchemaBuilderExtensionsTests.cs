@@ -44,8 +44,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             ISchema schema = builder.Create();
             schema.DirectiveTypes.Should().Contain(d => d.RuntimeType
                 == typeof(TranslateDirective<string>));
-            schema.DirectiveTypes.Should().Contain(d => d.RuntimeType
-                == typeof(TranslatableDirective));
         }
     }
 }

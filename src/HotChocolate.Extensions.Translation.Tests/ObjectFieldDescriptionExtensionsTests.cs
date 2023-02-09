@@ -28,7 +28,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Act
             ISchema schema = SchemaBuilder.New()
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(keys)
@@ -48,7 +47,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Act
             ISchema schema = SchemaBuilder.New()
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(keys)
@@ -76,7 +74,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Act
             ISchema schema = SchemaBuilder.New()
                 .AddDirectiveType<TranslateDirectiveType>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(keys)
@@ -114,7 +111,6 @@ namespace HotChocolate.Extensions.Translation.Tests
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
                     .AddDirectiveType<TranslateDirectiveType>()
-                    .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
                             .Resolve(key)
@@ -163,7 +159,6 @@ namespace HotChocolate.Extensions.Translation.Tests
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
                     .AddDirectiveType<TranslateDirectiveType>()
-                    .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
                             .Resolve(keys)
@@ -194,7 +189,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Act
             ISchema schema = SchemaBuilder.New()
                 .AddDirectiveType<TranslateDirectiveType>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(keys)
@@ -214,7 +208,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Act
             ISchema schema = SchemaBuilder.New()
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(keys)
@@ -252,7 +245,6 @@ namespace HotChocolate.Extensions.Translation.Tests
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
                     .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
-                    .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
                             .Resolve(keys)
@@ -301,7 +293,6 @@ namespace HotChocolate.Extensions.Translation.Tests
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
                     .AddDirectiveType<TranslateDirectiveType>()
-                    .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
                             .Resolve(keys)
@@ -338,7 +329,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             ISchema schema = SchemaBuilder.New()
                 .AddServices(services.BuildServiceProvider())
                 .AddDirectiveType<TranslateDirectiveType>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(keys)
@@ -368,7 +358,6 @@ namespace HotChocolate.Extensions.Translation.Tests
             ISchema schema = SchemaBuilder.New()
                 .AddServices(services.BuildServiceProvider())
                 .AddDirectiveType<TranslateDirectiveType>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("myField")
                         .Resolve(new Dummy())
@@ -399,7 +388,6 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .New()
                     .AddServices(services.BuildServiceProvider())
                     .AddDirectiveType<TranslateDirectiveType>()
-                    .AddDirectiveType<TranslatableDirectiveType>()
                     .AddQueryType(d =>
                         d.Field("myField")
                             .Resolve(new[] { "foo", "bar" })

@@ -51,7 +51,7 @@ type CreateReviewPayload {
 "This resolver class extends all object types implementing ICharacter."
 type Droid implements Character {
   "The episodes the character appears in."
-  appearsIn: [TranslatedResourceOfEpisode!]! @translatable(resourceKeyPrefix: "Episodes", toCodeLabelItem: true) @translateEpisode
+  appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
   friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
   "The height of the character."
   height(unit: Unit = METERS): Float!
@@ -84,11 +84,11 @@ type FriendsEdge {
 "This resolver class extends all object types implementing ICharacter."
 type Human implements Character {
   "The episodes the character appears in."
-  appearsIn: [TranslatedResourceOfEpisode!]! @translatable(resourceKeyPrefix: "Episodes", toCodeLabelItem: true) @translateEpisode
+  appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
   friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
   "Color of the Human's hair"
-  hairColor: TranslatedResourceOfHairColor @translatable(resourceKeyPrefix: "HairColors", toCodeLabelItem: true) @translateHairColor
-  hairColor2: TranslatedResourceOfHairColor @translatable(resourceKeyPrefix: "HairColors", toCodeLabelItem: true) @translateHairColor
+  hairColor: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
+  hairColor2: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
   "The height of the character."
   height(unit: Unit = METERS): Float! @deprecated(reason: "invocations of this field will be tracked!")
   "The planet the character is originally from."
@@ -96,7 +96,7 @@ type Human implements Character {
   "The unique identifier for the character."
   id: Int!
   "the Humans's marital status"
-  maritalStatus: TranslatedResourceOfMaritalStatus! @translatable(resourceKeyPrefix: "MaritalStatus", toCodeLabelItem: true) @translateMaritalStatus
+  maritalStatus: TranslatedResourceOfMaritalStatus! @translateMaritalStatus(resourceKeyPrefix: "MaritalStatus", toCodeLabelItem: true)
   "The name of the character."
   name: String!
 }
@@ -378,14 +378,12 @@ directive @stream("Streamed when true." if: Boolean "The initial elements that s
 
 directive @tracked repeatable on FIELD_DEFINITION
 
-directive @translatable(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
+directive @translate(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translate(language: String) on FIELD | FIELD_DEFINITION
+directive @translateEpisode(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translateEpisode(language: String) on FIELD | FIELD_DEFINITION
+directive @translateHairColor(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translateHairColor(language: String) on FIELD | FIELD_DEFINITION
-
-directive @translateMaritalStatus(language: String) on FIELD | FIELD_DEFINITION
+directive @translateMaritalStatus(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
