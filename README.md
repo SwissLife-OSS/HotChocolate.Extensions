@@ -57,34 +57,6 @@ With this we have registered the necessary objects to support translation on our
 
 You can translate field values in several ways, listed below.
 
-#### Translation on demand
-
-A field can be made translatable. In this scenario, the field has two possible states: translated or not translated.
-The consumer of the application decides whether he wants the translated state of the field or the non-translated state. 
-He does so by adding, or not adding, the field directive ```@translate``` to the field in his query. 
-
-```csharp
-public class AddressType : ObjectType<Query>
-{
-    protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
-    {
-        descriptor
-            .Field(c => c.Country) // the Country property is a Country enum
-            .Translatable("Ref/Aex/Countries")
-            .Type<NonNullType<StringType>>();
-    }
-}
-```
-
-Querying this field will produce the following results:
-```graphql
-{ 
-  country // -> "CH"
-  countryLabel: country @translate // -> "Switzerland" if your Thread language is english
-  country_fr: country @translate(lang:"fr") // -> "Suisse"
-}
-```
-
 #### Translation to a { key label } type
 
 We can also rewrite our string/enum/other field to make it a `{ key label }` field.
