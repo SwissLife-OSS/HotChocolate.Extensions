@@ -28,7 +28,7 @@ namespace HotChocolate.Extensions.Translation
         public TranslateDirective(
             string resourceKeyPrefix,
             bool toCodeLabelItem)
-            :base(resourceKeyPrefix, toCodeLabelItem)
+            : base(resourceKeyPrefix, toCodeLabelItem)
         {
         }
     }
