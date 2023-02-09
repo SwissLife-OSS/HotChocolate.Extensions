@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ISchemaBuilder AddTranslation(this ISchemaBuilder builder)
         {
             builder.AddDirectiveType<TranslateDirectiveType>();
-            builder.AddDirectiveType<TranslatableDirectiveType>();
 
             return builder;
         }

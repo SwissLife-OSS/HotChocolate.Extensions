@@ -31,9 +31,7 @@ namespace HotChocolate.Extensions.Translation
             IDirectiveTypeDescriptor<TranslateDirective<T>> descriptor)
         {
             descriptor.Name(DirectiveName);
-            descriptor.Location(DirectiveLocation.Field);
             descriptor.Location(DirectiveLocation.FieldDefinition);
-            descriptor.Argument(t => t.Language).Type<StringType>();
 
             descriptor.Use(next => context => Translate(next, context));
         }
@@ -52,11 +50,10 @@ namespace HotChocolate.Extensions.Translation
 
             try
             {
-                
-
                 CultureInfo culture = DetermineOutputCulture(context);
 
-                TranslatableDirective directiveOptions = GetDirectiveOptions(context);
+                TranslateDirective directiveOptions
+                    = context.Directive.ToObject<TranslateDirective>();
 
                 UpdateResult(context, value, directiveOptions, culture);
             }
@@ -74,7 +71,7 @@ namespace HotChocolate.Extensions.Translation
         internal static void UpdateResult(
             IMiddlewareContext context,
             object value,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture)
         {
             IResourcesProviderAdapter client = context.Service<IResourcesProviderAdapter>();
@@ -97,7 +94,7 @@ namespace HotChocolate.Extensions.Translation
         private static void TranslateFieldToString(
             IMiddlewareContext context,
             object value,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client)
         {
@@ -137,7 +134,7 @@ namespace HotChocolate.Extensions.Translation
 
         private static void TranslateArray(
             IMiddlewareContext context,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client,
             IReadOnlyList<T> items)
@@ -157,7 +154,7 @@ namespace HotChocolate.Extensions.Translation
         private static void TranslateEnum(
             IMiddlewareContext context,
             object value,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client,
             Enum e)
@@ -171,7 +168,7 @@ namespace HotChocolate.Extensions.Translation
         private static void TranslateString(
             IMiddlewareContext context,
             object value,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client,
             string s)
@@ -184,7 +181,7 @@ namespace HotChocolate.Extensions.Translation
 
         private static void TranslateToStringArray(
             IMiddlewareContext context,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client,
             IReadOnlyList<T> items)
@@ -199,7 +196,7 @@ namespace HotChocolate.Extensions.Translation
 
         private static void TranslateToCodeLabelArray(
             IMiddlewareContext context,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client,
             IReadOnlyList<T> items)
@@ -216,7 +213,7 @@ namespace HotChocolate.Extensions.Translation
 
         private static void TranslateToCodeLabelItem(
             IMiddlewareContext context,
-            TranslatableDirective directiveOptions,
+            TranslateDirective directiveOptions,
             CultureInfo culture,
             IResourcesProviderAdapter client,
             T item)
@@ -232,29 +229,9 @@ namespace HotChocolate.Extensions.Translation
                 );
         }
 
-        internal static TranslatableDirective GetDirectiveOptions(
-            IDirectiveContext context)
-        {
-            IDirective? directive = context.Selection.Field.Directives.FirstOrDefault(
-                d => d.Name.Equals(TranslatableDirectiveType.DirectiveName));
-
-            if (directive == null)
-            {
-                throw new TranslationNotSupportedForFieldException(context.Selection.Field);
-            }
-
-            TranslatableDirective translatableOptions
-                = directive.ToObject<TranslatableDirective>();
-
-            return translatableOptions;
-        }
-
         internal static CultureInfo DetermineOutputCulture(
             IDirectiveContext context)
         {
-            string? language
-                    = context.Directive.ToObject<TranslateDirective<T>>().Language;
-
             return Thread.CurrentThread.CurrentCulture;
         }
     }

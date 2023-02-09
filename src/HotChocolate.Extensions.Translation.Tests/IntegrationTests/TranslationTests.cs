@@ -29,7 +29,6 @@ namespace HotChocolate.Extensions.Translation.Tests.IntegrationTests
                 .AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter())
                 .AddGraphQL()
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
-                .AddDirectiveType<TranslatableDirectiveType>()
                 .AddQueryType(d =>
                     d.Field("foo")
                         .Resolver(keys)
