@@ -378,12 +378,12 @@ directive @stream("Streamed when true." if: Boolean "The initial elements that s
 
 directive @tracked repeatable on FIELD_DEFINITION
 
-directive @translate(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD | FIELD_DEFINITION
+directive @translate(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translateEpisode(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD | FIELD_DEFINITION
+directive @translateEpisode(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translateHairColor(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD | FIELD_DEFINITION
+directive @translateHairColor(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
-directive @translateMaritalStatus(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD | FIELD_DEFINITION
+directive @translateMaritalStatus(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
