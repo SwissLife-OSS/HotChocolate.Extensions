@@ -13,8 +13,7 @@ public sealed class TrackedDirectiveType : DirectiveType<TrackedDirective>
 {
     private const string DirectiveName = "tracked";
 
-    protected override void Configure(
-        IDirectiveTypeDescriptor<TrackedDirective> descriptor)
+    protected override void Configure(IDirectiveTypeDescriptor<TrackedDirective> descriptor)
     {
         descriptor.Name(DirectiveName);
         descriptor.Location(DirectiveLocation.FieldDefinition);
@@ -22,20 +21,20 @@ public sealed class TrackedDirectiveType : DirectiveType<TrackedDirective>
         descriptor.Repeatable();
         descriptor.Internal();
 
-        descriptor.Use(next => context => Track(next, context));
+        descriptor.Use((next, directive) => context => Track(next, context, directive));
     }
 
     private async ValueTask Track(
         FieldDelegate next,
-        IDirectiveContext context)
+        IMiddlewareContext context,
+        Directive directive)
     {
         // first run the field's resolver pipeline to it's end
         await next.Invoke(context);
 
         try
         {
-            TrackedDirective trackedDirectivePayload =
-                context.Directive.ToObject<TrackedDirective>();
+            TrackedDirective trackedDirectivePayload = directive.AsValue<TrackedDirective>();
 
             await context.SubmitTrack(
                 trackedDirectivePayload.GetTrackingEntryFactory(context.Services),

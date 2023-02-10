@@ -9,15 +9,9 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
 {
     public class DeprecatedFieldsTypeInterceptor : TypeInterceptor
     {
-        public override bool CanHandle(ITypeSystemObjectContext context)
-        {
-            return context.Type is ObjectType or InterfaceType;
-        }
-
         public override void OnBeforeCompleteType(
             ITypeCompletionContext completionContext,
-            DefinitionBase? definition,
-            IDictionary<string, object?> contextData)
+            DefinitionBase? definition)
         {
             if (definition is ObjectTypeDefinition otd)
             {
@@ -35,12 +29,14 @@ namespace HotChocolate.Extensions.Tracking.FieldsLifetime
 
                 FieldMiddlewareDefinition trackingMiddlewareDefinition
                     = new FieldMiddlewareDefinition(
-                        trackingMiddleware, isRepeatable: false);
+                        trackingMiddleware,
+                        isRepeatable: false);
 
                 foreach (ObjectFieldDefinition deprecatedField in deprecatedFields)
                 {
                     deprecatedField.MiddlewareDefinitions.Insert(
-                        0, trackingMiddlewareDefinition);
+                        0,
+                        trackingMiddlewareDefinition);
                 }
             }
         }

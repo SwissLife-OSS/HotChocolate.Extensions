@@ -32,7 +32,8 @@ namespace HotChocolate.Extensions.Translation.Tests
                     d.Field("myField")
                         .Resolve(keys)
                         .Translate<DummyValues>("prefix")
-                ).Create();
+                )
+                .Create();
 
             //Assert
             Snapshot.Match(schema.ToString());
@@ -51,7 +52,8 @@ namespace HotChocolate.Extensions.Translation.Tests
                     d.Field("myField")
                         .Resolve(keys)
                         .Translate<DummyValues>("prefix", nullable: true)
-                ).Create();
+                )
+                .Create();
 
             //Assert
             Snapshot.Match(schema.ToString());
@@ -78,10 +80,12 @@ namespace HotChocolate.Extensions.Translation.Tests
                     d.Field("myField")
                         .Resolve(keys)
                         .Translated("prefix")
-                ).Create();
+                )
+                .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString(), "Translated_RmsNodePathOk_ShouldAddBothDirectives_schema");
+            Snapshot.Match(schema.ToString(),
+                "Translated_RmsNodePathOk_ShouldAddBothDirectives_schema");
         }
 
         [InlineData("en")]
@@ -99,11 +103,12 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 var key = "foo";
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter())
+                    .AddSingleton<IResourcesProviderAdapter>(
+                        new EvergreenResourcesProviderAdapter())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IReadOnlyQueryRequest request = QueryRequestBuilder.New()
+                var request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField }")
                     .SetServices(services)
                     .Create();
@@ -115,14 +120,15 @@ namespace HotChocolate.Extensions.Translation.Tests
                         d.Field("myField")
                             .Resolve(key)
                             .Translated("prefix")
-                    ).Create();
+                    )
+                    .Create();
                 IRequestExecutor executor = schema.MakeExecutable();
 
                 //Act
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.Errors.Should().BeNull();
+                result.ExpectQueryResult().Errors.Should().BeNull();
                 Snapshot.Match(result, $"Translated_StringValue_ShouldTranslate_{culture}");
             }
             finally
@@ -147,11 +153,12 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 string[] keys = { "foo", "bar", "baz" };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter())
+                    .AddSingleton<IResourcesProviderAdapter>(
+                        new EvergreenResourcesProviderAdapter())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IReadOnlyQueryRequest request = QueryRequestBuilder.New()
+                var request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField }")
                     .SetServices(services)
                     .Create();
@@ -163,14 +170,15 @@ namespace HotChocolate.Extensions.Translation.Tests
                         d.Field("myField")
                             .Resolve(keys)
                             .Translated("prefix")
-                    ).Create();
+                    )
+                    .Create();
                 IRequestExecutor executor = schema.MakeExecutable();
 
                 //Act
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.Errors.Should().BeNull();
+                result.ExpectQueryResult().Errors.Should().BeNull();
                 Snapshot.Match(result, $"Translated_ArrayOfStringValues_ShouldTranslate_{culture}");
             }
             finally
@@ -193,10 +201,12 @@ namespace HotChocolate.Extensions.Translation.Tests
                     d.Field("myField")
                         .Resolve(keys)
                         .TranslateArray("prefix")
-                ).Create();
+                )
+                .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString(), "TranslateArray_RmsNodePathOk_ShouldAddBothDirectives_schema");
+            Snapshot.Match(schema.ToString(),
+                "TranslateArray_RmsNodePathOk_ShouldAddBothDirectives_schema");
         }
 
         [Fact]
@@ -212,10 +222,12 @@ namespace HotChocolate.Extensions.Translation.Tests
                     d.Field("myField")
                         .Resolve(keys)
                         .TranslateArray<DummyValues>("prefix")
-                ).Create();
+                )
+                .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString(), "TranslateArrayOfT_RmsNodePathOk_ShouldAddBothDirectives_schema");
+            Snapshot.Match(schema.ToString(),
+                "TranslateArrayOfT_RmsNodePathOk_ShouldAddBothDirectives_schema");
         }
 
         [InlineData("en")]
@@ -233,11 +245,12 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 DummyValues[] keys = { DummyValues.Foo, DummyValues.Qux };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter())
+                    .AddSingleton<IResourcesProviderAdapter>(
+                        new EvergreenResourcesProviderAdapter())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IReadOnlyQueryRequest request = QueryRequestBuilder.New()
+                var request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField { key label } }")
                     .SetServices(services)
                     .Create();
@@ -249,15 +262,17 @@ namespace HotChocolate.Extensions.Translation.Tests
                         d.Field("myField")
                             .Resolve(keys)
                             .TranslateArray<DummyValues>("prefix")
-                    ).Create();
+                    )
+                    .Create();
                 IRequestExecutor executor = schema.MakeExecutable();
 
                 //Act
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.Errors.Should().BeNull();
-                Snapshot.Match(result, $"TranslateArrayOfT_RmsNodePathOk_ShouldTranslate_{culture}");
+                result.ExpectQueryResult().Errors.Should().BeNull();
+                Snapshot.Match(result,
+                    $"TranslateArrayOfT_RmsNodePathOk_ShouldTranslate_{culture}");
             }
             finally
             {
@@ -281,11 +296,12 @@ namespace HotChocolate.Extensions.Translation.Tests
 
                 string[] keys = { "foo", "bar", "baz" };
                 IServiceProvider services = new ServiceCollection()
-                    .AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter())
+                    .AddSingleton<IResourcesProviderAdapter>(
+                        new EvergreenResourcesProviderAdapter())
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IReadOnlyQueryRequest request = QueryRequestBuilder.New()
+                var request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField { key label } }")
                     .SetServices(services)
                     .Create();
@@ -297,14 +313,15 @@ namespace HotChocolate.Extensions.Translation.Tests
                         d.Field("myField")
                             .Resolve(keys)
                             .TranslateArray("prefix")
-                    ).Create();
+                    )
+                    .Create();
                 IRequestExecutor executor = schema.MakeExecutable();
 
                 //Act
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.Errors.Should().BeNull();
+                result.ExpectQueryResult().Errors.Should().BeNull();
                 Snapshot.Match(result, $"TranslateArray_RmsNodePathOk_ShouldTranslate_{culture}");
             }
             finally
@@ -320,9 +337,10 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Arrange
             var keys = (List<string>?)null;
             var services = new ServiceCollection();
-            services.AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter());
+            services.AddSingleton<IResourcesProviderAdapter>(
+                new EvergreenResourcesProviderAdapter());
 
-            IReadOnlyQueryRequest request = QueryRequestBuilder.New()
+            var request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
                 .Create();
 
@@ -333,14 +351,15 @@ namespace HotChocolate.Extensions.Translation.Tests
                     d.Field("myField")
                         .Resolve(keys)
                         .Translated("prefix")
-                ).Create();
+                )
+                .Create();
             IRequestExecutor executor = schema.MakeExecutable();
 
             //Act
             IExecutionResult result = await executor.ExecuteAsync(request);
 
             //Assert
-            result.Errors.Should().BeNull();
+            result.ExpectQueryResult().Errors.Should().BeNull();
             Snapshot.Match(result);
         }
 
@@ -349,9 +368,10 @@ namespace HotChocolate.Extensions.Translation.Tests
         {
             //Arrange
             var services = new ServiceCollection();
-            services.AddSingleton<IResourcesProviderAdapter>(new EvergreenResourcesProviderAdapter());
+            services.AddSingleton<IResourcesProviderAdapter>(
+                new EvergreenResourcesProviderAdapter());
 
-            IReadOnlyQueryRequest request = QueryRequestBuilder.New()
+            var request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
                 .Create();
 
@@ -363,14 +383,15 @@ namespace HotChocolate.Extensions.Translation.Tests
                         .Resolve(new Dummy())
                         .Type<ObjectType<Dummy>>()
                         .Translated("prefix")
-                ).Create();
+                )
+                .Create();
             IRequestExecutor executor = schema.MakeExecutable();
 
             //Act
             IExecutionResult result = await executor.ExecuteAsync(request);
 
             //Assert
-            result.Errors.Should().NotBeNull();
+            result.ExpectQueryResult().Errors.Should().NotBeNull();
         }
 
         [InlineData("")]

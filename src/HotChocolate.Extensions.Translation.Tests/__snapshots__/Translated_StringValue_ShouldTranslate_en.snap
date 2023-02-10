@@ -1,11 +1,14 @@
 ﻿{
+  "Kind": "SingleResult",
   "Label": null,
   "Path": null,
   "Data": {
     "myField": "rms:prefix/foo_English"
   },
+  "Items": null,
   "Errors": null,
   "Extensions": null,
+  "Incremental": null,
   "ContextData": null,
   "HasNext": null
 }

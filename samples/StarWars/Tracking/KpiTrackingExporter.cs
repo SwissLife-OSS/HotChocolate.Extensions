@@ -1,7 +1,7 @@
+using System.Text.Json;
 using HotChocolate.Extensions.Tracking.Persistence;
 using HotChocolate.Extensions.Tracking;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Threading;
 
@@ -20,9 +20,10 @@ namespace StarWars.Tracking
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
-            await Task.Delay(5000); // Added some delay on the Exporter to show that it is run asynchronously even after the end of the GraphQL Query
+            // Added some delay on the Exporter to show that it is run asynchronously even after the end of the GraphQL Query
+            await Task.Delay(5000, cancellationToken);
             _loggerFactory.CreateLogger<KpiTrackingExporter>()
-                .LogInformation($"New KPI Value: {JsonConvert.SerializeObject(trackingEntry)}");
+                .LogInformation($"New KPI Value: {JsonSerializer.Serialize(trackingEntry)}");
         }
     }
 }
