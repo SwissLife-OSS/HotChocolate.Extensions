@@ -10,8 +10,6 @@
 
   <PropertyGroup>
     <HotChocolateVersion>13.0.0</HotChocolateVersion>
-    <ThorVersion>4.0.0</ThorVersion>
-    <ThorGenVersion>1.3.3</ThorGenVersion>
     <MassTransitVersion>8.0.0</MassTransitVersion>
   </PropertyGroup>
 
