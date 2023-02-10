@@ -33,12 +33,14 @@ namespace HotChocolate.Extensions.Translation
             descriptor.Name(DirectiveName);
             descriptor.Location(DirectiveLocation.FieldDefinition);
 
-            descriptor.Use(next => context => Translate(next, context));
+            descriptor.Use((next, directive) => context
+                => Translate(next, context, directive.AsValue<TranslateDirective<T>>()));
         }
 
-        internal static async ValueTask Translate(
+        private static async ValueTask Translate(
             FieldDelegate next,
-            IDirectiveContext context)
+            IMiddlewareContext context,
+            TranslateDirective directive)
         {
             await next.Invoke(context);
             var value = context.Result;
@@ -50,12 +52,9 @@ namespace HotChocolate.Extensions.Translation
 
             try
             {
-                CultureInfo culture = DetermineOutputCulture(context);
+                CultureInfo culture = Thread.CurrentThread.CurrentCulture;
 
-                TranslateDirective directiveOptions
-                    = context.Directive.ToObject<TranslateDirective>();
-
-                UpdateResult(context, value, directiveOptions, culture);
+                UpdateResult(context, value, directive, culture);
             }
             catch (TranslationException ex)
             {
@@ -76,9 +75,9 @@ namespace HotChocolate.Extensions.Translation
         {
             IResourcesProviderAdapter client = context.Service<IResourcesProviderAdapter>();
 
-            if (value is IEnumerable<T> items)
+            if (value is IEnumerable<T?> items)
             {
-                var rItems = items.Where(t => t != null).ToList();
+                var rItems = items.OfType<T>().ToList();
                 TranslateArray(context, directiveOptions, culture, client, rItems);
             }
             else if (directiveOptions.ToCodeLabelItem && value is T t)
@@ -98,37 +97,30 @@ namespace HotChocolate.Extensions.Translation
             CultureInfo culture,
             IResourcesProviderAdapter client)
         {
-            if (value is string s)
+            switch (value)
             {
-                TranslateString(
-                    context, value, directiveOptions, culture, client, s);
-            }
-            else if (value is sbyte
-                || value is byte
-                || value is short
-                || value is ushort
-                || value is int
-                || value is uint
-                || value is long
-                || value is ulong)
-            {
-                var sValue = value.ToString()
-                    ?? throw new TranslationNotSupportedForTypeException(
-                            value.GetType(), context.Field);
+                case string s:
+                    TranslateString(context, value, directiveOptions, culture, client, s);
+                    break;
 
-                TranslateString(
-                    context, value, directiveOptions, culture, client, sValue);
-            }
-            else if (value is Enum e)
-            {
-                TranslateEnum(
-                    context, value, directiveOptions, culture, client, e);
-            }
-            else
-            {
-                throw new TranslationNotSupportedForTypeException(
-                    value.GetType(),
-                    context.Field);
+                case sbyte or byte or short or ushort or int or uint or long or ulong:
+                {
+                    var sValue = value.ToString()
+                        ?? throw new TranslationNotSupportedForTypeException(value.GetType(),
+                            context.Selection.Field);
+
+                    TranslateString(context, value, directiveOptions, culture, client, sValue);
+                    break;
+                }
+
+                case Enum e:
+                    TranslateEnum(context, value, directiveOptions, culture, client, e);
+                    break;
+
+                default:
+                    throw new TranslationNotSupportedForTypeException(
+                        value.GetType(),
+                        context.Selection.Field);
             }
         }
 
@@ -141,13 +133,11 @@ namespace HotChocolate.Extensions.Translation
         {
             if (directiveOptions.ToCodeLabelItem)
             {
-                TranslateToCodeLabelArray(
-                    context, directiveOptions, culture, client, items);
+                TranslateToCodeLabelArray( context, directiveOptions, culture, client, items);
             }
             else
             {
-                TranslateToStringArray(
-                    context, directiveOptions, culture, client, items);
+                TranslateToStringArray( context, directiveOptions, culture, client, items);
             }
         }
 
@@ -188,9 +178,9 @@ namespace HotChocolate.Extensions.Translation
         {
             context.Result = items
                 .Select(t => client.TryGetTranslationAsString(
-                        $"{directiveOptions.ResourceKeyPrefix}/{t}",
-                        culture,
-                        t.ToString()))
+                    $"{directiveOptions.ResourceKeyPrefix}/{t}",
+                    culture,
+                    t.ToString()))
                 .ToList();
         }
 
@@ -208,7 +198,8 @@ namespace HotChocolate.Extensions.Translation
                         $"{directiveOptions.ResourceKeyPrefix}/{item}",
                         culture,
                         item.ToString())
-                )).ToList();
+                ))
+                .ToList();
         }
 
         private static void TranslateToCodeLabelItem(
@@ -227,12 +218,6 @@ namespace HotChocolate.Extensions.Translation
                         culture,
                         item.ToString())
                 );
-        }
-
-        internal static CultureInfo DetermineOutputCulture(
-            IDirectiveContext context)
-        {
-            return Thread.CurrentThread.CurrentCulture;
         }
     }
 }

@@ -3,11 +3,7 @@
   <PropertyGroup>
     <AssemblyName>HotChocolate.Extensions.Tracking</AssemblyName>
     <RootNamespace>HotChocolate.Extensions.Tracking</RootNamespace>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

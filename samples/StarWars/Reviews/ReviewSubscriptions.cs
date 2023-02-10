@@ -23,9 +23,7 @@ namespace StarWars.Reviews
         /// The review that was created.
         /// </returns>
         [Subscribe]
-        public Review OnReview(
-            [Topic]Episode episode, 
-            [EventMessage]Review message) => 
-            message;
+        [Topic("{episode}")]
+        public Review OnReview(Episode episode, [EventMessage] Review message) => message;
     }
 }

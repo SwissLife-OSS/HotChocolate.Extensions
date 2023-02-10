@@ -193,51 +193,6 @@ type TranslatedResourceOfMaritalStatus implements ITranslation {
 
 union SearchResult = Human | Droid | Starship
 
-input ComparableDoubleOperationFilterInput {
-  eq: Float
-  neq: Float
-  in: [Float!]
-  nin: [Float!]
-  gt: Float
-  ngt: Float
-  gte: Float
-  ngte: Float
-  lt: Float
-  nlt: Float
-  lte: Float
-  nlte: Float
-}
-
-input ComparableGuidOperationFilterInput {
-  eq: UUID
-  neq: UUID
-  in: [UUID!]
-  nin: [UUID!]
-  gt: UUID
-  ngt: UUID
-  gte: UUID
-  ngte: UUID
-  lt: UUID
-  nlt: UUID
-  lte: UUID
-  nlte: UUID
-}
-
-input ComparableInt32OperationFilterInput {
-  eq: Int
-  neq: Int
-  in: [Int!]
-  nin: [Int!]
-  gt: Int
-  ngt: Int
-  gte: Int
-  ngte: Int
-  lt: Int
-  nlt: Int
-  lte: Int
-  nlte: Int
-}
-
 "This input represents the data needed to create a review."
 input CreateReviewInput {
   "An explanation for the rating."
@@ -255,20 +210,35 @@ input EpisodeOperationFilterInput {
   nin: [Episode!]
 }
 
+input FloatOperationFilterInput {
+  eq: Float
+  neq: Float
+  in: [Float]
+  nin: [Float]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
 "A character in the Star Wars universe."
 input ICharacterFilterInput {
   and: [ICharacterFilterInput!]
   or: [ICharacterFilterInput!]
   "The unique identifier for the character."
-  id: ComparableInt32OperationFilterInput
+  id: IntOperationFilterInput
   "The name of the character."
   name: StringOperationFilterInput
   "The ids of the character's friends."
-  friends: ListComparableInt32OperationFilterInput
+  friends: ListIntOperationFilterInput
   "The episodes the character appears in."
   appearsIn: ListEpisodeOperationFilterInput
   "The height of the character."
-  height: ComparableDoubleOperationFilterInput
+  height: FloatOperationFilterInput
 }
 
 "A character in the Star Wars universe."
@@ -281,11 +251,19 @@ input ICharacterSortInput {
   height: SortEnumType
 }
 
-input ListComparableInt32OperationFilterInput {
-  all: ComparableInt32OperationFilterInput
-  none: ComparableInt32OperationFilterInput
-  some: ComparableInt32OperationFilterInput
-  any: Boolean
+input IntOperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
 }
 
 input ListEpisodeOperationFilterInput {
@@ -295,14 +273,21 @@ input ListEpisodeOperationFilterInput {
   any: Boolean
 }
 
+input ListIntOperationFilterInput {
+  all: IntOperationFilterInput
+  none: IntOperationFilterInput
+  some: IntOperationFilterInput
+  any: Boolean
+}
+
 "A review of a particular movie."
 input ReviewFilterInput {
   and: [ReviewFilterInput!]
   or: [ReviewFilterInput!]
   "The ID of the review."
-  id: ComparableGuidOperationFilterInput
+  id: UuidOperationFilterInput
   "The number of stars given for this review."
-  stars: ComparableInt32OperationFilterInput
+  stars: IntOperationFilterInput
   "An explanation for the rating."
   commentary: StringOperationFilterInput
 }
@@ -330,6 +315,21 @@ input StringOperationFilterInput {
   nstartsWith: String
   endsWith: String
   nendsWith: String
+}
+
+input UuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
 }
 
 "The Star Wars episodes."
@@ -367,14 +367,8 @@ enum Unit {
   METERS
 }
 
-"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
-directive @defer("Deferred when true." if: Boolean "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
-
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
-
-"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
-directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
 
 directive @tracked repeatable on FIELD_DEFINITION
 

@@ -4,6 +4,10 @@ namespace HotChocolate.Extensions.Tracking;
 
 public class TrackedDirective
 {
+    public TrackedDirective()
+    {
+    }
+
     public TrackedDirective(Func<IServiceProvider, ITrackingEntryFactory> getTrackingEntryFactory)
     {
         GetTrackingEntryFactory = getTrackingEntryFactory;

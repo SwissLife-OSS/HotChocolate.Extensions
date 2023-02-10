@@ -1,9 +1,10 @@
+using System;
+using System.Text.Json;
 using HotChocolate.Extensions.Tracking;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using HotChocolate.Extensions.Tracking.Persistence;
-using Newtonsoft.Json;
 
 namespace StarWars.Tracking
 {
@@ -20,9 +21,11 @@ namespace StarWars.Tracking
             ITrackingEntry trackingEntry,
             CancellationToken cancellationToken)
         {
-            await Task.Delay(5000); // Added some delay on the Exporter to show that it is run asynchronously even after the end of the GraphQL Query
+            // Added some delay on the Exporter to show that it is run asynchronously even after the end of the GraphQL Query
+            await Task.Delay(5000, cancellationToken);
+
             _loggerFactory.CreateLogger<DeprecatedFieldsTracingExporter>()
-                .LogWarning($"Use of deprecated field: {JsonConvert.SerializeObject(trackingEntry)}");
+                .LogWarning($"Use of deprecated field: {JsonSerializer.Serialize(trackingEntry)}");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿{
+  "Kind": "SingleResult",
   "Label": null,
   "Path": null,
   "Data": {
@@ -7,8 +8,10 @@
       "label": "rms:prefix/Bar_English"
     }
   },
+  "Items": null,
   "Errors": null,
   "Extensions": null,
+  "Incremental": null,
   "ContextData": null,
   "HasNext": null
 }

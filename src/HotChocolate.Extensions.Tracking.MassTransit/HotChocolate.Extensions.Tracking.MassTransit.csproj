@@ -3,9 +3,6 @@
   <PropertyGroup>
     <AssemblyName>HotChocolate.Extensions.Tracking.MassTransit</AssemblyName>
     <RootNamespace>HotChocolate.Extensions.Tracking.MassTransit</RootNamespace>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 

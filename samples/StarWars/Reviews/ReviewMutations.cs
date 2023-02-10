@@ -22,13 +22,13 @@ namespace StarWars.Reviews
         [Track("NewReview")] // simple tracking with a simple tag+date message
         public async Task<CreateReviewPayload> CreateReview(
             CreateReviewInput input,
-            [Service]IReviewRepository repository,
-            [Service]ITopicEventSender eventSender)
+            [Service] IReviewRepository repository,
+            [Service] ITopicEventSender eventSender)
         {
             var review = new Review(input.Stars, input.Commentary);
             repository.AddReview(input.Episode, review);
             await eventSender
-                .SendAsync(input.Episode, review)
+                .SendAsync(input.Episode.ToString(), review)
                 .ConfigureAwait(false);
             return new CreateReviewPayload(input.Episode, review);
         }
