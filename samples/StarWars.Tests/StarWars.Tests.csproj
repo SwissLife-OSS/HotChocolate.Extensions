@@ -6,9 +6,5 @@
     <ProjectReference Include="..\StarWars\StarWars.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="__snapshots__\__mismatch__" />
-  </ItemGroup>
-
 </Project>
 
