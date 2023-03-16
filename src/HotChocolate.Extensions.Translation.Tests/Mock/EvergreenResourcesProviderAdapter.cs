@@ -1,13 +1,19 @@
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using HotChocolate.Extensions.Translation.Resources;
 
 namespace HotChocolate.Extensions.Translation.Tests.Mock
 {
     public class EvergreenResourcesProviderAdapter : IResourcesProviderAdapter
     {
-        public string TryGetTranslationAsString(string key, CultureInfo culture, string fallbackValue)
+        public Task<string> TryGetTranslationAsStringAsync(
+            string key,
+            CultureInfo culture,
+            string fallbackValue,
+            CancellationToken cancellationToken)
         {
-            return $"rms:{key}_{culture.DisplayName}";
+            return Task.FromResult($"rms:{key}_{culture.DisplayName}");
         }
     }
 }

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HotChocolate.Extensions.Translation.Resources
 {
@@ -16,12 +18,15 @@ namespace HotChocolate.Extensions.Translation.Resources
             _observers = observers;
         }
 
-        public string TryGetTranslationAsString(
+        public async Task<string> TryGetTranslationAsStringAsync(
             string key,
             CultureInfo culture,
-            string fallbackValue)
+            string fallbackValue,
+            CancellationToken cancellationToken)
         {
-            if (_resourcesProvider.TryGetResource(key, culture, out Resource? res))
+            if (await _resourcesProvider
+                .TryGetResourceAsync(key, culture, out Resource? res, cancellationToken)
+                .ConfigureAwait(false))
             {
                 return res.Value;
             }

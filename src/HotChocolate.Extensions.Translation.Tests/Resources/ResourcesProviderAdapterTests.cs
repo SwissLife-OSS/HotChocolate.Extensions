@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HotChocolate.Extensions.Translation.Resources;
@@ -12,7 +13,7 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
     public class ResourcesProviderAdapterTests
     {
         [Fact]
-        public void TryGetTranslationAsString_WhenResourceFound_ShouldReturnResource()
+        public async Task TryGetTranslationAsString_WhenResourceFound_ShouldReturnResource()
         {
             //Arrange testData
             var key = GetRandomString();
@@ -22,20 +23,20 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
             //Arrange dependencies
             var provider = new Mock<IResourcesProvider>(MockBehavior.Strict);
             provider
-                .Setup(p => p.TryGetResource(key, culture, out resource))
-                .Returns(true);
+                .Setup(p => p.TryGetResourceAsync(key, culture, out resource, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
 
             var adapter = new ResourcesProviderAdapter(provider.Object, observers: default!);
 
             //Act
-            var value = adapter.TryGetTranslationAsString(key, culture, default!);
+            var value = await adapter.TryGetTranslationAsStringAsync(key, culture, default!, default);
 
             //Assert
             value.Should().Be(resource.Value);
         }
 
         [Fact]
-        public void TryGetTranslationAsString_WhenResourceNotFound_ShouldReturnFallBakValue()
+        public async Task TryGetTranslationAsString_WhenResourceNotFound_ShouldReturnFallBakValue()
         {
             //Arrange testData
             var key = GetRandomString();
@@ -46,14 +47,14 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
             //Arrange dependencies
             var provider = new Mock<IResourcesProvider>(MockBehavior.Strict);
             provider
-                .Setup(p => p.TryGetResource(key, culture, out resource))
-                .Returns(false);
+                .Setup(p => p.TryGetResourceAsync(key, culture, out resource, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
             var observer = new DummyObserver();
 
             var adapter = new ResourcesProviderAdapter(provider.Object, observers: new[] { observer });
 
             //Act
-            var value = adapter.TryGetTranslationAsString(key, culture, fallBackValue);
+            var value = await adapter.TryGetTranslationAsStringAsync(key, culture, fallBackValue, default);
 
             //Assert
             value.Should().Be(fallBackValue);

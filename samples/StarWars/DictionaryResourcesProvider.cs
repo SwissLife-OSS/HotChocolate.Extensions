@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using HotChocolate.Extensions.Translation.Resources;
 
 namespace StarWars
@@ -68,24 +70,28 @@ namespace StarWars
 
         private IReadOnlyDictionary<Language, IReadOnlyDictionary<string, string>> _masterDictionary;
 
-        public bool TryGetResource(string key, CultureInfo culture, [NotNullWhen(returnValue: true)] out Resource? res)
+        public Task<bool> TryGetResourceAsync(
+            string key,
+            CultureInfo culture,
+            [NotNullWhen(returnValue: true)] out Resource? res,
+            CancellationToken cancellationToken)
         {
             res = null;
             Language language = ToLanguage(culture);
 
             if (!_masterDictionary.ContainsKey(language))
             {
-                return false;
+                return Task.FromResult(false);
             }
             if (!_masterDictionary[language].ContainsKey(key))
             {
-                return false;
+                return Task.FromResult(false);
             }
 
             string label = _masterDictionary[language][key];
             res = new Resource(key, label);
 
-            return true;
+            return Task.FromResult(true);
         }
 
         private static Language ToLanguage(CultureInfo culture)
