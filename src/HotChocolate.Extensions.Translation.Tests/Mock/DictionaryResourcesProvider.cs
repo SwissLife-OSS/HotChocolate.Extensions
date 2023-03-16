@@ -1,34 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using HotChocolate.Extensions.Translation.Resources;
 
 namespace HotChocolate.Extensions.Translation.Tests.Mock
 {
     public class DictionaryResourcesProviderAdapter : IResourcesProviderAdapter
     {
+        private IDictionary<Language, Dictionary<string, Resource>> _masterDictionary;
+
         internal DictionaryResourcesProviderAdapter(
             IDictionary<Language, Dictionary<string, Resource>> masterDictionary)
         {
             _masterDictionary = masterDictionary;
         }
 
-        private IDictionary<Language, Dictionary<string, Resource>> _masterDictionary;
-
-        public string TryGetTranslationAsString(string key, CultureInfo culture, string fallbackValue)
+        public Task<string> TryGetTranslationAsStringAsync(
+            string key,
+            CultureInfo culture,
+            string fallbackValue,
+            CancellationToken cancellationToken)
         {
             Language language = ToLanguage(culture);
 
             if (!_masterDictionary.ContainsKey(language))
             {
-                return fallbackValue;
+                return Task.FromResult(fallbackValue);
             }
             if (!_masterDictionary[language].ContainsKey(key))
             {
-                return fallbackValue;
+                return Task.FromResult(fallbackValue);
             }
 
-            return _masterDictionary[language][key].Value;
+            return Task.FromResult(_masterDictionary[language][key].Value);
         }
 
         private static Language ToLanguage(CultureInfo culture)
