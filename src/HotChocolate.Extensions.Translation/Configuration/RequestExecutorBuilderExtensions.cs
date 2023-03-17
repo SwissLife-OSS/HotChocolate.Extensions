@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class RequestExecutorBuilderExtensions
     {
-        private const string DefaultInterfaceName = "Translation";
+        private const string DefaultTranslationInterfaceName = "Translation";
         
         public static IRequestExecutorBuilder AddTranslation(
             this IRequestExecutorBuilder builder)
@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var translateDirective = new TranslateDirectiveType();
             var translationInterfaceType = new TranslationInterfaceType
-                { InterfaceName = DefaultInterfaceName };
+                { InterfaceName = DefaultTranslationInterfaceName };
 
             if (configure != null)
             {
