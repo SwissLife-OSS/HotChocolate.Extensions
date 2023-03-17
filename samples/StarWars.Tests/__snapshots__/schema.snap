@@ -18,7 +18,7 @@ interface Character {
   name: String!
 }
 
-interface ITranslation {
+interface Translation {
   label: String!
 }
 
@@ -176,17 +176,17 @@ type Subscription {
   onReview("The episode to which you want to subscribe to." episode: Episode!): Review!
 }
 
-type TranslatedResourceOfEpisode implements ITranslation {
+type TranslatedResourceOfEpisode implements Translation {
   key: Episode!
   label: String!
 }
 
-type TranslatedResourceOfHairColor implements ITranslation {
+type TranslatedResourceOfHairColor implements Translation {
   key: HairColor!
   label: String!
 }
 
-type TranslatedResourceOfMaritalStatus implements ITranslation {
+type TranslatedResourceOfMaritalStatus implements Translation {
   key: MaritalStatus!
   label: String!
 }
