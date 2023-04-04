@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,30 +67,33 @@ namespace StarWars
             };
         }
 
-        private IReadOnlyDictionary<Language, IReadOnlyDictionary<string, string>> _masterDictionary;
+        private readonly IReadOnlyDictionary<Language, IReadOnlyDictionary<string, string>>
+            _masterDictionary;
 
-        public Task<bool> TryGetResourceAsync(
+        public Task<Resource?> TryGetResourceAsync(
             string key,
             CultureInfo culture,
-            [NotNullWhen(returnValue: true)] out Resource? res,
             CancellationToken cancellationToken)
         {
-            res = null;
+            return Task.FromResult(TryGetResource(key, culture));
+        }
+        
+        private Resource? TryGetResource(string key, CultureInfo culture)
+        {
             Language language = ToLanguage(culture);
 
             if (!_masterDictionary.ContainsKey(language))
             {
-                return Task.FromResult(false);
+                return null;
             }
             if (!_masterDictionary[language].ContainsKey(key))
             {
-                return Task.FromResult(false);
+                return null;
             }
 
             string label = _masterDictionary[language][key];
-            res = new Resource(key, label);
 
-            return Task.FromResult(true);
+            return new Resource(key, label);
         }
 
         private static Language ToLanguage(CultureInfo culture)
