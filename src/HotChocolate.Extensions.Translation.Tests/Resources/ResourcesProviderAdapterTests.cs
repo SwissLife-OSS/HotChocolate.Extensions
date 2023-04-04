@@ -23,8 +23,8 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
             //Arrange dependencies
             var provider = new Mock<IResourcesProvider>(MockBehavior.Strict);
             provider
-                .Setup(p => p.TryGetResourceAsync(key, culture, out resource, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true);
+                .Setup(p => p.TryGetResourceAsync(key, culture, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(resource);
 
             var adapter = new ResourcesProviderAdapter(provider.Object, observers: default!);
 
@@ -47,8 +47,9 @@ namespace HotChocolate.Extensions.Translation.Tests.Resources
             //Arrange dependencies
             var provider = new Mock<IResourcesProvider>(MockBehavior.Strict);
             provider
-                .Setup(p => p.TryGetResourceAsync(key, culture, out resource, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
+                .Setup(p => p.TryGetResourceAsync(key, culture, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(resource);
+            
             var observer = new DummyObserver();
 
             var adapter = new ResourcesProviderAdapter(provider.Object, observers: new[] { observer });
