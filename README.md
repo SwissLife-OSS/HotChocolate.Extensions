@@ -51,6 +51,34 @@ The last step is to implement and register an IResourcesProvider. This provider 
 services.AddSingleton<IResourcesProvider, MyResourcesProvider>();
 ```
 
+The alternative way is to implement both IStringLocalizerFactory and IStringLocalizer interfaces.
+Also we can use resource type marker classes.
+It overrides all logic related to IResourcesProvider interface usage.
+```csharp
+namespace Namespace.Namespace1.Namespace2;
+
+[ResourceTypeAlias("SomePath")]
+public class CustomResource
+{
+}
+
+new ServiceCollection()
+  .AddGraphQLServer()
+  .SetSchema<MySchema>()
+  .AddTranslation(    
+      /* add all translatable types explicitely, except String, which is already added implicitely. */
+      c => c.AddTranslatableType<Country>()
+            .AddTranslatableType<MyEnum2>()
+  )
+  .AddStringLocalizerFactory()
+  .AddStringLocalizer<CustomLocalizer>(ServiceLifetime.Singleton, typeof(CustomResource))
+  .AddStringLocalizer<OtherCustomLocalizer>(ServiceLifetime.Scoped, [ typeof(OtherCustomResource) /* additional resources can share the same localizer logic */ ]);
+```
+
+If resource type is not decorated with ResourceTypeAlias attribute the default alias is generated from namespace/name of resource class.
+It would generate "Namespace::Namespace1::Namespace2::CustomResource" alias for the case described above.
+
+
 With this we have registered the necessary objects to support translation on our fields. Now we can start adding translation support to our fields.
 
 ### Translating fields
@@ -63,6 +91,11 @@ We can also rewrite our string/enum/other field to make it a `{ key label }` fie
 This can be useful if we also use Array Translations, which use the same typing (see next chapter).
 
 ```csharp
+[ResourceTypeAlias("Ref/Aex/Countries"))]
+public class CountryResource
+{
+}
+
 public class AddressType : ObjectType<Query>
 {
     protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
@@ -70,16 +103,31 @@ public class AddressType : ObjectType<Query>
         descriptor
             .Field(c => c.Country) // The Country property is a Country enum
             .Translate("Ref/Aex/Countries");
+       
+       // OR
+       // descriptor
+       //     .Field(c => c.Country)
+       //     .Translate(typeof(CountryResource));
     }
 }
 ```
 
 Alternatively it is possible to translate the field via an attribute directly on the property:
 ```csharp
+[ResourceTypeAlias("Ref/Aex/Countries"))]
+public class CountryResource
+{
+}
+
 public class Address
 {
     [Translate("Ref/Aex/Countries")]
     public Country Country { get; }
+    
+    
+    // OR
+    // [Translate(typeof(CountryResource)]
+    // public Country Country { get; }
 }
 ```
 

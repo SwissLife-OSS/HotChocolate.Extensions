@@ -24,7 +24,7 @@ namespace HotChocolate.Extensions.Translation.Resources
             string fallbackValue,
             CancellationToken cancellationToken)
         {
-            var res = await _resourcesProvider
+            Resource? res = await _resourcesProvider
                 .TryGetResourceAsync(key, culture, cancellationToken)
                 .ConfigureAwait(false);
 

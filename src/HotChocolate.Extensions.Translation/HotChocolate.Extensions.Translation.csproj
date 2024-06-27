@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Localization" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageReference Include="HotChocolate.Types" Version="$(HotChocolateVersion)" />
     <PackageReference Include="HotChocolate.Execution" Version="$(HotChocolateVersion)" />
   </ItemGroup>

@@ -1,5 +1,7 @@
 using System;
+using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Types;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HotChocolate.Extensions.Translation
 {
@@ -49,6 +51,23 @@ namespace HotChocolate.Extensions.Translation
                 .Directive(new TranslateDirective<T>(resourceKeyPrefix, toCodeLabelItem: true));
         }
 
+        public static IObjectFieldDescriptor Translate<T>(
+            this IObjectFieldDescriptor fieldDescriptor, Type resourceSource, bool nullable = false)
+        {
+            if (!nullable)
+            {
+                fieldDescriptor
+                    .Type<NonNullType<TranslatedResourceType<T>>>();
+            }
+            else
+            {
+                fieldDescriptor
+                    .Type<TranslatedResourceType<T>>();
+            }
+
+            return AddTranslateDirective<T>(fieldDescriptor, resourceSource);;
+        }
+
         public static IInterfaceFieldDescriptor Translate<T>(
             this IInterfaceFieldDescriptor fieldDescriptor, bool nullable = false)
         {
@@ -93,6 +112,23 @@ namespace HotChocolate.Extensions.Translation
                 .Directive(new TranslateDirective<T>(resourceKeyPrefix, toCodeLabelItem: true));
         }
 
+        public static IObjectFieldDescriptor TranslateArray<T>(
+            this IObjectFieldDescriptor fieldDescriptor, Type resourceSource, bool nullable = false)
+        {
+            if (!nullable)
+            {
+                fieldDescriptor
+                    .Type<NonNullType<ListType<NonNullType<TranslatedResourceType<T>>>>>();
+            }
+            else
+            {
+                fieldDescriptor
+                    .Type<ListType<NonNullType<TranslatedResourceType<T>>>>();
+            }
+
+            return AddTranslateDirective<T>(fieldDescriptor, resourceSource);
+        }
+
         public static IInterfaceFieldDescriptor TranslateArray<T>(
             this IInterfaceFieldDescriptor fieldDescriptor, bool nullable = false)
         {
@@ -114,6 +150,32 @@ namespace HotChocolate.Extensions.Translation
             this IObjectFieldDescriptor fieldDescriptor, string keyPrefix, bool nullable = false)
         {
             return fieldDescriptor.TranslateArray<string>(keyPrefix, nullable);
+        }
+
+        public static IObjectFieldDescriptor TranslateArray(
+            this IObjectFieldDescriptor fieldDescriptor, Type resourceSource, bool nullable = false)
+        {
+            return fieldDescriptor.TranslateArray<string>(resourceSource, nullable);
+        }
+
+        private static IObjectFieldDescriptor AddTranslateDirective<T>(
+            IObjectFieldDescriptor fieldDescriptor, Type resourceSource)
+        {
+            if (fieldDescriptor is IHasDescriptorContext contextHolder)
+            {
+                IResourceTypeResolver? resourceTypeResolver =
+                    contextHolder.Context.Services.GetService<IResourceTypeResolver>();
+
+                if (resourceTypeResolver != null)
+                {
+                    string resourceKeyPrefix = resourceTypeResolver.GetAlias(resourceSource);
+
+                    return fieldDescriptor
+                        .Directive(new TranslateDirective<T>(resourceKeyPrefix, toCodeLabelItem: true));
+                }
+            }
+
+            return fieldDescriptor;
         }
     }
 }
