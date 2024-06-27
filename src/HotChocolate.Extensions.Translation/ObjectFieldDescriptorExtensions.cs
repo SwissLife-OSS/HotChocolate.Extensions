@@ -65,7 +65,7 @@ namespace HotChocolate.Extensions.Translation
                     .Type<TranslatedResourceType<T>>();
             }
 
-            return AddTranslateDirective<T>(fieldDescriptor, resourceSource);;
+            return AddTranslateDirective<T>(fieldDescriptor, resourceSource);
         }
 
         public static IInterfaceFieldDescriptor Translate<T>(
