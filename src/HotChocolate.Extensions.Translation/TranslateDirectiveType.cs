@@ -8,6 +8,8 @@ using HotChocolate.Extensions.Translation.Exceptions;
 using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 
 namespace HotChocolate.Extensions.Translation
 {
@@ -52,9 +54,7 @@ namespace HotChocolate.Extensions.Translation
 
             try
             {
-                CultureInfo culture = Thread.CurrentThread.CurrentCulture;
-
-                await UpdateResultAsync(context, value, directive, culture, context.RequestAborted)
+                await UpdateResultAsync(context, value, directive, context.RequestAborted)
                     .ConfigureAwait(false);
             }
             catch (TranslationException ex)
@@ -68,39 +68,113 @@ namespace HotChocolate.Extensions.Translation
             }
         }
 
-        internal static async Task UpdateResultAsync(IMiddlewareContext context,
+        internal static async Task UpdateResultAsync(
+            IMiddlewareContext context,
             object value,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             CancellationToken cancellationToken)
         {
+            if (context.Result is null)
+            {
+                return;
+            }
+
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+
+            IStringLocalizerFactory? localizerFactory =
+                context.Services.GetService<IStringLocalizerFactory>();
+
+            if (localizerFactory is not null)
+            {
+                IStringLocalizer stringLocalizer =
+                    localizerFactory.Create(directiveOptions.ResourceKeyPrefix, string.Empty);
+
+                IEnumerable<TranslationObserver>? observers =
+                    context.Services.GetService<IEnumerable<TranslationObserver>>();  
+
+                if (value is IEnumerable<T?> values)
+                {
+                    if (directiveOptions.ToCodeLabelItem)
+                    {
+                        context.Result = values
+                            .Select(item => item is not null
+                                ? new TranslatedResource<T>(
+                                    (T)item, GetString(stringLocalizer, item, observers))
+                                : null)
+                            .ToArray();
+
+                        return;
+                    }
+
+                    context.Result = values
+                        .Select(item => item is not null
+                            ? GetString(stringLocalizer, item, observers)
+                            : null)
+                        .ToArray();
+
+                    return;
+                }
+
+                if (directiveOptions.ToCodeLabelItem && value is T t)
+                {
+                    context.Result =
+                        new TranslatedResource<T>(
+                            (T)value, GetString(stringLocalizer, value, observers));
+
+                    return;
+                }
+
+                context.Result = GetString(stringLocalizer, value, observers);
+                
+                return;
+            }
+
             IResourcesProviderAdapter client = context.Service<IResourcesProviderAdapter>();
 
             if (value is IEnumerable<T?> items)
             {
                 var rItems = items.OfType<T>().ToList();
                 await TranslateArrayAsync(
-                        context, directiveOptions, culture, client, rItems, cancellationToken)
+                        context, directiveOptions, client, rItems, cancellationToken)
                     .ConfigureAwait(false);
             }
             else if (directiveOptions.ToCodeLabelItem && value is T t)
             {
                 await TranslateToCodeLabelItemAsync(
-                        context, directiveOptions, culture, client, t, cancellationToken)
+                        context, directiveOptions, client, t, cancellationToken)
                     .ConfigureAwait(false);
             }
             else
             {
                 await TranslateFieldToStringAsync(
-                        context, value, directiveOptions, culture, client, cancellationToken)
+                        context, value, directiveOptions, client, cancellationToken)
                     .ConfigureAwait(false);
             }
+        }
+
+        private static string GetString(
+             IStringLocalizer stringLocalizer,
+             object value,
+             IEnumerable<TranslationObserver>? observers)
+        {
+            string key = value.ToString()!;
+
+            LocalizedString localizedString = stringLocalizer[key];
+
+            if (localizedString.ResourceNotFound && observers is not null)
+            {
+                foreach (TranslationObserver observer in observers)
+                {
+                    observer.OnMissingResource(key);
+                }
+            }
+
+            return localizedString.Value;
         }
 
         private static async Task TranslateFieldToStringAsync(IMiddlewareContext context,
             object value,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             CancellationToken cancellationToken)
         {
@@ -111,7 +185,6 @@ namespace HotChocolate.Extensions.Translation
                             context,
                             value,
                             directiveOptions,
-                            culture,
                             client,
                             s,
                             cancellationToken)
@@ -129,7 +202,6 @@ namespace HotChocolate.Extensions.Translation
                             context,
                             value,
                             directiveOptions,
-                            culture,
                             client,
                             sValue,
                             cancellationToken)
@@ -139,7 +211,7 @@ namespace HotChocolate.Extensions.Translation
 
                 case Enum e:
                     await TranslateEnum(
-                        context, value, directiveOptions, culture, client, e, cancellationToken);
+                        context, value, directiveOptions, client, e, cancellationToken);
                     break;
 
                 default:
@@ -151,7 +223,6 @@ namespace HotChocolate.Extensions.Translation
 
         private static async Task TranslateArrayAsync(IMiddlewareContext context,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             IReadOnlyList<T> items,
             CancellationToken cancellationToken)
@@ -159,42 +230,25 @@ namespace HotChocolate.Extensions.Translation
             if (directiveOptions.ToCodeLabelItem)
             {
                 await TranslateToCodeLabelArrayAsync(
-                        context, directiveOptions, culture, client, items, cancellationToken)
+                        context, directiveOptions, client, items, cancellationToken)
                     .ConfigureAwait(false);
             }
             else
             {
                 await TranslateToStringArrayAsync(
-                        context, directiveOptions, culture, client, items, cancellationToken)
+                        context, directiveOptions, client, items, cancellationToken)
                     .ConfigureAwait(false);
             }
-        }
-
-        private static async Task UpdateResultAsync(
-            IMiddlewareContext context,
-            object value,
-            TranslateDirective directiveOptions,
-            CultureInfo culture,
-            IResourcesProviderAdapter client,
-            Enum e,
-            CancellationToken cancellationToken)
-        {
-            context.Result = await client
-                .TryGetTranslationAsStringAsync(
-                    $"{directiveOptions.ResourceKeyPrefix}/{value}",
-                    culture,
-                    e.ToString(),
-                    cancellationToken)
-                .ConfigureAwait(false);
         }
 
         private static async Task TranslateStringAsync(IMiddlewareContext context,
             object value,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             string s, CancellationToken cancellationToken)
         {
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+
             context.Result = await client.TryGetTranslationAsStringAsync(
                 $"{directiveOptions.ResourceKeyPrefix}/{value}",
                 culture,
@@ -205,10 +259,11 @@ namespace HotChocolate.Extensions.Translation
 
         private static async Task TranslateToStringArrayAsync(IMiddlewareContext context,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             IReadOnlyList<T> items, CancellationToken cancellationToken)
         {
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+
             var result = await Task.WhenAll(items
                 .Select(async t => await client.TryGetTranslationAsStringAsync(
                     $"{directiveOptions.ResourceKeyPrefix}/{t}",
@@ -223,11 +278,12 @@ namespace HotChocolate.Extensions.Translation
 
         private static async Task TranslateToCodeLabelArrayAsync(IMiddlewareContext context,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             IReadOnlyList<T> items, CancellationToken cancellationToken)
         {
-            var result = await Task.WhenAll(items
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+
+            TranslatedResource<T>[] result = await Task.WhenAll(items
                     .Select(async item => new TranslatedResource<T>(
                         item,
                         await client.TryGetTranslationAsStringAsync(
@@ -245,11 +301,12 @@ namespace HotChocolate.Extensions.Translation
 
         private static async Task TranslateToCodeLabelItemAsync(IMiddlewareContext context,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             T item,
             CancellationToken cancellationToken)
         {
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+
             context.Result = item == null
                 ? null
                 : new TranslatedResource<T>(
@@ -267,11 +324,12 @@ namespace HotChocolate.Extensions.Translation
             IMiddlewareContext context,
             object value,
             TranslateDirective directiveOptions,
-            CultureInfo culture,
             IResourcesProviderAdapter client,
             Enum e,
             CancellationToken cancellationToken)
         {
+            CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+
             context.Result = await client.TryGetTranslationAsStringAsync(
                 $"{directiveOptions.ResourceKeyPrefix}/{value}",
                 culture,

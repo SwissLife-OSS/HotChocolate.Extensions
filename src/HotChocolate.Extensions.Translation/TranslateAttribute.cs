@@ -1,8 +1,9 @@
 using System;
 using System.Reflection;
-using HotChocolate.Extensions.Translation.Exceptions;
+using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Types;
 using HotChocolate.Types.Descriptors;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HotChocolate.Extensions.Translation
 {
@@ -18,6 +19,13 @@ namespace HotChocolate.Extensions.Translation
             : base(resourceKeyPrefix, nullable)
         {
         }
+
+        public TranslateAttribute(
+             Type resourceSource,
+             bool nullable = false)
+             : base(resourceSource, nullable)
+        {
+        }
     }
 
     [AttributeUsage(
@@ -26,11 +34,22 @@ namespace HotChocolate.Extensions.Translation
         AllowMultiple = false)]
     public class TranslateAttribute<T>: DescriptorAttribute
     {
+        private readonly Type? _resourceSource;
+
         public TranslateAttribute(
             string resourceKeyPrefix,
             bool nullable = false)
         {
             ResourceKeyPrefix = resourceKeyPrefix;
+            Nullable = nullable;
+        }
+
+        public TranslateAttribute(
+            Type resourceSource,
+            bool nullable = false)
+        {
+            _resourceSource = resourceSource;
+            ResourceKeyPrefix = string.Empty;
             Nullable = nullable;
         }
 
@@ -42,6 +61,14 @@ namespace HotChocolate.Extensions.Translation
             IDescriptor descriptor,
             ICustomAttributeProvider element)
         {
+            if (_resourceSource is not null)
+            {
+                IResourceTypeResolver typeResolver =
+                    context.Services.GetRequiredService<IResourceTypeResolver>();
+
+                ResourceKeyPrefix = typeResolver.GetAlias(_resourceSource);
+            }
+
             if (descriptor is IObjectFieldDescriptor d)
             {
                 d.Translate<T>(ResourceKeyPrefix, Nullable);
