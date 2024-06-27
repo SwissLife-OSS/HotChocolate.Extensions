@@ -51,9 +51,9 @@ The last step is to implement and register an IResourcesProvider. This provider 
 services.AddSingleton<IResourcesProvider, MyResourcesProvider>();
 ```
 
-The alternative way is to implement both IStringLocalizerFactory and IStringLocalizer interfaces.
-Also we can use resource type marker classes.
-It overrides all logic related to IResourcesProvider interface usage.
+The alternative way is to implement both the IStringLocalizerFactory and IStringLocalizer interfaces.
+Additionally, we can use resource type marker classes.
+This approach overrides all logic related to the usage of the IResourcesProvider interface.
 ```csharp
 namespace Namespace.Namespace1.Namespace2;
 
@@ -75,8 +75,9 @@ new ServiceCollection()
   .AddStringLocalizer<OtherCustomLocalizer>(ServiceLifetime.Scoped, [ typeof(OtherCustomResource) /* additional resources can share the same localizer logic */ ]);
 ```
 
-If resource type is not decorated with ResourceTypeAlias attribute the default alias is generated from namespace/name of resource class.
-It would generate "Namespace::Namespace1::Namespace2::CustomResource" alias for the case described above.
+If the resource type is not decorated with the ResourceTypeAlias attribute,
+the default alias is generated from the namespace and name of the resource class.
+For the case described above, it would generate the alias "Namespace::Namespace1::Namespace2::CustomResource".
 
 
 With this we have registered the necessary objects to support translation on our fields. Now we can start adding translation support to our fields.
