@@ -1,5 +1,11 @@
 <Project>
 
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
-  
+
+  <PropertyGroup>
+    <CCPackageProps>$([System.IO.Path]::Combine($(CCSourceDirectory), 'Package.props'))</CCPackageProps>
+  </PropertyGroup>
+
+  <Import Project="$(CCPackageProps)" Condition="Exists('$(CCPackageProps)')"/>
+
 </Project>
