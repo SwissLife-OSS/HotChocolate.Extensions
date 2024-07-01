@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Translation;
@@ -43,20 +44,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return b;
         }
 
-        public static IRequestExecutorBuilder AddStringLocalizerFactory(
-            this IRequestExecutorBuilder builder)
-        {
-            builder.Services.AddDefaultStringLocalizerFactory();
-
-            return builder;
-        }
-
-        internal static void AddDefaultStringLocalizerFactory(
-            this IServiceCollection services)
-        {
-            services.AddSingleton<IStringLocalizerFactory, DefaultLocalizerFactory>();
-        }
-
         public static IRequestExecutorBuilder AddStringLocalizer<T>(
             this IRequestExecutorBuilder builder,
             ServiceLifetime serviceLifetime,
@@ -68,56 +55,91 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        public static IRequestExecutorBuilder AddStringLocalizer(
+           this IRequestExecutorBuilder builder,
+           ServiceLifetime serviceLifetime,
+           Type stringLocalizerType,
+           params Type[] resourceTypes)
+        {
+            builder.Services.AddStringLocalizer(serviceLifetime, stringLocalizerType, resourceTypes);
+
+            return builder;
+        }
+
         internal static void AddStringLocalizer<T>(
             this IServiceCollection services,
             ServiceLifetime serviceLifetime,
             params Type[] resourceTypes)
             where T : class, IStringLocalizer
         {
-            if (serviceLifetime == ServiceLifetime.Transient)
+            services.TryAddSingleton<IResourceTypeResolver>(new DefaultResourceTypeResolver());
+
+            services.TryAddSingleton<IStringLocalizerFactory, DefaultLocalizerFactory>();
+
+            foreach (Type resourceType in resourceTypes)
             {
-                services.TryAddTransient<T>();
-                services.TryAddTransient(typeof(IStringLocalizer<T>), typeof(T));
-            }
-            else if (serviceLifetime == ServiceLifetime.Scoped)
-            {
-                services.TryAddScoped<T>();
-                services.TryAddScoped(typeof(IStringLocalizer<T>), typeof(T));
-            }
-            else
-            {
-                services.TryAddSingleton<T>();
-                services.TryAddSingleton(typeof(IStringLocalizer<T>), typeof(T));
+                services.UpdateResourceTypeResolver(typeof(T), resourceType);
             }
 
-            services.AddOrUpdateResourceTypeResolver(typeof(T), resourceTypes);
+            services.TryAdd(
+                new ServiceDescriptor(
+                    typeof(T),
+                    typeof(T),
+                    serviceLifetime));
         }
 
-        private static void AddOrUpdateResourceTypeResolver(
-            this IServiceCollection services, Type localizer, params Type[] resourceTypes)
+        internal static void AddStringLocalizer(
+            this IServiceCollection services,
+            ServiceLifetime serviceLifetime,
+            Type stringLocalizerType,
+            params Type[] resourceTypes)
+        {
+            if (!stringLocalizerType.IsClass || stringLocalizerType.IsAbstract)
+            {
+                throw new ArgumentException("It supports non abstract classes only.",
+                    nameof(stringLocalizerType));
+            }
+
+            if (!typeof(IStringLocalizer).IsAssignableFrom(stringLocalizerType))
+            {
+                throw new ArgumentException(
+                    $"The {stringLocalizerType.Name} should implement IStringLocalizer interface.",
+                    nameof(stringLocalizerType));
+            }
+
+            services.TryAddSingleton<IResourceTypeResolver>(new DefaultResourceTypeResolver());
+
+            services.TryAddSingleton<IStringLocalizerFactory, DefaultLocalizerFactory>();
+
+            bool isOpenGeneric =
+                stringLocalizerType.IsGenericType &&
+                stringLocalizerType.ContainsGenericParameters;
+
+            foreach (Type resourceType in resourceTypes)
+            {
+                services.UpdateResourceTypeResolver(
+                    isOpenGeneric
+                    ? stringLocalizerType.MakeGenericType(resourceType)
+                    : stringLocalizerType,
+                    resourceType);
+            }
+
+            services.TryAdd(
+                new ServiceDescriptor(stringLocalizerType, stringLocalizerType, serviceLifetime));
+        }
+
+        private static void UpdateResourceTypeResolver(
+            this IServiceCollection services, Type localizer, Type resourceType)
         {
             ServiceDescriptor? descriptor = services.FirstOrDefault(x =>
                 x.Lifetime == ServiceLifetime.Singleton
                 && x.ServiceType == typeof(IResourceTypeResolver)
-                && x.ImplementationType == typeof(DefaultResourceTypeResolver));
+                && x.ImplementationInstance?.GetType() == typeof(DefaultResourceTypeResolver));
 
-            DefaultResourceTypeResolver typeResolver;
+            DefaultResourceTypeResolver typeResolver =
+                (DefaultResourceTypeResolver)descriptor!.ImplementationInstance!;
 
-            if (descriptor is null)
-            {
-                typeResolver = new();
-
-                services.AddSingleton<IResourceTypeResolver>(typeResolver);
-            }
-            else
-            {
-                typeResolver = (DefaultResourceTypeResolver)descriptor.ImplementationInstance!;
-            }
-
-            foreach (Type resourceType in resourceTypes)
-            {
-                typeResolver.RegisterType(resourceType, localizer);
-            }
+            typeResolver.RegisterType(resourceType, localizer);
         }
     }
 }

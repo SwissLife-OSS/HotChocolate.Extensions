@@ -274,7 +274,6 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             if (useStringLocalizer)
             {
-                services.AddDefaultStringLocalizerFactory();
                 services.AddStringLocalizer<TestStringLocalizer>(
                     ServiceLifetime.Singleton, typeof(TestResourceType));
                 services.AddSingleton<Func<IDictionary<Mock.Language, Dictionary<string, Resource>>>>(

@@ -51,7 +51,7 @@ The last step is to implement and register an IResourcesProvider. This provider 
 services.AddSingleton<IResourcesProvider, MyResourcesProvider>();
 ```
 
-The alternative way is to implement both the IStringLocalizerFactory and IStringLocalizer interfaces.
+The alternative way is to implement IStringLocalizer interfaces.
 Additionally, we can use resource type marker classes.
 This approach overrides all logic related to the usage of the IResourcesProvider interface.
 ```csharp
@@ -70,9 +70,9 @@ new ServiceCollection()
       c => c.AddTranslatableType<Country>()
             .AddTranslatableType<MyEnum2>()
   )
-  .AddStringLocalizerFactory()
   .AddStringLocalizer<CustomLocalizer>(ServiceLifetime.Singleton, typeof(CustomResource))
-  .AddStringLocalizer<OtherCustomLocalizer>(ServiceLifetime.Scoped, [ typeof(OtherCustomResource) /* additional resources can share the same localizer logic */ ]);
+  .AddStringLocalizer<OtherCustomLocalizer>(ServiceLifetime.Scoped, [ typeof(OtherCustomResource) /* additional resources can share the same localizer logic */ ])
+  .AddStringLocalizer(typeof(OpenGenericLocalizer<>), [ typeof(AnyResource), ......]);
 ```
 
 If the resource type is not decorated with the ResourceTypeAlias attribute,
