@@ -4,21 +4,19 @@
     <Product>HotChocolate.Extensions</Product>
     <Authors>Swiss Life authors and contributors</Authors>
     <Company>Swiss Life</Company>
-    <Version Condition="$(Version) == ''">0.0.0</Version>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
     <PackageLicenseUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions</PackageProjectUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/HotChocolate.Extensions/releases/$(Version)</PackageReleaseNotes>
     <PackageTags>SwissLife .Net HotChocolate Translation</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://github.com/SwissLife-OSS/bewit/raw/master/logo.png</PackageIconUrl>
 	  <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <RepositoryUrl>https://github.com/SwissLife-OSS/bewit.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
