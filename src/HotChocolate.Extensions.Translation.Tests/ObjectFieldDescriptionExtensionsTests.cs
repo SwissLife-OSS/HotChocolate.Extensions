@@ -108,7 +108,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                var request = QueryRequestBuilder.New()
+                IQueryRequest request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField }")
                     .SetServices(services)
                     .Create();
@@ -158,7 +158,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                var request = QueryRequestBuilder.New()
+                IQueryRequest request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField }")
                     .SetServices(services)
                     .Create();
@@ -250,7 +250,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                var request = QueryRequestBuilder.New()
+                IQueryRequest request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField { key label } }")
                     .SetServices(services)
                     .Create();
@@ -301,7 +301,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                var request = QueryRequestBuilder.New()
+                IQueryRequest request = QueryRequestBuilder.New()
                     .SetQuery(@"{ myField { key label } }")
                     .SetServices(services)
                     .Create();
@@ -340,7 +340,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             services.AddSingleton<IResourcesProviderAdapter>(
                 new EvergreenResourcesProviderAdapter());
 
-            var request = QueryRequestBuilder.New()
+            IQueryRequest request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
                 .Create();
 
@@ -371,7 +371,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             services.AddSingleton<IResourcesProviderAdapter>(
                 new EvergreenResourcesProviderAdapter());
 
-            var request = QueryRequestBuilder.New()
+            IQueryRequest request = QueryRequestBuilder.New()
                 .SetQuery(@"{ myField }")
                 .Create();
 

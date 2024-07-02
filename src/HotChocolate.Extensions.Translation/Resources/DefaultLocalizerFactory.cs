@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
@@ -7,21 +8,22 @@ namespace HotChocolate.Extensions.Translation.Resources;
 public class DefaultLocalizerFactory : IStringLocalizerFactory
 {
     private readonly IResourceTypeResolver _resourceTypeResolver;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public DefaultLocalizerFactory(
         IResourceTypeResolver resourceTypeResolver,
-        IServiceProvider serviceProvider)
+        IHttpContextAccessor httpContextAccessor)
     {
         _resourceTypeResolver = resourceTypeResolver;
-        _serviceProvider = serviceProvider;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public IStringLocalizer Create(Type resourceSource)
     {
         Type localizer = _resourceTypeResolver.LookupLocalizer(resourceSource);
 
-        return (IStringLocalizer)_serviceProvider.GetRequiredService(localizer);
+        return (IStringLocalizer)_httpContextAccessor.HttpContext.RequestServices
+            .GetRequiredService(localizer);
     }
 
     public IStringLocalizer Create(string baseName, string location)

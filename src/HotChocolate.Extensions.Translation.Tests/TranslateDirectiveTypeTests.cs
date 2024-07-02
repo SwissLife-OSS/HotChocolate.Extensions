@@ -8,6 +8,7 @@ using FluentAssertions;
 using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Extensions.Translation.Tests.Mock;
 using HotChocolate.Resolvers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
@@ -274,6 +275,18 @@ namespace HotChocolate.Extensions.Translation.Tests
 
             if (useStringLocalizer)
             {
+                var httpContextMock = new Mock<HttpContext>();
+                httpContextMock
+                    .SetupGet(x => x.RequestServices)
+                    .Returns(() => services.BuildServiceProvider());
+                var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+
+                httpContextAccessorMock
+                    .SetupGet(x => x.HttpContext)
+                    .Returns(httpContextMock.Object);
+
+                services.AddScoped(
+                    _ => httpContextAccessorMock.Object);
                 services.AddStringLocalizer<TestStringLocalizer>(
                     ServiceLifetime.Singleton, typeof(TestResourceType));
                 services.AddSingleton<Func<IDictionary<Mock.Language, Dictionary<string, Resource>>>>(
