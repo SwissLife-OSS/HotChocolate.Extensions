@@ -56,10 +56,10 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public static IRequestExecutorBuilder AddStringLocalizer(
-           this IRequestExecutorBuilder builder,
-           ServiceLifetime serviceLifetime,
-           Type stringLocalizerType,
-           params Type[] resourceTypes)
+            this IRequestExecutorBuilder builder,
+            ServiceLifetime serviceLifetime,
+            Type stringLocalizerType,
+            params Type[] resourceTypes)
         {
             builder.Services.AddStringLocalizer(serviceLifetime, stringLocalizerType, resourceTypes);
 
@@ -72,8 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             params Type[] resourceTypes)
             where T : class, IStringLocalizer
         {
-            services.TryAddSingleton<IResourceTypeResolver>(new DefaultResourceTypeResolver());
-
+            services.TryAddSingleton((IResourceTypeResolver)new DefaultResourceTypeResolver());
             services.TryAddSingleton<IStringLocalizerFactory, DefaultLocalizerFactory>();
 
             foreach (Type resourceType in resourceTypes)
@@ -81,11 +80,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.UpdateResourceTypeResolver(typeof(T), resourceType);
             }
 
-            services.TryAdd(
-                new ServiceDescriptor(
-                    typeof(T),
-                    typeof(T),
-                    serviceLifetime));
+            services.TryAdd(new ServiceDescriptor(typeof(T), typeof(T), serviceLifetime));
         }
 
         internal static void AddStringLocalizer(
@@ -96,7 +91,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (!stringLocalizerType.IsClass || stringLocalizerType.IsAbstract)
             {
-                throw new ArgumentException("It supports non abstract classes only.",
+                throw new ArgumentException(
+                    "It supports non abstract classes only.",
                     nameof(stringLocalizerType));
             }
 
@@ -107,8 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     nameof(stringLocalizerType));
             }
 
-            services.TryAddSingleton<IResourceTypeResolver>(new DefaultResourceTypeResolver());
-
+            services.TryAddSingleton((IResourceTypeResolver)new DefaultResourceTypeResolver());
             services.TryAddSingleton<IStringLocalizerFactory, DefaultLocalizerFactory>();
 
             bool isOpenGeneric =
@@ -129,17 +124,20 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         private static void UpdateResourceTypeResolver(
-            this IServiceCollection services, Type localizer, Type resourceType)
+            this IServiceCollection services,
+            Type localizer,
+            Type resourceType)
         {
-            ServiceDescriptor? descriptor = services.FirstOrDefault(x =>
-                x.Lifetime == ServiceLifetime.Singleton
-                && x.ServiceType == typeof(IResourceTypeResolver)
-                && x.ImplementationInstance?.GetType() == typeof(DefaultResourceTypeResolver));
+            ServiceDescriptor serviceDescriptor =
+                services.First((ServiceDescriptor x) =>
+                    x.Lifetime == ServiceLifetime.Singleton &&
+                    x.ServiceType == typeof(IResourceTypeResolver) &&
+                    x.ImplementationInstance?.GetType() == typeof(DefaultResourceTypeResolver));
 
-            DefaultResourceTypeResolver typeResolver =
-                (DefaultResourceTypeResolver)descriptor!.ImplementationInstance!;
+            DefaultResourceTypeResolver defaultResourceTypeResolver =
+                (DefaultResourceTypeResolver)serviceDescriptor.ImplementationInstance!;
 
-            typeResolver.RegisterType(resourceType, localizer);
+            defaultResourceTypeResolver.RegisterType(resourceType, localizer);
         }
     }
 }
