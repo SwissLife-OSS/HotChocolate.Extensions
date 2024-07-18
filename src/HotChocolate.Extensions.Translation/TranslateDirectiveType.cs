@@ -35,8 +35,8 @@ namespace HotChocolate.Extensions.Translation
             descriptor.Name(DirectiveName);
             descriptor.Location(DirectiveLocation.FieldDefinition);
 
-            descriptor.Use((next, directive) => context
-                => Translate(next, context, directive.AsValue<TranslateDirective<T>>()));
+            descriptor.Use((next, directive) => async context
+                => await Translate(next, context, directive.AsValue<TranslateDirective<T>>()));
         }
 
         private static async ValueTask Translate(
@@ -88,6 +88,11 @@ namespace HotChocolate.Extensions.Translation
             {
                 IStringLocalizer stringLocalizer =
                     localizerFactory.Create(directiveOptions.ResourceKeyPrefix, string.Empty);
+
+                if (stringLocalizer is IFetcher fetcher)
+                {
+                    await fetcher.FetchAsync();
+                }
 
                 IEnumerable<TranslationObserver>? observers =
                     context.Services.GetService<IEnumerable<TranslationObserver>>();  
