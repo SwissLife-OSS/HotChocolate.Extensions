@@ -6,8 +6,4 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\HotChocolate.Extensions.Translation\HotChocolate.Extensions.Translation.csproj" />
-  </ItemGroup>
-  
 </Project>

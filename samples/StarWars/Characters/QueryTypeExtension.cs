@@ -10,7 +10,7 @@ namespace StarWars.Characters
     /// The queries related to characters.
     /// </summary>
     [ExtendObjectType(OperationTypeNames.Query)]
-    public class CharacterQueries
+    public class QueryTypeExtension
     {
         /// <summary>
         /// Retrieve a hero by a particular Star Wars episode.

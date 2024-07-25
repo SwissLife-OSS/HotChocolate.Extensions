@@ -13,7 +13,7 @@ namespace StarWars
         {
             return builder
                 .AddQueryType()
-                    .AddTypeExtension<CharacterQueries>()
+                    .AddTypeExtension<QueryTypeExtension>()
                     .AddTypeExtension<ReviewQueries>()
                 .AddMutationType()
                     .AddTypeExtension<ReviewMutations>()
@@ -21,13 +21,10 @@ namespace StarWars
                     .AddTypeExtension<ReviewSubscriptions>()
 
                 .AddType<Human>()
-                    .AddType<HumanType>()
-                    .AddTypeExtension<HumanTypeExtension>()
                 .AddType<Droid>()
                 .AddType<Starship>()
-                //.AddTypeExtension<CharacterResolvers>()
-                .AddTypeExtension<HumanResolvers>()
-                .AddTypeExtension<DroidResolvers>()
+                .AddUnionType<ISearchResult>()
+                .AddInterfaceType<ICharacter>()
 
                 .AddFiltering()
                 .AddSorting()
