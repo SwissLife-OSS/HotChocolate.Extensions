@@ -6,16 +6,24 @@ using StarWars.Repositories;
 
 namespace StarWars.Characters
 {
-    /// <summary>
-    /// This resolver class extends all object types implementing <see cref="ICharacter"/>.
-    /// </summary>
-    [ExtendObjectType(typeof(ICharacter))]
-    public class CharacterResolvers
+    [ExtendObjectType<Human>]
+    public class HumanResolvers
     {
         [UsePaging(typeof(InterfaceType<ICharacter>))]
-        [BindMember(nameof(ICharacter.Friends))]
+        [BindMember(nameof(Human.Friends))]
         public IEnumerable<ICharacter> GetFriends(
-            [Parent] ICharacter character,
+            [Parent] Human character,
+            [Service] ICharacterRepository repository) =>
+            repository.GetCharacters(character.Friends.ToArray());
+    }
+
+    [ExtendObjectType<Droid>]
+    public class DroidResolvers
+    {
+        [UsePaging(typeof(InterfaceType<ICharacter>))]
+        [BindMember(nameof(Droid.Friends))]
+        public IEnumerable<ICharacter> GetFriends(
+            [Parent] Droid character,
             [Service] ICharacterRepository repository) =>
             repository.GetCharacters(character.Friends.ToArray());
     }

@@ -21,11 +21,6 @@ namespace StarWars.Characters
         string Name { get; }
 
         /// <summary>
-        /// The ids of the character's friends.
-        /// </summary>
-        IReadOnlyList<int> Friends { get; }
-
-        /// <summary>
         /// The episodes the character appears in.
         /// </summary>
         [TranslateArray<Episode>("Episodes")]

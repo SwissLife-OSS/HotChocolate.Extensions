@@ -4,17 +4,10 @@
   subscription: Subscription
 }
 
-"A character in the Star Wars universe."
 interface Character {
-  "The episodes the character appears in."
   appearsIn: [TranslatedResourceOfEpisode!]!
-  "The ids of the character's friends."
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
-  "The height of the character."
-  height(unit: Unit = METERS): Float!
-  "The unique identifier for the character."
+  height: Float!
   id: Int!
-  "The name of the character."
   name: String!
 }
 
@@ -40,26 +33,17 @@ type CharactersEdge {
   node: Character
 }
 
-"This payload allows us to query the created review object."
 type CreateReviewPayload {
-  "The episode for which a review was created."
   episode: Episode!
-  "The review that was being created."
   review: Review!
 }
 
-"This resolver class extends all object types implementing ICharacter."
 type Droid implements Character {
-  "The episodes the character appears in."
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
   friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
-  "The height of the character."
-  height(unit: Unit = METERS): Float!
-  "The unique identifier for the character."
+  height: Float!
   id: Int!
-  "The name of the character."
   name: String!
-  "The droid's primary function."
   primaryFunction: String!
 }
 
@@ -81,29 +65,19 @@ type FriendsEdge {
   node: Character
 }
 
-"This resolver class extends all object types implementing ICharacter."
 type Human implements Character {
-  "The episodes the character appears in."
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
   friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
-  "Color of the Human's hair"
   hairColor: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
   hairColor2: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
-  "The height of the character."
-  height(unit: Unit = METERS): Float! @deprecated(reason: "invocations of this field will be tracked!")
-  "The planet the character is originally from."
+  height: Float! @deprecated(reason: "invocations of this field will be tracked!")
   homePlanet: String
-  "The unique identifier for the character."
   id: Int!
-  "the Humans's marital status"
   maritalStatus: TranslatedResourceOfMaritalStatus! @translateMaritalStatus(resourceKeyPrefix: "MaritalStatus", toCodeLabelItem: true)
-  "The name of the character."
   name: String!
 }
 
-"The mutations related to reviews."
 type Mutation {
-  "Creates a review for a given Star Wars episode."
   createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked @tracked
 }
 
@@ -119,26 +93,17 @@ type PageInfo {
   startCursor: String
 }
 
-"The queries related to reviews."
 type Query {
-  "Gets a character by it`s id.\n\n\n**Returns:**\nThe character."
-  character("The ids of the human to retrieve." ids: [Int!]!): [Character!]!
-  "Gets all character.\n\n\n**Returns:**\nThe character."
+  character(ids: [Int!]!): [Character!]!
   characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] where: ICharacterFilterInput): CharactersConnection
-  "Retrieve a hero by a particular Star Wars episode.\n\n\n**Returns:**\nThe hero character."
-  hero("The episode to retrieve the hero." episode: Episode!): Character!
+  hero(episode: Episode!): Character!
   reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] where: ReviewFilterInput): ReviewsConnection
-  "Search the repository for objects that contain the text.\n\n\n**Returns:**\nReturns the union type ISearchResult."
-  search("The text we are searching for." text: String!): [SearchResult!]!
+  search(text: String!): [SearchResult!]!
 }
 
-"A review of a particular movie."
 type Review {
-  "An explanation for the rating."
   commentary: String!
-  "The ID of the review."
   id: UUID!
-  "The number of stars given for this review."
   stars: Int!
 }
 
@@ -160,20 +125,14 @@ type ReviewsEdge {
   node: Review!
 }
 
-"A starship in the Star Wars universe."
 type Starship {
-  "The Id of the starship."
   id: Int!
-  "The length of the starship."
-  length(unit: Unit = METERS): Float!
-  "The name of the starship."
+  length: Float!
   name: String!
 }
 
-"The subscriptions related to reviews."
 type Subscription {
-  "The OnReview event is invoked whenever a new review is being created.\n\n\n**Returns:**\n\nThe review that was created."
-  onReview("The episode to which you want to subscribe to." episode: Episode!): Review!
+  onReview(episode: Episode!): Review!
 }
 
 type TranslatedResourceOfEpisode implements Translation {
@@ -193,13 +152,9 @@ type TranslatedResourceOfMaritalStatus implements Translation {
 
 union SearchResult = Human | Droid | Starship
 
-"This input represents the data needed to create a review."
 input CreateReviewInput {
-  "An explanation for the rating."
   commentary: String!
-  "The review for which to create the review."
   episode: Episode!
-  "The number of stars given for this review."
   stars: Int!
 }
 
@@ -225,29 +180,18 @@ input FloatOperationFilterInput {
   nlte: Float
 }
 
-"A character in the Star Wars universe."
 input ICharacterFilterInput {
   and: [ICharacterFilterInput!]
   or: [ICharacterFilterInput!]
-  "The unique identifier for the character."
   id: IntOperationFilterInput
-  "The name of the character."
   name: StringOperationFilterInput
-  "The ids of the character's friends."
-  friends: ListIntOperationFilterInput
-  "The episodes the character appears in."
   appearsIn: ListEpisodeOperationFilterInput
-  "The height of the character."
   height: FloatOperationFilterInput
 }
 
-"A character in the Star Wars universe."
 input ICharacterSortInput {
-  "The unique identifier for the character."
   id: SortEnumType
-  "The name of the character."
   name: SortEnumType
-  "The height of the character."
   height: SortEnumType
 }
 
@@ -273,32 +217,17 @@ input ListEpisodeOperationFilterInput {
   any: Boolean
 }
 
-input ListIntOperationFilterInput {
-  all: IntOperationFilterInput
-  none: IntOperationFilterInput
-  some: IntOperationFilterInput
-  any: Boolean
-}
-
-"A review of a particular movie."
 input ReviewFilterInput {
   and: [ReviewFilterInput!]
   or: [ReviewFilterInput!]
-  "The ID of the review."
   id: UuidOperationFilterInput
-  "The number of stars given for this review."
   stars: IntOperationFilterInput
-  "An explanation for the rating."
   commentary: StringOperationFilterInput
 }
 
-"A review of a particular movie."
 input ReviewSortInput {
-  "The ID of the review."
   id: SortEnumType
-  "The number of stars given for this review."
   stars: SortEnumType
-  "An explanation for the rating."
   commentary: SortEnumType
 }
 
@@ -332,13 +261,9 @@ input UuidOperationFilterInput {
   nlte: UUID
 }
 
-"The Star Wars episodes."
 enum Episode {
-  "Star Wars Episode IV: A New Hope"
   NEW_HOPE
-  "Star Wars Episode V: Empire Strikes Back"
   EMPIRE
-  "Star Wars Episode VI: Return of the Jedi"
   JEDI
 }
 
@@ -359,12 +284,6 @@ enum MaritalStatus {
 enum SortEnumType {
   ASC
   DESC
-}
-
-"Different units of measurement."
-enum Unit {
-  FOOT
-  METERS
 }
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
