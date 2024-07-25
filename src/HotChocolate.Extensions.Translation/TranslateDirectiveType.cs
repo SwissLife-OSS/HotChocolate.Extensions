@@ -8,6 +8,7 @@ using HotChocolate.Extensions.Translation.Exceptions;
 using HotChocolate.Extensions.Translation.Resources;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
+using HotChocolate.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
@@ -81,56 +82,8 @@ namespace HotChocolate.Extensions.Translation
 
             CultureInfo culture = Thread.CurrentThread.CurrentCulture;
 
-            IStringLocalizerFactory? localizerFactory =
-                context.Services.GetService<IStringLocalizerFactory>();
-
-            if (localizerFactory is not null)
+            if (await TryTranslateWithStringLocalizer(context, value, directiveOptions))
             {
-                IStringLocalizer stringLocalizer =
-                    localizerFactory.Create(directiveOptions.ResourceKeyPrefix, string.Empty);
-
-                if (stringLocalizer is IFetcher fetcher)
-                {
-                    await fetcher.FetchAsync();
-                }
-
-                IEnumerable<TranslationObserver>? observers =
-                    context.Services.GetService<IEnumerable<TranslationObserver>>();  
-
-                if (value is IEnumerable<T?> values)
-                {
-                    if (directiveOptions.ToCodeLabelItem)
-                    {
-                        context.Result = values
-                            .Select(item => item is not null
-                                ? new TranslatedResource<T>(
-                                    (T)item, GetString(stringLocalizer, item, observers))
-                                : null)
-                            .ToArray();
-
-                        return;
-                    }
-
-                    context.Result = values
-                        .Select(item => item is not null
-                            ? GetString(stringLocalizer, item, observers)
-                            : null)
-                        .ToArray();
-
-                    return;
-                }
-
-                if (directiveOptions.ToCodeLabelItem && value is T t)
-                {
-                    context.Result =
-                        new TranslatedResource<T>(
-                            (T)value, GetString(stringLocalizer, value, observers));
-
-                    return;
-                }
-
-                context.Result = GetString(stringLocalizer, value, observers);
-                
                 return;
             }
 
@@ -155,6 +108,80 @@ namespace HotChocolate.Extensions.Translation
                         context, value, directiveOptions, client, cancellationToken)
                     .ConfigureAwait(false);
             }
+        }
+
+        private static async Task<bool> TryTranslateWithStringLocalizer(
+            IMiddlewareContext context, object value, TranslateDirective directiveOptions)
+        {
+            IStringLocalizerFactory? localizerFactory =
+                context.Services.GetService<IStringLocalizerFactory>();
+
+            if (localizerFactory is not null)
+            {
+                IResourceTypeResolver? resourceTypeResolver =
+                    context.Services.GetService<IResourceTypeResolver>();
+
+                if (resourceTypeResolver is null)
+                {
+                    return false;
+                }
+
+                Type? resourceSource = resourceTypeResolver.Resolve(
+                    directiveOptions.ResourceKeyPrefix);
+
+                if (resourceSource is null)
+                {
+                    return false;
+                }
+
+                IStringLocalizer stringLocalizer = localizerFactory.Create(resourceSource);
+
+                if (stringLocalizer is IFetcher fetcher)
+                {
+                    await fetcher.FetchAsync();
+                }
+
+                IEnumerable<TranslationObserver>? observers =
+                    context.Services.GetService<IEnumerable<TranslationObserver>>();
+
+                if (value is IEnumerable<T?> values)
+                {
+                    if (directiveOptions.ToCodeLabelItem)
+                    {
+                        context.Result = values
+                            .Select(item => item is not null
+                                ? new TranslatedResource<T>(
+                                    (T)item, GetString(stringLocalizer, item, observers))
+                                : null)
+                            .ToArray();
+
+                        return true;
+                    }
+
+                    context.Result = values
+                        .Select(item => item is not null
+                            ? GetString(stringLocalizer, item, observers)
+                            : null)
+                        .ToArray();
+
+                    return true;
+                }
+
+                if (directiveOptions.ToCodeLabelItem && value is T t)
+                {
+                    context.Result =
+                        new TranslatedResource<T>(
+                            (T)value, GetString(stringLocalizer, value, observers));
+
+                    return true;
+                }
+
+                context.Result = GetString(stringLocalizer, value, observers);
+
+                return true;
+            }
+
+            return false;
         }
 
         private static string GetString(
