@@ -23,7 +23,6 @@ namespace StarWars.Characters
         /// <summary>
         /// The ids of the character's friends.
         /// </summary>
-        [UsePaging(typeof(InterfaceType<ICharacter>))]
         IReadOnlyList<int> Friends { get; }
 
         /// <summary>
@@ -35,7 +34,6 @@ namespace StarWars.Characters
         /// <summary>
         /// The height of the character.
         /// </summary>
-        [UseConvertUnit]
         double Height { get; }
     }
 }

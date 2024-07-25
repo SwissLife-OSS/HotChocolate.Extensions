@@ -59,7 +59,6 @@ namespace StarWars.Characters
         public MaritalStatus MaritalStatus { get; }
 
         /// <inheritdoc />
-        [UseConvertUnit]
         [Obsolete(message: "invocations of this field will be tracked!")]
         public double Height { get; }
     }

@@ -25,7 +25,6 @@ namespace StarWars.Characters
         /// <summary>
         /// The length of the starship.
         /// </summary>
-        [UseConvertUnit]
         public double Length { get; }
     }
 }

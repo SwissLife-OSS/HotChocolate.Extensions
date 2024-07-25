@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using HotChocolate.Extensions.Translation;
-using HotChocolate.Types;
-using HotChocolate.Types.Relay;
 
 namespace StarWars.Characters
 {
@@ -45,7 +43,6 @@ namespace StarWars.Characters
         public string PrimaryFunction { get; }
 
         /// <inheritdoc />
-        [UseConvertUnit]
         public double Height { get; }
     }
 }
