@@ -4,8 +4,7 @@
   subscription: Subscription
 }
 
-interface Character {
-  appearsIn: [TranslatedResourceOfEpisode!]!
+interface ICharacter {
   height: Float!
   id: Int!
   name: String!
@@ -20,7 +19,7 @@ type CharactersConnection {
   "A list of edges."
   edges: [CharactersEdge!]
   "A flattened list of the nodes."
-  nodes: [Character]
+  nodes: [ICharacter]
   "Information to aid in pagination."
   pageInfo: PageInfo!
 }
@@ -30,7 +29,7 @@ type CharactersEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Character
+  node: ICharacter
 }
 
 type CreateReviewPayload {
@@ -38,7 +37,7 @@ type CreateReviewPayload {
   review: Review!
 }
 
-type Droid implements Character {
+type Droid implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
   friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
   height: Float!
@@ -52,7 +51,7 @@ type FriendsConnection {
   "A list of edges."
   edges: [FriendsEdge!]
   "A flattened list of the nodes."
-  nodes: [Character]
+  nodes: [ICharacter]
   "Information to aid in pagination."
   pageInfo: PageInfo!
 }
@@ -62,10 +61,10 @@ type FriendsEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Character
+  node: ICharacter
 }
 
-type Human implements Character {
+type Human implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
   friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
   hairColor: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
@@ -94,11 +93,11 @@ type PageInfo {
 }
 
 type Query {
-  character(ids: [Int!]!): [Character!]!
+  character(ids: [Int!]!): [ICharacter!]!
   characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] where: ICharacterFilterInput): CharactersConnection
-  hero(episode: Episode!): Character!
+  hero(episode: Episode!): ICharacter!
   reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] where: ReviewFilterInput): ReviewsConnection
-  search(text: String!): [SearchResult!]!
+  search(text: String!): [ISearchResult!]!
 }
 
 type Review {
@@ -150,19 +149,12 @@ type TranslatedResourceOfMaritalStatus implements Translation {
   label: String!
 }
 
-union SearchResult = Human | Droid | Starship
+union ISearchResult = Human | Droid | Starship
 
 input CreateReviewInput {
   commentary: String!
   episode: Episode!
   stars: Int!
-}
-
-input EpisodeOperationFilterInput {
-  eq: Episode
-  neq: Episode
-  in: [Episode!]
-  nin: [Episode!]
 }
 
 input FloatOperationFilterInput {
@@ -185,7 +177,6 @@ input ICharacterFilterInput {
   or: [ICharacterFilterInput!]
   id: IntOperationFilterInput
   name: StringOperationFilterInput
-  appearsIn: ListEpisodeOperationFilterInput
   height: FloatOperationFilterInput
 }
 
@@ -208,13 +199,6 @@ input IntOperationFilterInput {
   nlt: Int
   lte: Int
   nlte: Int
-}
-
-input ListEpisodeOperationFilterInput {
-  all: EpisodeOperationFilterInput
-  none: EpisodeOperationFilterInput
-  some: EpisodeOperationFilterInput
-  any: Boolean
 }
 
 input ReviewFilterInput {

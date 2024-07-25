@@ -13,12 +13,9 @@ namespace StarWars
         {
             return builder
                 .AddQueryType()
-                    .AddTypeExtension<QueryTypeExtension>()
-                    .AddTypeExtension<ReviewQueries>()
+                .AddStarWarsTypes()
                 .AddMutationType()
-                    .AddTypeExtension<ReviewMutations>()
                 .AddSubscriptionType()
-                    .AddTypeExtension<ReviewSubscriptions>()
 
                 .AddType<Human>()
                 .AddType<Droid>()

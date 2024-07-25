@@ -27,7 +27,7 @@ public class HumanTypeExtension
     public IReadOnlyList<Episode> GetAppearsIn(
         [Parent] Human character) => character.AppearsIn;
 
-    [TranslateArray<MaritalStatus>(resourceKeyPrefix: "MaritalStatus")]
+    [Translate<MaritalStatus>(resourceKeyPrefix: "MaritalStatus")]
     public MaritalStatus GetMaritalStatus(
     [Parent] Human character) => character.MaritalStatus;
 }
