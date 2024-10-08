@@ -9,7 +9,7 @@
     <PackageLicenseUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions</PackageProjectUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/HotChocolate.Extensions/releases/$(Version)</PackageReleaseNotes>
-    <PackageTags>SwissLife .Net HotChocolate Translation</PackageTags>
+    <PackageTags>SwissLife .Net HotChocolate Translation Tracking</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageIconUrl>https://github.com/SwissLife-OSS/bewit/raw/master/logo.png</PackageIconUrl>
 	  <IsPackable>false</IsPackable>
