@@ -27,6 +27,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{10818A1C-FFEF-4696-B852-062C60C1A69E}"
 	ProjectSection(SolutionItems) = preProject
 		..\samples\Directory.Build.props = ..\samples\Directory.Build.props
+		..\samples\TestProject.props = ..\samples\TestProject.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarWars", "..\samples\StarWars\StarWars.csproj", "{F0107CD4-E228-410E-AE38-EAF15F2758A2}"
