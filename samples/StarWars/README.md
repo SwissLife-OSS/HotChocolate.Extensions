@@ -12,8 +12,8 @@ Test the following Query against the Api:
     nodes {
       __typename
       name
-      appearsIn { key label }
       ... on Human {
+        appearsIn { key label }
         hairColor { key label }
         maritalStatus { key label }
       }
