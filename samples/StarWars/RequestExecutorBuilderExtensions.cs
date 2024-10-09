@@ -2,7 +2,6 @@ using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Tracking.FieldsLifetime;
 using Microsoft.Extensions.DependencyInjection;
 using StarWars.Characters;
-using StarWars.Reviews;
 using StarWars.Tracking;
 
 namespace StarWars

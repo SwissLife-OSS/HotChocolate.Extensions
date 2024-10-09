@@ -39,7 +39,7 @@ type CreateReviewPayload {
 
 type Droid implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
   height: Float!
   id: Int!
   name: String!
@@ -66,7 +66,7 @@ type FriendsEdge {
 
 type Human implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
   hairColor: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
   hairColor2: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
   height: Float! @deprecated(reason: "invocations of this field will be tracked!")
@@ -77,7 +77,7 @@ type Human implements ICharacter {
 }
 
 type Mutation {
-  createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked @tracked
+  createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked @tracked @cost(weight: "10")
 }
 
 "Information about pagination in a connection."
@@ -94,9 +94,9 @@ type PageInfo {
 
 type Query {
   character(ids: [Int!]!): [ICharacter!]!
-  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] where: ICharacterFilterInput): CharactersConnection
+  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] @cost(weight: "10") where: ICharacterFilterInput @cost(weight: "10")): CharactersConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
   hero(episode: Episode!): ICharacter!
-  reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] where: ReviewFilterInput): ReviewsConnection
+  reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] @cost(weight: "10") where: ReviewFilterInput @cost(weight: "10")): ReviewsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
   search(text: String!): [ISearchResult!]!
 }
 
@@ -158,18 +158,18 @@ input CreateReviewInput {
 }
 
 input FloatOperationFilterInput {
-  eq: Float
-  neq: Float
-  in: [Float]
-  nin: [Float]
-  gt: Float
-  ngt: Float
-  gte: Float
-  ngte: Float
-  lt: Float
-  nlt: Float
-  lte: Float
-  nlte: Float
+  eq: Float @cost(weight: "10")
+  neq: Float @cost(weight: "10")
+  in: [Float] @cost(weight: "10")
+  nin: [Float] @cost(weight: "10")
+  gt: Float @cost(weight: "10")
+  ngt: Float @cost(weight: "10")
+  gte: Float @cost(weight: "10")
+  ngte: Float @cost(weight: "10")
+  lt: Float @cost(weight: "10")
+  nlt: Float @cost(weight: "10")
+  lte: Float @cost(weight: "10")
+  nlte: Float @cost(weight: "10")
 }
 
 input ICharacterFilterInput {
@@ -181,24 +181,24 @@ input ICharacterFilterInput {
 }
 
 input ICharacterSortInput {
-  id: SortEnumType
-  name: SortEnumType
-  height: SortEnumType
+  id: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  height: SortEnumType @cost(weight: "10")
 }
 
 input IntOperationFilterInput {
-  eq: Int
-  neq: Int
-  in: [Int]
-  nin: [Int]
-  gt: Int
-  ngt: Int
-  gte: Int
-  ngte: Int
-  lt: Int
-  nlt: Int
-  lte: Int
-  nlte: Int
+  eq: Int @cost(weight: "10")
+  neq: Int @cost(weight: "10")
+  in: [Int] @cost(weight: "10")
+  nin: [Int] @cost(weight: "10")
+  gt: Int @cost(weight: "10")
+  ngt: Int @cost(weight: "10")
+  gte: Int @cost(weight: "10")
+  ngte: Int @cost(weight: "10")
+  lt: Int @cost(weight: "10")
+  nlt: Int @cost(weight: "10")
+  lte: Int @cost(weight: "10")
+  nlte: Int @cost(weight: "10")
 }
 
 input ReviewFilterInput {
@@ -210,39 +210,39 @@ input ReviewFilterInput {
 }
 
 input ReviewSortInput {
-  id: SortEnumType
-  stars: SortEnumType
-  commentary: SortEnumType
+  id: SortEnumType @cost(weight: "10")
+  stars: SortEnumType @cost(weight: "10")
+  commentary: SortEnumType @cost(weight: "10")
 }
 
 input StringOperationFilterInput {
   and: [StringOperationFilterInput!]
   or: [StringOperationFilterInput!]
-  eq: String
-  neq: String
-  contains: String
-  ncontains: String
-  in: [String]
-  nin: [String]
-  startsWith: String
-  nstartsWith: String
-  endsWith: String
-  nendsWith: String
+  eq: String @cost(weight: "10")
+  neq: String @cost(weight: "10")
+  contains: String @cost(weight: "20")
+  ncontains: String @cost(weight: "20")
+  in: [String] @cost(weight: "10")
+  nin: [String] @cost(weight: "10")
+  startsWith: String @cost(weight: "20")
+  nstartsWith: String @cost(weight: "20")
+  endsWith: String @cost(weight: "20")
+  nendsWith: String @cost(weight: "20")
 }
 
 input UuidOperationFilterInput {
-  eq: UUID
-  neq: UUID
-  in: [UUID]
-  nin: [UUID]
-  gt: UUID
-  ngt: UUID
-  gte: UUID
-  ngte: UUID
-  lt: UUID
-  nlt: UUID
-  lte: UUID
-  nlte: UUID
+  eq: UUID @cost(weight: "10")
+  neq: UUID @cost(weight: "10")
+  in: [UUID] @cost(weight: "10")
+  nin: [UUID] @cost(weight: "10")
+  gt: UUID @cost(weight: "10")
+  ngt: UUID @cost(weight: "10")
+  gte: UUID @cost(weight: "10")
+  ngte: UUID @cost(weight: "10")
+  lt: UUID @cost(weight: "10")
+  nlt: UUID @cost(weight: "10")
+  lte: UUID @cost(weight: "10")
+  nlte: UUID @cost(weight: "10")
 }
 
 enum Episode {
@@ -270,12 +270,16 @@ enum SortEnumType {
   DESC
 }
 
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
+directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!]) on FIELD_DEFINITION
+
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 directive @tracked repeatable on FIELD_DEFINITION
-
-directive @translate(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
 directive @translateEpisode(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
