@@ -35,8 +35,6 @@ namespace StarWars
 
                 .AddInMemorySubscriptions()
 
-                .AddApolloTracing()
-
                 /* HotChocolate.Extensions.Tracking Pipeline */
                 .AddTrackingPipeline(builder => builder
                     .AddExporter<KpiTrackingExporter>()

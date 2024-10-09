@@ -60,10 +60,10 @@ public class IntegrationTests
         {
             //Act
             IExecutionResult res = await executor.ExecuteAsync(
-                QueryRequestBuilder.New()
-                    .SetQuery(query)
+                OperationRequestBuilder.New()
+                    .SetDocument(query)
                     .SetServices(services)
-                    .Create());
+                    .Build());
 
             //Assert
             res.ToMinifiedJson().Should().Be("{\"data\":{\"foo\":\"bar\"}}");
