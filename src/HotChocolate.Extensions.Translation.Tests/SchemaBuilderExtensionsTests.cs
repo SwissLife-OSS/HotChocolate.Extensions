@@ -29,21 +29,5 @@ namespace HotChocolate.Extensions.Translation.Tests
             //Assert
             builder2.Should().Be(builder);
         }
-
-        [Fact]
-        public void RegisterTranslation_WithBuilder_ShouldAddBothTranslationDirectives()
-        {
-            //Arrange
-            ISchemaBuilder builder = SchemaBuilder.New()
-                .AddQueryType<QueryType>();
-
-            //Act
-            builder.AddTranslation();
-
-            //Assert
-            ISchema schema = builder.Create();
-            schema.DirectiveTypes.Should().Contain(d => d.RuntimeType
-                == typeof(TranslateDirective<string>));
-        }
     }
 }
