@@ -5,15 +5,12 @@
     <Authors>Swiss Life authors and contributors</Authors>
     <Company>Swiss Life</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
-    <PackageLicenseUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions</PackageProjectUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/HotChocolate.Extensions/releases/$(Version)</PackageReleaseNotes>
     <PackageTags>SwissLife .Net HotChocolate Translation Tracking</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
 	  <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <RepositoryUrl>https://github.com/SwissLife-OSS/HotChocolate.Extensions.git</RepositoryUrl>
@@ -25,6 +22,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="licenses\LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
