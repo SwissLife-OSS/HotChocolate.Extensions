@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using HotChocolate;
+using HotChocolate.CostAnalysis.Types;
 using HotChocolate.Data;
 using HotChocolate.Types;
 using StarWars.Repositories;
@@ -28,6 +29,10 @@ namespace StarWars.Characters
         /// </summary>
         /// <param name="repository">The character repository.</param>
         /// <returns>The character.</returns>
+        [ListSize(
+            AssumedSize = 100,
+            SlicingArguments = ["first", "last"],
+            RequireOneSlicingArgument = false)]
         [UsePaging(typeof(InterfaceType<ICharacter>))]
         [UseFiltering]
         [UseSorting]
