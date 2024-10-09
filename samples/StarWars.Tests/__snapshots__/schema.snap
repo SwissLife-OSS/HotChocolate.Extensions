@@ -39,7 +39,7 @@ type CreateReviewPayload {
 
 type Droid implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection @listSize(assumedSize: 100, slicingArguments: [ "first", "last" ], requireOneSlicingArgument: false)
   height: Float!
   id: Int!
   name: String!
@@ -94,7 +94,7 @@ type PageInfo {
 
 type Query {
   character(ids: [Int!]!): [ICharacter!]!
-  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] @cost(weight: "10") where: ICharacterFilterInput @cost(weight: "10")): CharactersConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
+  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] @cost(weight: "10") where: ICharacterFilterInput @cost(weight: "10")): CharactersConnection @listSize(assumedSize: 100, slicingArguments: [ "first", "last" ], requireOneSlicingArgument: false)
   hero(episode: Episode!): ICharacter!
   reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] @cost(weight: "10") where: ReviewFilterInput @cost(weight: "10")): ReviewsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
   search(text: String!): [ISearchResult!]!
