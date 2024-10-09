@@ -338,3 +338,4 @@ testoutput/
 
 tools/**
 !tools/packages.config
+**/__mismatch__/*.snap

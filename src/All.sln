@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{E4CA8599-F97B-4F06-AA7B-6D9965FA6AA2}"
 	ProjectSection(SolutionItems) = preProject
 		..\.editorconfig = ..\.editorconfig
+		..\.gitignore = ..\.gitignore
 		..\CODE_OF_CONDUCT.md = ..\CODE_OF_CONDUCT.md
 		..\Directory.Build.props = ..\Directory.Build.props
 		..\Directory.Packages.props = ..\Directory.Packages.props

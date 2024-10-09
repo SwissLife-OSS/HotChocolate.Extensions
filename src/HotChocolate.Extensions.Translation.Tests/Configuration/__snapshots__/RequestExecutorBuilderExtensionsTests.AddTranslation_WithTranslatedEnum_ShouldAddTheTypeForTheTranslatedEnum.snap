@@ -20,6 +20,4 @@ enum DummyEnum {
   QUX
 }
 
-directive @translate(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
-
 directive @translateDummyEnum(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION

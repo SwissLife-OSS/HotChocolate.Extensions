@@ -1,5 +1,7 @@
 ﻿{
   "Kind": "SingleResult",
+  "RequestIndex": null,
+  "VariableIndex": null,
   "Label": null,
   "Path": null,
   "Data": {
@@ -14,5 +16,6 @@
   "Extensions": null,
   "Incremental": null,
   "ContextData": null,
-  "HasNext": null
+  "HasNext": null,
+  "IsDataSet": true
 }

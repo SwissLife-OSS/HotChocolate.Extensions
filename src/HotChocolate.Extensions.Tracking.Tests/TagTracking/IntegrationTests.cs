@@ -55,7 +55,7 @@ public class IntegrationTests
             TagTrackingEntry trackedEntry = trackedEntity.Should().BeOfType<TagTrackingEntry>().Subject;
 
             trackedEntry.Tag.Should().Be("FooInvoked");
-            trackedEntry.Date.Should().BeCloseTo(DateTimeOffset.UtcNow, precision: 30000);
+            trackedEntry.Date.Should().BeCloseTo(DateTimeOffset.UtcNow, precision: TimeSpan.FromSeconds(30));
         }
         finally
         {
