@@ -2,7 +2,6 @@ using HotChocolate.Execution.Configuration;
 using HotChocolate.Extensions.Tracking.FieldsLifetime;
 using Microsoft.Extensions.DependencyInjection;
 using StarWars.Characters;
-using StarWars.Reviews;
 using StarWars.Tracking;
 
 namespace StarWars
@@ -13,19 +12,15 @@ namespace StarWars
         {
             return builder
                 .AddQueryType()
-                    .AddTypeExtension<CharacterQueries>()
-                    .AddTypeExtension<ReviewQueries>()
+                .AddStarWarsTypes()
                 .AddMutationType()
-                    .AddTypeExtension<ReviewMutations>()
                 .AddSubscriptionType()
-                    .AddTypeExtension<ReviewSubscriptions>()
 
                 .AddType<Human>()
-                    .AddType<HumanType>()
-                    .AddTypeExtension<HumanTypeExtension>()
                 .AddType<Droid>()
                 .AddType<Starship>()
-                .AddTypeExtension<CharacterResolvers>()
+                .AddUnionType<ISearchResult>()
+                .AddInterfaceType<ICharacter>()
 
                 .AddFiltering()
                 .AddSorting()
@@ -38,8 +33,6 @@ namespace StarWars
                 )
 
                 .AddInMemorySubscriptions()
-
-                .AddApolloTracing()
 
                 /* HotChocolate.Extensions.Tracking Pipeline */
                 .AddTrackingPipeline(builder => builder

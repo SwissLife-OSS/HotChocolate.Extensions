@@ -31,13 +31,13 @@ namespace HotChocolate.Extensions.Translation.Tests.IntegrationTests
                 .AddDirectiveType<TranslateDirectiveType<DummyValues>>()
                 .AddQueryType(d =>
                     d.Field("foo")
-                        .Resolver(keys)
+                        .Resolve(keys)
                         .Translate<DummyValues>("prefix")
                 );
 
             //Act
             IExecutionResult result = await builder.ExecuteRequestAsync(
-                QueryRequestBuilder.New().SetQuery(query).Create());
+                OperationRequestBuilder.New().SetDocument(query).Build());
 
             //Assert
             Snapshot.Match(result);

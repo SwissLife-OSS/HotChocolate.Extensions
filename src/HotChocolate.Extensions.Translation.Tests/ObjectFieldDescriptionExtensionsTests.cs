@@ -36,7 +36,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString());
+            schema.ToString().Should().MatchSnapshot();
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString());
+            schema.ToString().Should().MatchSnapshot();
         }
 
         public enum DummyValues
@@ -84,7 +84,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString(),
+            schema.ToString().Should().MatchSnapshot(
                 "Translated_RmsNodePathOk_ShouldAddBothDirectives_schema");
         }
 
@@ -108,10 +108,10 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IQueryRequest request = QueryRequestBuilder.New()
-                    .SetQuery(@"{ myField }")
+                IOperationRequest request = OperationRequestBuilder.New()
+                    .SetDocument(@"{ myField }")
                     .SetServices(services)
-                    .Create();
+                    .Build();
 
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
@@ -128,8 +128,8 @@ namespace HotChocolate.Extensions.Translation.Tests
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.ExpectQueryResult().Errors.Should().BeNull();
-                Snapshot.Match(result, $"Translated_StringValue_ShouldTranslate_{culture}");
+                result.ExpectOperationResult().Errors.Should().BeNull();
+                result.Should().MatchSnapshot($"Translated_StringValue_ShouldTranslate_{culture}");
             }
             finally
             {
@@ -158,10 +158,10 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IQueryRequest request = QueryRequestBuilder.New()
-                    .SetQuery(@"{ myField }")
+                IOperationRequest request = OperationRequestBuilder.New()
+                    .SetDocument(@"{ myField }")
                     .SetServices(services)
-                    .Create();
+                    .Build();
 
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
@@ -178,8 +178,8 @@ namespace HotChocolate.Extensions.Translation.Tests
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.ExpectQueryResult().Errors.Should().BeNull();
-                Snapshot.Match(result, $"Translated_ArrayOfStringValues_ShouldTranslate_{culture}");
+                result.ExpectOperationResult().Errors.Should().BeNull();
+                result.Should().MatchSnapshot($"Translated_ArrayOfStringValues_ShouldTranslate_{culture}");
             }
             finally
             {
@@ -205,7 +205,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString(),
+            schema.ToString().Should().MatchSnapshot(
                 "TranslateArray_RmsNodePathOk_ShouldAddBothDirectives_schema");
         }
 
@@ -226,7 +226,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 .Create();
 
             //Assert
-            Snapshot.Match(schema.ToString(),
+            schema.ToString().Should().MatchSnapshot(
                 "TranslateArrayOfT_RmsNodePathOk_ShouldAddBothDirectives_schema");
         }
 
@@ -250,10 +250,10 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IQueryRequest request = QueryRequestBuilder.New()
-                    .SetQuery(@"{ myField { key label } }")
+                IOperationRequest request = OperationRequestBuilder.New()
+                    .SetDocument(@"{ myField { key label } }")
                     .SetServices(services)
-                    .Create();
+                    .Build();
 
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
@@ -270,8 +270,8 @@ namespace HotChocolate.Extensions.Translation.Tests
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.ExpectQueryResult().Errors.Should().BeNull();
-                Snapshot.Match(result,
+                result.ExpectOperationResult().Errors.Should().BeNull();
+                result.Should().MatchSnapshot(
                     $"TranslateArrayOfT_RmsNodePathOk_ShouldTranslate_{culture}");
             }
             finally
@@ -301,10 +301,10 @@ namespace HotChocolate.Extensions.Translation.Tests
                     .AddGraphQLCore()
                     .BuildServiceProvider();
 
-                IQueryRequest request = QueryRequestBuilder.New()
-                    .SetQuery(@"{ myField { key label } }")
+                IOperationRequest request = OperationRequestBuilder.New()
+                    .SetDocument(@"{ myField { key label } }")
                     .SetServices(services)
-                    .Create();
+                    .Build();
 
                 ISchema schema = SchemaBuilder.New()
                     .AddServices(services)
@@ -321,7 +321,7 @@ namespace HotChocolate.Extensions.Translation.Tests
                 IExecutionResult result = await executor.ExecuteAsync(request);
 
                 //Assert
-                result.ExpectQueryResult().Errors.Should().BeNull();
+                result.ExpectOperationResult().Errors.Should().BeNull();
                 Snapshot.Match(result, $"TranslateArray_RmsNodePathOk_ShouldTranslate_{culture}");
             }
             finally
@@ -340,9 +340,9 @@ namespace HotChocolate.Extensions.Translation.Tests
             services.AddSingleton<IResourcesProviderAdapter>(
                 new EvergreenResourcesProviderAdapter());
 
-            IQueryRequest request = QueryRequestBuilder.New()
-                .SetQuery(@"{ myField }")
-                .Create();
+            IOperationRequest request = OperationRequestBuilder.New()
+                .SetDocument(@"{ myField }")
+                .Build();
 
             ISchema schema = SchemaBuilder.New()
                 .AddServices(services.BuildServiceProvider())
@@ -359,7 +359,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             IExecutionResult result = await executor.ExecuteAsync(request);
 
             //Assert
-            result.ExpectQueryResult().Errors.Should().BeNull();
+            result.ExpectOperationResult().Errors.Should().BeNull();
             Snapshot.Match(result);
         }
 
@@ -371,9 +371,9 @@ namespace HotChocolate.Extensions.Translation.Tests
             services.AddSingleton<IResourcesProviderAdapter>(
                 new EvergreenResourcesProviderAdapter());
 
-            IQueryRequest request = QueryRequestBuilder.New()
-                .SetQuery(@"{ myField }")
-                .Create();
+            IOperationRequest request = OperationRequestBuilder.New()
+                .SetDocument(@"{ myField }")
+                .Build();
 
             ISchema schema = SchemaBuilder.New()
                 .AddServices(services.BuildServiceProvider())
@@ -391,7 +391,7 @@ namespace HotChocolate.Extensions.Translation.Tests
             IExecutionResult result = await executor.ExecuteAsync(request);
 
             //Assert
-            result.ExpectQueryResult().Errors.Should().NotBeNull();
+            result.ExpectOperationResult().Errors.Should().NotBeNull();
         }
 
         [InlineData("")]

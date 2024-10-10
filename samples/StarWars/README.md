@@ -8,11 +8,10 @@ Start the Api and explore the Schema under `/graphql` with your favorite GraphQL
 Test the following Query against the Api: 
 ```
 {
-  characters {
+  characters(first:10) {
     nodes {
       __typename
       name
-      appearsIn { key label }
       ... on Human {
         hairColor { key label }
         maritalStatus { key label }

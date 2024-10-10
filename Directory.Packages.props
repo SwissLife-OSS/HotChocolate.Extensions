@@ -1,0 +1,60 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="[1.1,)" />
+
+    <PackageVersion Include="HotChocolate" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Data" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Execution" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Types" Version="14.0.0-rc.3" />
+    <PackageVersion Include="HotChocolate.Types.Analyzers" Version="14.0.0-rc.3" />
+
+    <PackageVersion Include="MassTransit.Azure.ServiceBus.Core" Version="[8.0.0,)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="[2.2.0,)" />
+
+    <PackageVersion Include="System.Threading.Channels" Version="[4.7.1,)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="[7,)" />
+    <PackageVersion Include="Microsoft.Extensions.Localization" Version="[7,)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="[8,)" />
+    <PackageVersion Include="Microsoft.Extensions.Localization" Version="[8,)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="FluentAssertions" Version="6.12.1" />
+    <PackageVersion Include="Moq" Version="4.13.0" />
+    <PackageVersion Include="Snapshooter.Xunit" Version="0.14.1" />
+    <PackageVersion Include="Squadron.Mongo" Version="0.17.0" />
+    <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
+  </ItemGroup>
+
+</Project>

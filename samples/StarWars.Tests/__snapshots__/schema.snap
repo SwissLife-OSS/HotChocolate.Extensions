@@ -4,17 +4,9 @@
   subscription: Subscription
 }
 
-"A character in the Star Wars universe."
-interface Character {
-  "The episodes the character appears in."
-  appearsIn: [TranslatedResourceOfEpisode!]!
-  "The ids of the character's friends."
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
-  "The height of the character."
-  height(unit: Unit = METERS): Float!
-  "The unique identifier for the character."
+interface ICharacter {
+  height: Float!
   id: Int!
-  "The name of the character."
   name: String!
 }
 
@@ -27,7 +19,7 @@ type CharactersConnection {
   "A list of edges."
   edges: [CharactersEdge!]
   "A flattened list of the nodes."
-  nodes: [Character]
+  nodes: [ICharacter]
   "Information to aid in pagination."
   pageInfo: PageInfo!
 }
@@ -37,29 +29,20 @@ type CharactersEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Character
+  node: ICharacter
 }
 
-"This payload allows us to query the created review object."
 type CreateReviewPayload {
-  "The episode for which a review was created."
   episode: Episode!
-  "The review that was being created."
   review: Review!
 }
 
-"This resolver class extends all object types implementing ICharacter."
-type Droid implements Character {
-  "The episodes the character appears in."
+type Droid implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
-  "The height of the character."
-  height(unit: Unit = METERS): Float!
-  "The unique identifier for the character."
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection @listSize(assumedSize: 100, slicingArguments: [ "first", "last" ], requireOneSlicingArgument: false)
+  height: Float!
   id: Int!
-  "The name of the character."
   name: String!
-  "The droid's primary function."
   primaryFunction: String!
 }
 
@@ -68,7 +51,7 @@ type FriendsConnection {
   "A list of edges."
   edges: [FriendsEdge!]
   "A flattened list of the nodes."
-  nodes: [Character]
+  nodes: [ICharacter]
   "Information to aid in pagination."
   pageInfo: PageInfo!
 }
@@ -78,33 +61,23 @@ type FriendsEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Character
+  node: ICharacter
 }
 
-"This resolver class extends all object types implementing ICharacter."
-type Human implements Character {
-  "The episodes the character appears in."
+type Human implements ICharacter {
   appearsIn: [TranslatedResourceOfEpisode!]! @translateEpisode(resourceKeyPrefix: "Episodes", toCodeLabelItem: true)
-  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection
-  "Color of the Human's hair"
+  friends("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int): FriendsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
   hairColor: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
   hairColor2: TranslatedResourceOfHairColor @translateHairColor(resourceKeyPrefix: "HairColors", toCodeLabelItem: true)
-  "The height of the character."
-  height(unit: Unit = METERS): Float! @deprecated(reason: "invocations of this field will be tracked!")
-  "The planet the character is originally from."
+  height: Float! @deprecated(reason: "invocations of this field will be tracked!")
   homePlanet: String
-  "The unique identifier for the character."
   id: Int!
-  "the Humans's marital status"
   maritalStatus: TranslatedResourceOfMaritalStatus! @translateMaritalStatus(resourceKeyPrefix: "MaritalStatus", toCodeLabelItem: true)
-  "The name of the character."
   name: String!
 }
 
-"The mutations related to reviews."
 type Mutation {
-  "Creates a review for a given Star Wars episode."
-  createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked @tracked
+  createReview(input: CreateReviewInput!): CreateReviewPayload! @tracked @tracked @cost(weight: "10")
 }
 
 "Information about pagination in a connection."
@@ -119,26 +92,17 @@ type PageInfo {
   startCursor: String
 }
 
-"The queries related to reviews."
 type Query {
-  "Gets a character by it`s id.\n\n\n**Returns:**\nThe character."
-  character("The ids of the human to retrieve." ids: [Int!]!): [Character!]!
-  "Gets all character.\n\n\n**Returns:**\nThe character."
-  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] where: ICharacterFilterInput): CharactersConnection
-  "Retrieve a hero by a particular Star Wars episode.\n\n\n**Returns:**\nThe hero character."
-  hero("The episode to retrieve the hero." episode: Episode!): Character!
-  reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] where: ReviewFilterInput): ReviewsConnection
-  "Search the repository for objects that contain the text.\n\n\n**Returns:**\nReturns the union type ISearchResult."
-  search("The text we are searching for." text: String!): [SearchResult!]!
+  character(ids: [Int!]!): [ICharacter!]!
+  characters("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ICharacterSortInput!] @cost(weight: "10") where: ICharacterFilterInput @cost(weight: "10")): CharactersConnection @listSize(assumedSize: 100, slicingArguments: [ "first", "last" ], requireOneSlicingArgument: false)
+  hero(episode: Episode!): ICharacter!
+  reviews("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String episode: Episode! "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [ReviewSortInput!] @cost(weight: "10") where: ReviewFilterInput @cost(weight: "10")): ReviewsConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ])
+  search(text: String!): [ISearchResult!]!
 }
 
-"A review of a particular movie."
 type Review {
-  "An explanation for the rating."
   commentary: String!
-  "The ID of the review."
   id: UUID!
-  "The number of stars given for this review."
   stars: Int!
 }
 
@@ -160,20 +124,14 @@ type ReviewsEdge {
   node: Review!
 }
 
-"A starship in the Star Wars universe."
 type Starship {
-  "The Id of the starship."
   id: Int!
-  "The length of the starship."
-  length(unit: Unit = METERS): Float!
-  "The name of the starship."
+  length: Float!
   name: String!
 }
 
-"The subscriptions related to reviews."
 type Subscription {
-  "The OnReview event is invoked whenever a new review is being created.\n\n\n**Returns:**\n\nThe review that was created."
-  onReview("The episode to which you want to subscribe to." episode: Episode!): Review!
+  onReview(episode: Episode!): Review!
 }
 
 type TranslatedResourceOfEpisode implements Translation {
@@ -191,154 +149,105 @@ type TranslatedResourceOfMaritalStatus implements Translation {
   label: String!
 }
 
-union SearchResult = Human | Droid | Starship
+union ISearchResult = Human | Droid | Starship
 
-"This input represents the data needed to create a review."
 input CreateReviewInput {
-  "An explanation for the rating."
   commentary: String!
-  "The review for which to create the review."
   episode: Episode!
-  "The number of stars given for this review."
   stars: Int!
 }
 
-input EpisodeOperationFilterInput {
-  eq: Episode
-  neq: Episode
-  in: [Episode!]
-  nin: [Episode!]
-}
-
 input FloatOperationFilterInput {
-  eq: Float
-  neq: Float
-  in: [Float]
-  nin: [Float]
-  gt: Float
-  ngt: Float
-  gte: Float
-  ngte: Float
-  lt: Float
-  nlt: Float
-  lte: Float
-  nlte: Float
+  eq: Float @cost(weight: "10")
+  neq: Float @cost(weight: "10")
+  in: [Float] @cost(weight: "10")
+  nin: [Float] @cost(weight: "10")
+  gt: Float @cost(weight: "10")
+  ngt: Float @cost(weight: "10")
+  gte: Float @cost(weight: "10")
+  ngte: Float @cost(weight: "10")
+  lt: Float @cost(weight: "10")
+  nlt: Float @cost(weight: "10")
+  lte: Float @cost(weight: "10")
+  nlte: Float @cost(weight: "10")
 }
 
-"A character in the Star Wars universe."
 input ICharacterFilterInput {
   and: [ICharacterFilterInput!]
   or: [ICharacterFilterInput!]
-  "The unique identifier for the character."
   id: IntOperationFilterInput
-  "The name of the character."
   name: StringOperationFilterInput
-  "The ids of the character's friends."
-  friends: ListIntOperationFilterInput
-  "The episodes the character appears in."
-  appearsIn: ListEpisodeOperationFilterInput
-  "The height of the character."
   height: FloatOperationFilterInput
 }
 
-"A character in the Star Wars universe."
 input ICharacterSortInput {
-  "The unique identifier for the character."
-  id: SortEnumType
-  "The name of the character."
-  name: SortEnumType
-  "The height of the character."
-  height: SortEnumType
+  id: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  height: SortEnumType @cost(weight: "10")
 }
 
 input IntOperationFilterInput {
-  eq: Int
-  neq: Int
-  in: [Int]
-  nin: [Int]
-  gt: Int
-  ngt: Int
-  gte: Int
-  ngte: Int
-  lt: Int
-  nlt: Int
-  lte: Int
-  nlte: Int
+  eq: Int @cost(weight: "10")
+  neq: Int @cost(weight: "10")
+  in: [Int] @cost(weight: "10")
+  nin: [Int] @cost(weight: "10")
+  gt: Int @cost(weight: "10")
+  ngt: Int @cost(weight: "10")
+  gte: Int @cost(weight: "10")
+  ngte: Int @cost(weight: "10")
+  lt: Int @cost(weight: "10")
+  nlt: Int @cost(weight: "10")
+  lte: Int @cost(weight: "10")
+  nlte: Int @cost(weight: "10")
 }
 
-input ListEpisodeOperationFilterInput {
-  all: EpisodeOperationFilterInput
-  none: EpisodeOperationFilterInput
-  some: EpisodeOperationFilterInput
-  any: Boolean
-}
-
-input ListIntOperationFilterInput {
-  all: IntOperationFilterInput
-  none: IntOperationFilterInput
-  some: IntOperationFilterInput
-  any: Boolean
-}
-
-"A review of a particular movie."
 input ReviewFilterInput {
   and: [ReviewFilterInput!]
   or: [ReviewFilterInput!]
-  "The ID of the review."
   id: UuidOperationFilterInput
-  "The number of stars given for this review."
   stars: IntOperationFilterInput
-  "An explanation for the rating."
   commentary: StringOperationFilterInput
 }
 
-"A review of a particular movie."
 input ReviewSortInput {
-  "The ID of the review."
-  id: SortEnumType
-  "The number of stars given for this review."
-  stars: SortEnumType
-  "An explanation for the rating."
-  commentary: SortEnumType
+  id: SortEnumType @cost(weight: "10")
+  stars: SortEnumType @cost(weight: "10")
+  commentary: SortEnumType @cost(weight: "10")
 }
 
 input StringOperationFilterInput {
   and: [StringOperationFilterInput!]
   or: [StringOperationFilterInput!]
-  eq: String
-  neq: String
-  contains: String
-  ncontains: String
-  in: [String]
-  nin: [String]
-  startsWith: String
-  nstartsWith: String
-  endsWith: String
-  nendsWith: String
+  eq: String @cost(weight: "10")
+  neq: String @cost(weight: "10")
+  contains: String @cost(weight: "20")
+  ncontains: String @cost(weight: "20")
+  in: [String] @cost(weight: "10")
+  nin: [String] @cost(weight: "10")
+  startsWith: String @cost(weight: "20")
+  nstartsWith: String @cost(weight: "20")
+  endsWith: String @cost(weight: "20")
+  nendsWith: String @cost(weight: "20")
 }
 
 input UuidOperationFilterInput {
-  eq: UUID
-  neq: UUID
-  in: [UUID]
-  nin: [UUID]
-  gt: UUID
-  ngt: UUID
-  gte: UUID
-  ngte: UUID
-  lt: UUID
-  nlt: UUID
-  lte: UUID
-  nlte: UUID
+  eq: UUID @cost(weight: "10")
+  neq: UUID @cost(weight: "10")
+  in: [UUID] @cost(weight: "10")
+  nin: [UUID] @cost(weight: "10")
+  gt: UUID @cost(weight: "10")
+  ngt: UUID @cost(weight: "10")
+  gte: UUID @cost(weight: "10")
+  ngte: UUID @cost(weight: "10")
+  lt: UUID @cost(weight: "10")
+  nlt: UUID @cost(weight: "10")
+  lte: UUID @cost(weight: "10")
+  nlte: UUID @cost(weight: "10")
 }
 
-"The Star Wars episodes."
 enum Episode {
-  "Star Wars Episode IV: A New Hope"
   NEW_HOPE
-  "Star Wars Episode V: Empire Strikes Back"
   EMPIRE
-  "Star Wars Episode VI: Return of the Jedi"
   JEDI
 }
 
@@ -361,18 +270,16 @@ enum SortEnumType {
   DESC
 }
 
-"Different units of measurement."
-enum Unit {
-  FOOT
-  METERS
-}
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
+directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!]) on FIELD_DEFINITION
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 directive @tracked repeatable on FIELD_DEFINITION
-
-directive @translate(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
 directive @translateEpisode(resourceKeyPrefix: String! toCodeLabelItem: Boolean!) on FIELD_DEFINITION
 
